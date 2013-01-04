@@ -12,7 +12,6 @@ import javax.jms.Queue;
 import javax.jms.QueueBrowser;
 import javax.jms.TextMessage;
 
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.mutable.MutableInt;
 import org.fusesource.jansi.Ansi.Color;
@@ -155,7 +154,7 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 				result.putProperty("JMSMessageID", tm.getJMSMessageID());
 				result.putProperty("JMSPriority", tm.getJMSPriority());
 				result.putProperty("JMSRedelivered", tm.getJMSRedelivered());
-				result.putProperty("JMSReplyTo", "" + tm.getJMSReplyTo());
+				result.putProperty("JMSReplyTo", tm.getJMSReplyTo() == null ? "" : "" + tm.getJMSReplyTo());
 				result.putProperty("JMSTimestamp", tm.getJMSTimestamp() + " (" + new Date(tm.getJMSTimestamp()) + ")"); // TODO abstract and format
 				result.putProperty("JMSType", tm.getJMSType());
 			}
