@@ -1,6 +1,6 @@
 package de.galan.plunger.util;
 
-import java.util.regex.Pattern;
+import java.net.URI;
 
 import org.apache.commons.lang.StringUtils;
 
@@ -8,45 +8,39 @@ import de.galan.plunger.domain.Target;
 
 
 /**
- * Parses a given target in form [username[:password]@]host[:port]
+ * Parses a given target in form provider://[username[:password]@]host[:port]
  * 
  * @author daniel
  */
 public class TargetParser {
 
-	private static final Pattern VALID_PATTERN = Pattern.compile("^([\\w-+]+(:[^@:]+)?@)?[0-9a-zA-Z]+([.][0-9a-zA-Z]+)*([:][0-9]+)?$");
-
-
-	public Target parse(String proxy, int defaultPort) throws Exception {
+	public Target parse(String target, int defaultPort) throws Exception {
 		Target result = null;
+		try {
+			URI uri = new URI(target);
+			if (StringUtils.isBlank(uri.getScheme()) || !StringUtils.contains(target, "://")) {
+				throw new Exception("No provider given");
+			}
+			int port = uri.getPort();
+			if (port == -1) {
+				port = defaultPort;
+			}
 
-		//URL url = new URL(proxy);
-		//url.getProtocol();
-
-		if (proxy != null && VALID_PATTERN.matcher(proxy).matches()) {
-			int indexAuth = StringUtils.indexOf(proxy, "@");
 			String username = null;
 			String password = null;
-			String host = null;
-			if (indexAuth > 0) {
-				String auth = StringUtils.substring(proxy, 0, indexAuth);
-				host = StringUtils.substring(proxy, indexAuth + 1, proxy.length());
-				String[] authSplit = StringUtils.split(auth, ":", 2);
+			if (StringUtils.isNotEmpty(uri.getUserInfo())) {
+				String[] authSplit = StringUtils.split(uri.getUserInfo(), ":", 2);
 				username = authSplit[0];
 				if (authSplit.length == 2) {
 					password = authSplit[1];
 				}
 			}
-			else {
-				host = proxy;
-			}
-			String[] hostSplit = StringUtils.split(host, ":", 2);
-			String ip = hostSplit[0];
-			int port = defaultPort;
-			if (hostSplit.length == 2) {
-				port = Integer.valueOf(hostSplit[1]);
-			}
-			result = new Target(null, username, password, ip, port);
+			result = new Target(uri.getScheme(), username, password, uri.getHost(), port);
+
+		}
+		catch (Exception ex) {
+			result = null;
+			Output.error(ex.getMessage());
 		}
 
 		return result;
