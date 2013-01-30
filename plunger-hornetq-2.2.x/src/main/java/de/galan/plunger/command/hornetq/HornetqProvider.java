@@ -11,33 +11,34 @@ import de.galan.plunger.domain.PlungerArguments;
  * @author daniel
  */
 public class HornetqProvider implements CommandProvider {
-	
+
 	@Override
 	public String getName() {
 		return "hornetq-2.2.x";
 	}
 
+
 	@Override
-	public Command ls(PlungerArguments jca) {
+	public Command ls(PlungerArguments pa) {
 		return new HornetqCommandLs();
 	}
 
 
 	@Override
-	public Command cat(PlungerArguments jca) {
+	public Command cat(PlungerArguments pa) {
 		return new HornetqCommandCat();
 	}
 
 
 	@Override
-	public Command put(PlungerArguments jca) {
+	public Command put(PlungerArguments pa) {
 		return new HornetqCommandPut();
 		//cmd = new ActivemqCommandLs();
 	}
 
 
 	@Override
-	public Command count(PlungerArguments jca) {
+	public Command count(PlungerArguments pa) {
 		return new HornetqCommandCount();
 	}
 

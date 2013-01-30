@@ -32,42 +32,42 @@ import de.galan.plunger.util.Output;
 public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 
 	@Override
-	public void process(PlungerArguments jca) throws CommandException {
+	public void process(PlungerArguments pa) throws CommandException {
 		if (isQueue()) {
-			processQueue(jca);
+			processQueue(pa);
 		}
 		else if (isTopic()) {
-			processTopic(jca);
+			processTopic(pa);
 		}
 	}
 
 
-	private void processQueue(PlungerArguments jca) throws CommandException {
+	private void processQueue(PlungerArguments pa) throws CommandException {
 		try {
 			getConnection().start();
-			boolean browseOnly = !jca.hasCommandArgument("r");
+			boolean browseOnly = !pa.hasCommandArgument("r");
 			boolean firstMessage = true;
 			MutableInt counter = new MutableInt();
-			Integer limit = jca.getCommandArgumentPrefixInteger("n");
+			Integer limit = pa.getCommandArgumentPrefixInteger("n");
 			if (browseOnly) {
-				QueueBrowser browser = getSession().createBrowser((Queue)getDestination(), jca.getSelector());
+				QueueBrowser browser = getSession().createBrowser((Queue)getDestination(), pa.getSelector());
 				@SuppressWarnings("unchecked")
 				Enumeration<TextMessage> enumeration = browser.getEnumeration();
 				while(!isLimitExceeded(limit, counter) && enumeration.hasMoreElements()) {
-					firstMessage = printSeparator(firstMessage, jca);
+					firstMessage = printSeparator(firstMessage, pa);
 					TextMessage tm = enumeration.nextElement();
-					Message message = constructMessage(tm, jca);
-					printMessage(jca, message);
+					Message message = constructMessage(tm, pa);
+					printMessage(pa, message);
 				}
 			}
 			else {
-				MessageConsumer consumer = getSession().createConsumer(getDestination(), jca.getSelector());
+				MessageConsumer consumer = getSession().createConsumer(getDestination(), pa.getSelector());
 				javax.jms.Message jmsMessage = null;
 				while(!isLimitExceeded(limit, counter) && (jmsMessage = consumer.receiveNoWait()) != null) {
-					firstMessage = printSeparator(firstMessage, jca);
+					firstMessage = printSeparator(firstMessage, pa);
 					TextMessage tm = (TextMessage)jmsMessage;
-					Message message = constructMessage(tm, jca);
-					printMessage(jca, message);
+					Message message = constructMessage(tm, pa);
+					printMessage(pa, message);
 				}
 			}
 		}
@@ -89,9 +89,9 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 	}
 
 
-	private boolean printSeparator(boolean firstMessage, PlungerArguments jca) {
+	private boolean printSeparator(boolean firstMessage, PlungerArguments pa) {
 		if (!firstMessage) {
-			if (!jca.hasCommandArgument("ee")) {
+			if (!pa.hasCommandArgument("ee")) {
 				Output.println(StringUtils.repeat("-", 64));
 			}
 		}
@@ -99,20 +99,20 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 	}
 
 
-	private void processTopic(PlungerArguments jca) throws CommandException {
+	private void processTopic(PlungerArguments pa) throws CommandException {
 		try {
 			getConnection().start();
 			boolean firstMessage = true;
 			MutableInt counter = new MutableInt();
-			Integer limit = jca.getCommandArgumentPrefixInteger("n");
-			//TopicSubscriber subscriber = getSession().createDurableSubscriber((Topic)getDestination(), "name", jca.getSelector(), true);
-			MessageConsumer consumer = getSession().createConsumer(getDestination(), jca.getSelector());
+			Integer limit = pa.getCommandArgumentPrefixInteger("n");
+			//TopicSubscriber subscriber = getSession().createDurableSubscriber((Topic)getDestination(), "name", pa.getSelector(), true);
+			MessageConsumer consumer = getSession().createConsumer(getDestination(), pa.getSelector());
 			javax.jms.Message jmsMessage = null;
 			while((jmsMessage = consumer.receive()) != null && !isLimitExceeded(limit, counter)) {
-				firstMessage = printSeparator(firstMessage, jca);
+				firstMessage = printSeparator(firstMessage, pa);
 				TextMessage tm = (TextMessage)jmsMessage;
-				Message message = constructMessage(tm, jca);
-				printMessage(jca, message);
+				Message message = constructMessage(tm, pa);
+				printMessage(pa, message);
 			}
 		}
 		catch (Exception ex) {
@@ -121,23 +121,23 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 	}
 
 
-	protected Message constructMessage(TextMessage tm, PlungerArguments jca) throws CommandException {
+	protected Message constructMessage(TextMessage tm, PlungerArguments pa) throws CommandException {
 		try {
 			Message result = new Message();
 			// body
 			String body = tm.getText();
-			if (!jca.hasCommandArgument("b")) { // exclude body or not
-				if (jca.hasCommandArgument("e") && !jca.hasCommandArgument("ee")) { // escape body (check against isEscape, otherwise twice escaped)
+			if (!pa.hasCommandArgument("b")) { // exclude body or not
+				if (pa.hasCommandArgument("e") && !pa.hasCommandArgument("ee")) { // escape body (check against isEscape, otherwise twice escaped)
 					body = new Escape().escape(body);
 				}
-				Integer cut = jca.getCommandArgumentPrefixInteger("c"); // limiting the body output
+				Integer cut = pa.getCommandArgumentPrefixInteger("c"); // limiting the body output
 				if (cut != null) {
 					boolean addDots = StringUtils.length(body) > cut;
 					body = StringUtils.substring(body, 0, cut) + (addDots ? "..." : "");
 				}
 				result.setBody(body);
 			}
-			if (!jca.hasCommandArgument("p")) { // exclude properties or not
+			if (!pa.hasCommandArgument("p")) { // exclude properties or not
 				@SuppressWarnings("unchecked")
 				Enumeration<String> enumKeys = tm.getPropertyNames();
 				while(enumKeys.hasMoreElements()) {
@@ -167,8 +167,8 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 	}
 
 
-	private void printMessage(PlungerArguments jca, Message message) {
-		if (jca.hasCommandArgument("ee")) {
+	private void printMessage(PlungerArguments pa, Message message) {
+		if (pa.hasCommandArgument("ee")) {
 			String[] marshalled = new MessageMarshaller().marshalParts(message);
 			Output.print(Color.GREEN, marshalled[0]);
 			Output.print(marshalled[1]);

@@ -24,4 +24,6 @@ public interface CommandProvider {
 
 	public Command count(PlungerArguments pa);
 
+	//public Command execute(CommandName<<enum name, PlungerArguments pa);
+
 }

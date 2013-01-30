@@ -1,8 +1,8 @@
 package de.galan.plunger.util;
 
-import java.net.URI;
+import static org.apache.commons.lang.StringUtils.*;
 
-import org.apache.commons.lang.StringUtils;
+import java.net.URI;
 
 import de.galan.plunger.domain.Target;
 
@@ -18,7 +18,7 @@ public class TargetParser {
 		Target result = null;
 		try {
 			URI uri = new URI(target);
-			if (StringUtils.isBlank(uri.getScheme()) || !StringUtils.contains(target, "://")) {
+			if (isBlank(uri.getScheme()) || !contains(target, "://")) {
 				throw new Exception("No provider given");
 			}
 			int port = uri.getPort();
@@ -28,8 +28,8 @@ public class TargetParser {
 
 			String username = null;
 			String password = null;
-			if (StringUtils.isNotEmpty(uri.getUserInfo())) {
-				String[] authSplit = StringUtils.split(uri.getUserInfo(), ":", 2);
+			if (isNotEmpty(uri.getUserInfo())) {
+				String[] authSplit = split(uri.getUserInfo(), ":", 2);
 				username = authSplit[0];
 				if (authSplit.length == 2) {
 					password = authSplit[1];

@@ -23,7 +23,7 @@ import de.galan.plunger.util.SystemMessageReader;
 public class HornetqCommandPut extends AbstractHornetqJmsCommand {
 
 	@Override
-	public void process(PlungerArguments jca) {
+	public void process(PlungerArguments pa) {
 		//MessageReader reader = new FileMessageReader("/home/daniel/workspace-4.2/plunger/src/test/resources/test2");
 		MessageReader reader = new SystemMessageReader();
 
@@ -46,7 +46,7 @@ public class HornetqCommandPut extends AbstractHornetqJmsCommand {
 							textMessge.setObjectProperty(key, msg.getProperty(key));
 						}
 					}
-					if (jca.isVerbose()) {
+					if (pa.isVerbose()) {
 						//TODO abstract from HornetQCommandLs
 						String[] marshalled = new MessageMarshaller().marshalParts(msg);
 						Output.print(Color.GREEN, marshalled[0]);
@@ -67,7 +67,7 @@ public class HornetqCommandPut extends AbstractHornetqJmsCommand {
 			/*
 			//getSession().createQueue("jms.queue.test-plunger", "test-plunger");
 
-			ClientProducer producer = getSession().createProducer(jca.getDestination());
+			ClientProducer producer = getSession().createProducer(pa.getDestination());
 			int lineCount = 0;
 			MessageMarshaller mm = new MessageMarshaller();
 			String line = null;

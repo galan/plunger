@@ -2,7 +2,6 @@ package de.galan.plunger.command.hornetq;
 
 import java.util.Arrays;
 
-
 import org.apache.commons.lang.StringUtils;
 import org.fusesource.jansi.Ansi.Color;
 import org.hornetq.api.core.SimpleString;
@@ -29,7 +28,7 @@ import de.galan.plunger.util.StringCaseInsensitiveComparator;
 public class HornetqCommandLs extends AbstractHornetqCoreCommand {
 
 	@Override
-	public void process(PlungerArguments jca) throws CommandException {
+	public void process(PlungerArguments pa) throws CommandException {
 		try {
 			ClientRequestor requestor = new ClientRequestor(getSession(), "jms.queue.hornetq.management");
 			ClientMessage message = getSession().createMessage(false);
@@ -38,18 +37,18 @@ public class HornetqCommandLs extends AbstractHornetqCoreCommand {
 			Object[] arrayObjects = (Object[])ManagementHelper.getResult(reply);
 			String[] array = Arrays.copyOf(arrayObjects, arrayObjects.length, String[].class);
 			Arrays.sort(array, new StringCaseInsensitiveComparator());
-			boolean filterTemp = jca.hasCommandArgument("t");
-			boolean filterPersistent = jca.hasCommandArgument("p");
+			boolean filterTemp = pa.hasCommandArgument("t");
+			boolean filterPersistent = pa.hasCommandArgument("p");
 			for (String address: array) {
 				QueueQuery queueQuery = getSession().queueQuery(SimpleString.toSimpleString(address));
 				boolean persistent = queueQuery.isDurable();
 				boolean filterPassed = (persistent && !filterPersistent) || (!persistent && !filterTemp);
-				boolean optionMessages = !(jca.hasCommandArgument("m") && (queueQuery.getMessageCount() <= 0));
-				boolean optionConsumer = !(jca.hasCommandArgument("c") && (queueQuery.getConsumerCount() <= 0));
+				boolean optionMessages = !(pa.hasCommandArgument("m") && (queueQuery.getMessageCount() <= 0));
+				boolean optionConsumer = !(pa.hasCommandArgument("c") && (queueQuery.getConsumerCount() <= 0));
 				if (filterPassed && optionMessages && optionConsumer) {
 					Color destinationColor = StringUtils.startsWith(address, "jms.queue.") ? Color.CYAN : Color.GREEN;
 					Output.print(destinationColor, address);
-					if (!jca.hasCommandArgument("i")) {
+					if (!pa.hasCommandArgument("i")) {
 						if (!queueQuery.isDurable()) {
 							Output.print(" (temporary)");
 						}
@@ -71,7 +70,7 @@ public class HornetqCommandLs extends AbstractHornetqCoreCommand {
 		/*
 		ClientRequestor requestor = new ClientRequestor(session, "jms.queue.hornetq.management");
 		ClientMessage message = session.createMessage(false);
-		//ManagementHelper.putAttribute(message, jca.getDestination(), "messageCount");
+		//ManagementHelper.putAttribute(message, pa.getDestination(), "messageCount");
 		ManagementHelper.putAttribute(message, ResourceNames.CORE_SERVER, "addressNames");
 		ClientMessage reply = requestor.request(message);
 		int count = (Integer)ManagementHelper.getResult(reply);

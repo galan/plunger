@@ -1,6 +1,5 @@
 package de.galan.plunger.command.hornetq;
 
-
 import org.hornetq.api.core.SimpleString;
 import org.hornetq.api.core.client.ClientSession.QueueQuery;
 
@@ -16,9 +15,9 @@ import de.galan.plunger.util.Output;
 public class HornetqCommandCount extends AbstractHornetqCoreCommand {
 
 	@Override
-	public void process(PlungerArguments jca) {
+	public void process(PlungerArguments pa) {
 		try {
-			QueueQuery queueQuery = getSession().queueQuery(SimpleString.toSimpleString(jca.getDestination()));
+			QueueQuery queueQuery = getSession().queueQuery(SimpleString.toSimpleString(pa.getDestination()));
 			Output.println("" + queueQuery.getMessageCount());
 		}
 		catch (Exception ex) {

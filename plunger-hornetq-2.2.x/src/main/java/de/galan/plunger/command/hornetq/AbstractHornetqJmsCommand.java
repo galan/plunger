@@ -8,7 +8,6 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
 
-
 import org.apache.commons.lang.StringUtils;
 import org.hornetq.api.jms.HornetQJMSClient;
 import org.hornetq.api.jms.JMSFactoryType;
@@ -32,16 +31,16 @@ public abstract class AbstractHornetqJmsCommand extends AbstractHornetqCommand {
 
 
 	@Override
-	protected void initialize(PlungerArguments jca) throws CommandException {
+	protected void initialize(PlungerArguments pa) throws CommandException {
 		try {
-			factory = (ConnectionFactory)HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, getTransportConfiguration(jca));
-			connection = factory.createConnection(jca.getTarget().getUsername(), jca.getTarget().getPassword());
+			factory = (ConnectionFactory)HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, getTransportConfiguration(pa));
+			connection = factory.createConnection(pa.getTarget().getUsername(), pa.getTarget().getPassword());
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			if (StringUtils.startsWith(jca.getDestination(), "jms.queue.")) {
-				destination = HornetQJMSClient.createQueue(jca.getShortDestination());
+			if (StringUtils.startsWith(pa.getDestination(), "jms.queue.")) {
+				destination = HornetQJMSClient.createQueue(pa.getShortDestination());
 			}
-			else if (StringUtils.startsWith(jca.getDestination(), "jms.topic.")) {
-				destination = HornetQJMSClient.createTopic(jca.getShortDestination());
+			else if (StringUtils.startsWith(pa.getDestination(), "jms.topic.")) {
+				destination = HornetQJMSClient.createTopic(pa.getShortDestination());
 			}
 		}
 		catch (Exception ex) {

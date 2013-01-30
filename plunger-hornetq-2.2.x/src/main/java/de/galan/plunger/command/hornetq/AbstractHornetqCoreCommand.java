@@ -1,6 +1,5 @@
 package de.galan.plunger.command.hornetq;
 
-
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.client.ClientSession;
 import org.hornetq.api.core.client.ClientSessionFactory;
@@ -25,11 +24,11 @@ public abstract class AbstractHornetqCoreCommand extends AbstractHornetqCommand 
 
 
 	@Override
-	protected void initialize(PlungerArguments jca) throws CommandException {
+	protected void initialize(PlungerArguments pa) throws CommandException {
 		try {
-			locator = HornetQClient.createServerLocatorWithoutHA(getTransportConfiguration(jca));
+			locator = HornetQClient.createServerLocatorWithoutHA(getTransportConfiguration(pa));
 			factory = locator.createSessionFactory();
-			session = factory.createSession(jca.getTarget().getUsername(), jca.getTarget().getPassword(), false, true, true, false, 0);
+			session = factory.createSession(pa.getTarget().getUsername(), pa.getTarget().getPassword(), false, true, true, false, 0);
 			session.start();
 		}
 		catch (Exception ex) {

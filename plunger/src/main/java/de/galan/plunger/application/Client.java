@@ -38,8 +38,8 @@ public class Client {
 	}
 
 
-	protected void handleError(PlungerArguments jca, CommandException ex) {
-		if (jca.isVerbose()) {
+	protected void handleError(PlungerArguments pa, CommandException ex) {
+		if (pa.isVerbose()) {
 			Output.error(ex.getMessage() + System.getProperty("line.separator") + ExceptionUtils.getFullStackTrace(ex));
 		}
 		else {
@@ -51,12 +51,11 @@ public class Client {
 	}
 
 
-	protected static Command determineCommand(PlungerArguments pa) {
+	protected Command determineCommand(PlungerArguments pa) {
 		Command cmd = null;
 		CommandProvider provider = new CommandProviderServiceLocator().locate(CommandProvider.class, pa.getTarget().getProvider());
 		if (provider == null) {
-			Output.error("No provider for '" + pa.getTarget().getProvider() + "' found");
-			//exit
+			handleError(pa, new CommandException("No provider for '" + pa.getTarget().getProvider() + "' found"));
 		}
 		else {
 			switch (pa.getCommand()) {

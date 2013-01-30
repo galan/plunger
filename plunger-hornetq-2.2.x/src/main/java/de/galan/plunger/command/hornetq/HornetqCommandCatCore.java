@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-
 import org.apache.commons.lang.StringUtils;
 import org.fusesource.jansi.Ansi.Color;
 import org.hornetq.api.core.HornetQException;
@@ -31,19 +30,19 @@ import de.galan.plunger.util.Output;
 public class HornetqCommandCatCore extends AbstractHornetqCoreCommand {
 
 	@Override
-	public void process(PlungerArguments jca) throws CommandException {
+	public void process(PlungerArguments pa) throws CommandException {
 		try {
-			boolean browseOnly = !jca.hasCommandArgument("r");
-			ClientConsumer consumer = getSession().createConsumer(jca.getDestination(), jca.getSelector(), browseOnly);
+			boolean browseOnly = !pa.hasCommandArgument("r");
+			ClientConsumer consumer = getSession().createConsumer(pa.getDestination(), pa.getSelector(), browseOnly);
 			ClientMessage cm = getNextMessage(consumer);
 			Message message = null;
 			while(cm != null) {
-				message = constructMessage(cm, jca);
-				printMessage(jca, message);
+				message = constructMessage(cm, pa);
+				printMessage(pa, message);
 				cm.acknowledge();
 
 				cm = getNextMessage(consumer);
-				if (cm != null && !jca.hasCommandArgument("ee")) {
+				if (cm != null && !pa.hasCommandArgument("ee")) {
 					Output.println(StringUtils.repeat("-", 64));
 				}
 			}
@@ -61,16 +60,16 @@ public class HornetqCommandCatCore extends AbstractHornetqCoreCommand {
 	}
 
 
-	protected Message constructMessage(ClientMessage cm, PlungerArguments jca) {
+	protected Message constructMessage(ClientMessage cm, PlungerArguments pa) {
 		Message result = new Message();
 
 		// body
 		String body = BufferHelper.readNullableSimpleStringAsString(cm.getBodyBuffer());
-		if (!jca.hasCommandArgument("b")) { // exclude body or not
-			if (jca.hasCommandArgument("e") && !jca.hasCommandArgument("ee")) { // escape body (check against isEscape, otherwise twice escaped)
+		if (!pa.hasCommandArgument("b")) { // exclude body or not
+			if (pa.hasCommandArgument("e") && !pa.hasCommandArgument("ee")) { // escape body (check against isEscape, otherwise twice escaped)
 				body = new Escape().escape(body);
 			}
-			String cut = jca.getCommandArgumentMatching("c[0-9]+"); // limiting the body output
+			String cut = pa.getCommandArgumentMatching("c[0-9]+"); // limiting the body output
 			if (StringUtils.isNotBlank(cut)) {
 				int limit = Integer.valueOf(StringUtils.substring(cut, 1, cut.length()));
 				boolean addDots = StringUtils.length(body) > limit;
@@ -78,7 +77,7 @@ public class HornetqCommandCatCore extends AbstractHornetqCoreCommand {
 			}
 			result.setBody(body);
 		}
-		if (!jca.hasCommandArgument("p")) { // exclude properties or not
+		if (!pa.hasCommandArgument("p")) { // exclude properties or not
 			for (SimpleString key: cm.getPropertyNames()) {
 				Object value = cm.getObjectProperty(key);
 				if (value instanceof SimpleString) {
@@ -101,8 +100,8 @@ public class HornetqCommandCatCore extends AbstractHornetqCoreCommand {
 	}
 
 
-	private void printMessage(PlungerArguments jca, Message message) {
-		if (jca.hasCommandArgument("ee")) {
+	private void printMessage(PlungerArguments pa, Message message) {
+		if (pa.hasCommandArgument("ee")) {
 			String[] marshalled = new MessageMarshaller().marshalParts(message);
 			Output.print(Color.GREEN, marshalled[0]);
 			Output.print(marshalled[1]);
