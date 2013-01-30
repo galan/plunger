@@ -46,6 +46,7 @@ public class Plunger {
 			CommandLine line = parser.parse(options, args);
 			PlungerArguments pa = new PlungerArguments();
 			if (line.hasOption("help")) {
+				//TODO check if "command" options is given
 				printUsage(options, null, 0);
 			}
 			if (line.hasOption("version")) {
