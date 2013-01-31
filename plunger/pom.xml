@@ -16,7 +16,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<plugin.checkstyle.version>2.9.1</plugin.checkstyle.version>
 		<jdk.compiler.version>1.7</jdk.compiler.version>
-		<hornetq.version>2.2.5.Final</hornetq.version>
 	</properties>
 
 	<developers>
