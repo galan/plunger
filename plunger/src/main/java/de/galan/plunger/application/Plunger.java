@@ -1,22 +1,23 @@
 package de.galan.plunger.application;
 
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
-import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.apache.commons.lang.StringUtils;
 import org.fusesource.jansi.AnsiConsole;
 
+import de.galan.plunger.command.Commands;
 import de.galan.plunger.config.Config;
 import de.galan.plunger.config.Entry;
 import de.galan.plunger.domain.PlungerArguments;
 import de.galan.plunger.domain.Target;
+import de.galan.plunger.util.IgnoringPosixParser;
 import de.galan.plunger.util.Output;
 import de.galan.plunger.util.TargetParser;
 import de.galan.plunger.util.VersionUtil;
@@ -32,32 +33,30 @@ public class Plunger {
 	private static final int DEFAULT_PORT = 5445;
 	private static final String DOCUMENTATION_URL = "https://github.com/d8bitr/plunger";
 
+	private OptionsFactory factory = new OptionsFactory();
+
 
 	public static void main(String[] args) {
 		AnsiConsole.systemInstall();
-		new Plunger().process(args);
+		new Plunger().start(args);
 	}
 
 
-	public void process(String[] args) {
-		Options options = createOptions();
-		CommandLineParser parser = new PosixParser();
+	public void start(String[] args) {
+		Options options = factory.createBasicOptions();
+		CommandLineParser ignoringParser = new IgnoringPosixParser(true);
+		Commands command = null;
 		try {
-			CommandLine line = parser.parse(options, args);
+			CommandLine lineBasic = ignoringParser.parse(options, args);
+
+			command = Commands.get(lineBasic.getOptionValue("command"));
+			Options optionsCommand = factory.createOptions(command);
+			CommandLineParser parser = new PosixParser();
+			CommandLine line = parser.parse(optionsCommand, args);
+
+			checkInformationSwitches(optionsCommand, line, command);
+
 			PlungerArguments pa = new PlungerArguments();
-			if (line.hasOption("help")) {
-				//TODO check if "command" options is given
-				printUsage(options, null, 0);
-			}
-			if (line.hasOption("version")) {
-				printVersion();
-			}
-			if (line.getArgs().length == 0) {
-				throw new ParseException("No target provided");
-			}
-			else if (line.getArgs().length > 1) {
-				throw new ParseException("To many targets provided");
-			}
 			Config config = new Config();
 			if (!config.parse(System.getProperty("user.home") + System.getProperty("file.separator") + ".plunger")) {
 				System.exit(2);
@@ -67,7 +66,24 @@ public class Plunger {
 			new Client().process(pa);
 		}
 		catch (Exception ex) {
-			printUsage(options, ex.getMessage(), 1);
+			printUsage(command, ex.getMessage(), 1);
+		}
+	}
+
+
+	protected void checkInformationSwitches(Options options, CommandLine line, Commands command) throws ParseException {
+		if (line.hasOption("version")) {
+			printVersion();
+		}
+		if (line.hasOption("help")) {
+			//TODO check if "command" options is given
+			printUsage(command, null, 0);
+		}
+		if (line.getArgs().length == 0) {
+			throw new ParseException("No target provided");
+		}
+		else if (line.getArgs().length > 1) {
+			throw new ParseException("To many targets provided");
 		}
 	}
 
@@ -100,52 +116,6 @@ public class Plunger {
 	}
 
 
-	@SuppressWarnings("static-access")
-	protected Options createOptions() {
-		//[[[
-		Option optionHelp = OptionBuilder
-		                    .withLongOpt("help")
-		                    .withDescription("print program usage")
-		                    .create("h");
-		Option optionCommand = OptionBuilder
-		                       .withLongOpt("command")
-		                       .hasArgs()
-		                       .withDescription("the command to execute against the target")
-		                       .create("c");
-		Option optionSelector = OptionBuilder
-		                        .withLongOpt("selector")
-		                        .hasArgs()
-		                        .withDescription("selector to filter the targets result")
-		                        .create("s");
-		Option optionDestination = OptionBuilder
-		                           .withLongOpt("destination")
-		                           .hasArg()
-		                           .withDescription("selects the queue or topic,\nhas to start with 'jms.queue.' or 'jms.topic.'")
-		                           .create("d");
-		Option optionColors = OptionBuilder
-		                      .withDescription("highlights the output")
-		                      .hasArg()
-		                      .create("colors");
-		Option optionVerbose = OptionBuilder
-		                       .withLongOpt("verbose")
-		                       .withDescription("Verbose mode. Causes plunger to print debugging messages about its progress.")
-		                       .create("v");
-		Option optionVersion = OptionBuilder
-		                       .withDescription("Version")
-		                       .create("version");
-		//]]]
-		Options options = new Options();
-		options.addOption(optionCommand);
-		options.addOption(optionSelector);
-		options.addOption(optionDestination);
-		options.addOption(optionColors);
-		options.addOption(optionHelp);
-		options.addOption(optionVerbose);
-		options.addOption(optionVersion);
-		return options;
-	}
-
-
 	protected void printVersion() {
 		try {
 			new VersionUtil().printVersion();
@@ -158,9 +128,18 @@ public class Plunger {
 
 
 	/** Prints the usage and terminates the application */
-	protected void printUsage(Options options, String message, int status) {
+	protected void printUsage(Commands command, String message, int status) {
 		HelpFormatter helpFormatter = new HelpFormatter();
-		helpFormatter.printHelp("plunger <target> [options]", message, options, "Documentation: " + DOCUMENTATION_URL);
+		helpFormatter.printHelp("plunger <target> [options]", message, factory.createBasicOptions(), null);
+		if (command != null) {
+			Output.println("\nCommand specific options:");
+			PrintWriter writer = new PrintWriter(System./**/out);
+			helpFormatter.printOptions(writer, HelpFormatter.DEFAULT_WIDTH, factory.createCommandOptions(command), HelpFormatter.DEFAULT_LEFT_PAD,
+				HelpFormatter.DEFAULT_DESC_PAD);
+			writer.flush();
+		}
+		Output.println("\nPlunger homepage: " + DOCUMENTATION_URL);
+
 		System.exit(status);
 	}
 
