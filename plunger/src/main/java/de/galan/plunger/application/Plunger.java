@@ -1,11 +1,11 @@
 package de.galan.plunger.application;
 
 import java.io.PrintWriter;
-import java.util.Arrays;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
@@ -62,7 +62,7 @@ public class Plunger {
 				System.exit(2);
 			}
 			Entry entry = config.getEntry(line.getArgs()[0]);
-			mergeArguments(pa, line, entry);
+			mergeArguments(pa, entry, line, factory.createCommandOptions(command));
 			new Client().process(pa);
 		}
 		catch (Exception ex) {
@@ -88,7 +88,7 @@ public class Plunger {
 	}
 
 
-	protected void mergeArguments(PlungerArguments pa, CommandLine line, Entry entry) throws Exception {
+	protected void mergeArguments(PlungerArguments pa, Entry entry, CommandLine line, Options options) throws Exception {
 		Target target = null;
 		if (entry != null) {
 			target = new Target("hornetq-2.2.x", entry.getUsername(), entry.getPassword(), entry.getHostname(), entry.getPort() == null ? DEFAULT_PORT
@@ -110,9 +110,15 @@ public class Plunger {
 		pa.setVerbose(line.hasOption("verbose"));
 		pa.setCommand(line.getOptionValue("command"));
 
-		String[] commandArguments = line.getOptionValues("command");
-		commandArguments = Arrays.copyOfRange(commandArguments, 1, commandArguments.length);
-		pa.setCommandArguments(commandArguments);
+		for (Object opt: options.getOptions()) {
+			Option option = (Option)opt;
+			pa.addCommandArgument(option.getOpt(), option.getValue());
+			pa.addCommandArgument(option.getLongOpt(), option.getValue());
+		}
+
+		//String[] commandArguments = line.getOptionValues("command");
+		//commandArguments = Arrays.copyOfRange(commandArguments, 1, commandArguments.length);
+		//pa.setCommandArguments(commandArguments);
 	}
 
 

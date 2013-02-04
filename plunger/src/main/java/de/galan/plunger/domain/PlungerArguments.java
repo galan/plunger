@@ -1,6 +1,8 @@
 package de.galan.plunger.domain;
 
-import org.apache.commons.lang.ArrayUtils;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 
 
@@ -15,7 +17,7 @@ public class PlungerArguments {
 	private String destination;
 	private String selector;
 	private String command;
-	private String[] commandArguments;
+	private Map<String, String> commandArguments;
 	private boolean verbose;
 	private Boolean colors;
 
@@ -71,15 +73,46 @@ public class PlungerArguments {
 	}
 
 
-	public String[] getCommandArguments() {
+	public void addCommandArgument(String key, String value) {
+		getCommandArguments().put(key, value);
+	}
+
+
+	protected Map<String, String> getCommandArguments() {
+		if (commandArguments == null) {
+			commandArguments = new HashMap<String, String>();
+		}
 		return commandArguments;
 	}
 
 
-	public void setCommandArguments(String... commandArguments) {
-		this.commandArguments = commandArguments;
+	public boolean containsCommandArgument(String argument) {
+		return getCommandArguments().containsKey(argument);
 	}
 
+
+	public String getCommandArgument(String argument) {
+		return getCommandArguments().get(argument);
+	}
+
+
+	public Long getCommandArgumentLong(String argument) {
+		return Long.valueOf(getCommandArguments().get(argument));
+	}
+
+
+	/*
+	public String getCommandArgumentMatching(String pattern) {
+		if (getCommandArguments() != null) {
+			for (String arg: getCommandArguments()) {
+				if (arg.matches(pattern)) {
+					return arg;
+				}
+			}
+		}
+		return null;
+	}
+	*/
 
 	public boolean isVerbose() {
 		return verbose;
@@ -100,36 +133,6 @@ public class PlungerArguments {
 		if (colors != null) {
 			this.colors = colors;
 		}
-	}
-
-
-	public boolean hasCommandArgument(String argument) {
-		if (getCommandArguments() == null) {
-			return false;
-		}
-		return ArrayUtils.contains(getCommandArguments(), argument);
-	}
-
-
-	public String getCommandArgumentMatching(String pattern) {
-		if (getCommandArguments() != null) {
-			for (String arg: getCommandArguments()) {
-				if (arg.matches(pattern)) {
-					return arg;
-				}
-			}
-		}
-		return null;
-	}
-
-
-	public Integer getCommandArgumentPrefixInteger(String prefix) {
-		Integer result = null;
-		String match = getCommandArgumentMatching("^" + prefix + "[0-9]+$");
-		if (StringUtils.isNotBlank(match)) {
-			result = Integer.valueOf(StringUtils.substring(match, 1, match.length()));
-		}
-		return result;
 	}
 
 }

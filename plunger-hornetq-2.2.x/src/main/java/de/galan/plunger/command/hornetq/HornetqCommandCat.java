@@ -13,13 +13,12 @@ import javax.jms.QueueBrowser;
 import javax.jms.TextMessage;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.mutable.MutableInt;
+import org.apache.commons.lang.mutable.MutableLong;
 import org.fusesource.jansi.Ansi.Color;
 
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
-import de.galan.plunger.util.Escape;
 import de.galan.plunger.util.MessageMarshaller;
 import de.galan.plunger.util.Output;
 
@@ -45,10 +44,10 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 	private void processQueue(PlungerArguments pa) throws CommandException {
 		try {
 			getConnection().start();
-			boolean browseOnly = !pa.hasCommandArgument("r");
+			boolean browseOnly = !pa.containsCommandArgument("r");
 			boolean firstMessage = true;
-			MutableInt counter = new MutableInt();
-			Integer limit = pa.getCommandArgumentPrefixInteger("n");
+			MutableLong counter = new MutableLong();
+			Long limit = pa.getCommandArgumentLong("n");
 			if (browseOnly) {
 				QueueBrowser browser = getSession().createBrowser((Queue)getDestination(), pa.getSelector());
 				@SuppressWarnings("unchecked")
@@ -77,10 +76,10 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 	}
 
 
-	private boolean isLimitExceeded(Integer limit, MutableInt counter) {
+	private boolean isLimitExceeded(Long limit, MutableLong counter) {
 		boolean result = false;
 		if (limit != null) {
-			if (counter.intValue() >= limit) {
+			if (counter.longValue() >= limit) {
 				result = true;
 			}
 			counter.increment();
@@ -91,7 +90,7 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 
 	private boolean printSeparator(boolean firstMessage, PlungerArguments pa) {
 		if (!firstMessage) {
-			if (!pa.hasCommandArgument("ee")) {
+			if (!pa.containsCommandArgument("e")) {
 				Output.println(StringUtils.repeat("-", 64));
 			}
 		}
@@ -103,8 +102,8 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 		try {
 			getConnection().start();
 			boolean firstMessage = true;
-			MutableInt counter = new MutableInt();
-			Integer limit = pa.getCommandArgumentPrefixInteger("n");
+			MutableLong counter = new MutableLong();
+			Long limit = pa.getCommandArgumentLong("n");
 			//TopicSubscriber subscriber = getSession().createDurableSubscriber((Topic)getDestination(), "name", pa.getSelector(), true);
 			MessageConsumer consumer = getSession().createConsumer(getDestination(), pa.getSelector());
 			javax.jms.Message jmsMessage = null;
@@ -126,18 +125,18 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 			Message result = new Message();
 			// body
 			String body = tm.getText();
-			if (!pa.hasCommandArgument("b")) { // exclude body or not
-				if (pa.hasCommandArgument("e") && !pa.hasCommandArgument("ee")) { // escape body (check against isEscape, otherwise twice escaped)
-					body = new Escape().escape(body);
-				}
-				Integer cut = pa.getCommandArgumentPrefixInteger("c"); // limiting the body output
+			if (!pa.containsCommandArgument("b")) { // exclude body or not
+				//if (pa.hasCommandArgument("e") && !pa.hasCommandArgument("ee")) { // escape body (check against isEscape, otherwise twice escaped)
+				//	body = new Escape().escape(body);
+				//}
+				Long cut = pa.getCommandArgumentLong("c"); // limiting the body output
 				if (cut != null) {
 					boolean addDots = StringUtils.length(body) > cut;
-					body = StringUtils.substring(body, 0, cut) + (addDots ? "..." : "");
+					body = StringUtils.substring(body, 0, cut.intValue()) + (addDots ? "..." : "");
 				}
 				result.setBody(body);
 			}
-			if (!pa.hasCommandArgument("p")) { // exclude properties or not
+			if (!pa.containsCommandArgument("p")) { // exclude properties or not
 				@SuppressWarnings("unchecked")
 				Enumeration<String> enumKeys = tm.getPropertyNames();
 				while(enumKeys.hasMoreElements()) {
@@ -168,7 +167,7 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 
 
 	private void printMessage(PlungerArguments pa, Message message) {
-		if (pa.hasCommandArgument("ee")) {
+		if (pa.containsCommandArgument("e")) {
 			String[] marshalled = new MessageMarshaller().marshalParts(message);
 			Output.print(Color.GREEN, marshalled[0]);
 			Output.print(marshalled[1]);

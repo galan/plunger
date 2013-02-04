@@ -57,60 +57,108 @@ public class OptionsFactory {
 	public Options createBasicOptions() {
 		//[[[
 		Option optionHelp = OptionBuilder
-		                    .withLongOpt("help")
-		                    .withDescription("print program usage")
-		                    .create("h");
+                .withLongOpt("help")
+                .withDescription("Print program usage")
+                .create("h");
 		/* TODO
 		Option optionTarget = OptionBuilder
-                              .withLongOpt("target")
-                              .hasArg()
-                              .required
-                              .withDescription("the messaging target")
-                              .create("t");*/
+                .withLongOpt("target")
+                .hasArg()
+                .required
+                .withDescription("the messaging target")
+                .create("t");*/
 		Option optionCommand = OptionBuilder
-		                       .withLongOpt("command")
-		                       .hasArg()
-		                       .withDescription("the command to execute against the target")
-		                       .create("c");
+		        .withLongOpt("command")
+		        .hasArg()
+		        .withDescription("The command to execute against the target")
+		        .create("c");
 		Option optionDestination = OptionBuilder
-		                           .withLongOpt("destination")
-		                           .hasArg()
-		                           .withDescription("selects the queue or topic,\nhas to start with 'jms.queue.' or 'jms.topic.'") //TODO remove prefix
-		                           .create("d");
+		        .withLongOpt("destination")
+		        .hasArg()
+		        .withDescription("Selects the queue or topic,\nhas to start with 'jms.queue.' or 'jms.topic.'") //TODO remove prefix
+		        .create("d");
 		Option optionColors = OptionBuilder
-		                      .withDescription("highlights the output")
-		                      .hasArg()
-		                      .create("colors");
+		        .withDescription("Highlights the output")
+		        .hasArg()
+		        .create("colors"); //TODO
 		Option optionVerbose = OptionBuilder
-		                       .withLongOpt("verbose")
-		                       .withDescription("Verbose mode. Causes plunger to print debugging messages about its progress.")
-		                       .create("v");
+		        .withLongOpt("verbose")
+		        .withDescription("Verbose mode. Causes plunger to print debugging messages about its progress.")
+		        .create("v");
 		Option optionVersion = OptionBuilder
-		                       .withDescription("Version")
-		                       .create("version");
+		        .withDescription("Version")
+		        .create("version");
 		//]]]
 		return createOptions(optionCommand, optionDestination, optionColors, optionHelp, optionVerbose, optionVersion);
 	}
 
 
-	//@SuppressWarnings("static-access")
+	@SuppressWarnings("static-access")
 	protected Options createOptionsLs() {
 		//[[[
+		Option optionSelector = OptionBuilder
+                .withLongOpt("consumer")
+                .withDescription("Only show destinations with consumers")
+                .create("c");
+		Option optionInfos = OptionBuilder
+                .withLongOpt("informations")
+                .withDescription("When set, additional informations (like counters) are omitted.")
+                .create("i");
+		Option optionMessages = OptionBuilder
+                .withLongOpt("messages")
+                .withDescription("When set, only show destinations with messages.")
+                .create("m");
+		Option optionPersistent = OptionBuilder
+                .withLongOpt("persistent")
+                .withDescription("When set, filter persistent (durable) destinations.")
+                .create("p");
+		Option optionTemp = OptionBuilder
+                .withLongOpt("temporary")
+                .withDescription("When set, filter temporary destinations.")
+                .create("t");
 		//]]]
-		return createOptions();
+		return createOptions(optionSelector, optionInfos, optionMessages, optionPersistent, optionTemp);
 	}
 
 
 	@SuppressWarnings("static-access")
 	protected Options createOptionsCat() {
 		//[[[
+		Option optionBody = OptionBuilder
+                .withLongOpt("body")
+                .withDescription("When set, the body will be omitted")
+                .create("b");
+		Option optionCut = OptionBuilder
+                .withLongOpt("cut")
+                .hasArg()
+                .withType(Long.class)
+                .withDescription("Cuts the body after n characters, adding ... when characters were removed.")
+                .create("c");
+		Option optionEscape = OptionBuilder
+                .withLongOpt("escape")
+                .withDescription("Escapes the message.\nWhen the output is intended for further processing, this switch will map all output to single line. JMS-properties are formatted as json, the body is escaped as well. This form is required for put.")
+                .create("e");
+		Option optionLimit = OptionBuilder
+                .withLongOpt("limit")
+                .hasArg()
+                .withType(Long.class)
+                .withDescription("Limits the messages to the first n elements in a queue or received by a topic")
+                .create("n");
+		Option optionProperties = OptionBuilder
+                .withLongOpt("properties")
+                .withDescription("When set, the properties will be omitted")
+                .create("p");
+		Option optionRemove = OptionBuilder
+                .withLongOpt("remove")
+                .withDescription("Read messages will also be removed from the queue")
+                .create("r");
 		Option optionSelector = OptionBuilder
-		                        .withLongOpt("selector")
-		                        .hasArgs()
-		                        .withDescription("selector to filter the targets result")
-		                        .create("s");
+                .withLongOpt("selector")
+                .hasArgs() // is required, even we think of the selector query only as single argument
+                .withDescription("selector to filter the targets result")
+                .create("s");
 		//]]]
-		return createOptions(optionSelector);
+		return createOptions(optionBody, optionCut, optionEscape, optionLimit, optionProperties, optionRemove, optionSelector);
 	}
 
 

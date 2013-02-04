@@ -15,7 +15,6 @@ import org.hornetq.utils.BufferHelper;
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
-import de.galan.plunger.util.Escape;
 import de.galan.plunger.util.MessageMarshaller;
 import de.galan.plunger.util.Output;
 
@@ -32,7 +31,7 @@ public class HornetqCommandCatCore extends AbstractHornetqCoreCommand {
 	@Override
 	public void process(PlungerArguments pa) throws CommandException {
 		try {
-			boolean browseOnly = !pa.hasCommandArgument("r");
+			boolean browseOnly = !pa.containsCommandArgument("r");
 			ClientConsumer consumer = getSession().createConsumer(pa.getDestination(), pa.getSelector(), browseOnly);
 			ClientMessage cm = getNextMessage(consumer);
 			Message message = null;
@@ -42,7 +41,7 @@ public class HornetqCommandCatCore extends AbstractHornetqCoreCommand {
 				cm.acknowledge();
 
 				cm = getNextMessage(consumer);
-				if (cm != null && !pa.hasCommandArgument("ee")) {
+				if (cm != null && !pa.containsCommandArgument("e")) {
 					Output.println(StringUtils.repeat("-", 64));
 				}
 			}
@@ -65,19 +64,18 @@ public class HornetqCommandCatCore extends AbstractHornetqCoreCommand {
 
 		// body
 		String body = BufferHelper.readNullableSimpleStringAsString(cm.getBodyBuffer());
-		if (!pa.hasCommandArgument("b")) { // exclude body or not
-			if (pa.hasCommandArgument("e") && !pa.hasCommandArgument("ee")) { // escape body (check against isEscape, otherwise twice escaped)
-				body = new Escape().escape(body);
-			}
-			String cut = pa.getCommandArgumentMatching("c[0-9]+"); // limiting the body output
-			if (StringUtils.isNotBlank(cut)) {
-				int limit = Integer.valueOf(StringUtils.substring(cut, 1, cut.length()));
-				boolean addDots = StringUtils.length(body) > limit;
-				body = StringUtils.substring(body, 0, limit) + (addDots ? "..." : "");
+		if (!pa.containsCommandArgument("b")) { // exclude body or not
+			//if (pa.hasCommandArgument("e") && !pa.hasCommandArgument("ee")) { // escape body (check against isEscape, otherwise twice escaped)
+			//	body = new Escape().escape(body);
+			//}
+			Long cut = pa.getCommandArgumentLong("c"); // limiting the body output
+			if (cut != null) {
+				boolean addDots = StringUtils.length(body) > cut;
+				body = StringUtils.substring(body, 0, cut.intValue()) + (addDots ? "..." : "");
 			}
 			result.setBody(body);
 		}
-		if (!pa.hasCommandArgument("p")) { // exclude properties or not
+		if (!pa.containsCommandArgument("p")) { // exclude properties or not
 			for (SimpleString key: cm.getPropertyNames()) {
 				Object value = cm.getObjectProperty(key);
 				if (value instanceof SimpleString) {
@@ -101,7 +99,7 @@ public class HornetqCommandCatCore extends AbstractHornetqCoreCommand {
 
 
 	private void printMessage(PlungerArguments pa, Message message) {
-		if (pa.hasCommandArgument("ee")) {
+		if (pa.containsCommandArgument("e")) {
 			String[] marshalled = new MessageMarshaller().marshalParts(message);
 			Output.print(Color.GREEN, marshalled[0]);
 			Output.print(marshalled[1]);

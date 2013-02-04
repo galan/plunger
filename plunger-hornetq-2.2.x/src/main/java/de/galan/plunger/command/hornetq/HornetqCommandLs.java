@@ -37,18 +37,18 @@ public class HornetqCommandLs extends AbstractHornetqCoreCommand {
 			Object[] arrayObjects = (Object[])ManagementHelper.getResult(reply);
 			String[] array = Arrays.copyOf(arrayObjects, arrayObjects.length, String[].class);
 			Arrays.sort(array, new StringCaseInsensitiveComparator());
-			boolean filterTemp = pa.hasCommandArgument("t");
-			boolean filterPersistent = pa.hasCommandArgument("p");
+			boolean filterTemp = pa.containsCommandArgument("t");
+			boolean filterPersistent = pa.containsCommandArgument("p");
 			for (String address: array) {
 				QueueQuery queueQuery = getSession().queueQuery(SimpleString.toSimpleString(address));
 				boolean persistent = queueQuery.isDurable();
 				boolean filterPassed = (persistent && !filterPersistent) || (!persistent && !filterTemp);
-				boolean optionMessages = !(pa.hasCommandArgument("m") && (queueQuery.getMessageCount() <= 0));
-				boolean optionConsumer = !(pa.hasCommandArgument("c") && (queueQuery.getConsumerCount() <= 0));
+				boolean optionMessages = !(pa.containsCommandArgument("m") && (queueQuery.getMessageCount() <= 0));
+				boolean optionConsumer = !(pa.containsCommandArgument("c") && (queueQuery.getConsumerCount() <= 0));
 				if (filterPassed && optionMessages && optionConsumer) {
 					Color destinationColor = StringUtils.startsWith(address, "jms.queue.") ? Color.CYAN : Color.GREEN;
 					Output.print(destinationColor, address);
-					if (!pa.hasCommandArgument("i")) {
+					if (!pa.containsCommandArgument("i")) {
 						if (!queueQuery.isDurable()) {
 							Output.print(" (temporary)");
 						}
