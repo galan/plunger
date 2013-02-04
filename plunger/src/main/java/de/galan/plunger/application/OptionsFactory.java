@@ -99,7 +99,7 @@ public class OptionsFactory {
 		Option optionSelector = OptionBuilder
                 .withLongOpt("consumer")
                 .withDescription("Only show destinations with consumers")
-                .create("c");
+                .create("C");
 		Option optionInfos = OptionBuilder
                 .withLongOpt("informations")
                 .withDescription("When set, additional informations (like counters) are omitted.")
@@ -133,7 +133,7 @@ public class OptionsFactory {
                 .hasArg()
                 .withType(Long.class)
                 .withDescription("Cuts the body after n characters, adding ... when characters were removed.")
-                .create("c");
+                .create("C");
 		Option optionEscape = OptionBuilder
                 .withLongOpt("escape")
                 .withDescription("Escapes the message.\nWhen the output is intended for further processing, this switch will map all output to single line. JMS-properties are formatted as json, the body is escaped as well. This form is required for put.")
