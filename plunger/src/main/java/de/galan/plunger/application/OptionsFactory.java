@@ -60,7 +60,7 @@ public class OptionsFactory {
 		                    .withLongOpt("help")
 		                    .withDescription("print program usage")
 		                    .create("h");
-		/*
+		/* TODO
 		Option optionTarget = OptionBuilder
                               .withLongOpt("target")
                               .hasArg()
@@ -75,7 +75,7 @@ public class OptionsFactory {
 		Option optionDestination = OptionBuilder
 		                           .withLongOpt("destination")
 		                           .hasArg()
-		                           .withDescription("selects the queue or topic,\nhas to start with 'jms.queue.' or 'jms.topic.'")
+		                           .withDescription("selects the queue or topic,\nhas to start with 'jms.queue.' or 'jms.topic.'") //TODO remove prefix
 		                           .create("d");
 		Option optionColors = OptionBuilder
 		                      .withDescription("highlights the output")
