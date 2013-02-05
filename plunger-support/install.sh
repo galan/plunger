@@ -55,7 +55,7 @@ createScript() {
 	SCRIPT_NAME=${PLUNGER_HOME}/${PLUNGER_PREFIX}$1
 	echo "#!/bin/bash" > ${SCRIPT_NAME}
 	echo "target=\$1; shift 1" >> ${SCRIPT_NAME}
-	echo "plunger \$target -c $1 \$*" >> ${SCRIPT_NAME}
+	echo "plunger \$target -C $1 \$*" >> ${SCRIPT_NAME}
 	chmod +x ${SCRIPT_NAME}
 }
 

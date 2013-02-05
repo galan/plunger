@@ -97,7 +97,8 @@ public class PlungerArguments {
 
 
 	public Long getCommandArgumentLong(String argument) {
-		return Long.valueOf(getCommandArguments().get(argument));
+		String ca = getCommandArguments().get(argument);
+		return ca == null ? null : Long.valueOf(ca);
 	}
 
 
