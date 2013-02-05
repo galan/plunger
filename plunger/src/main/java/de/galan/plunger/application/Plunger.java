@@ -113,8 +113,8 @@ public class Plunger {
 		for (Object opt: options.getOptions()) {
 			Option option = (Option)opt;
 			if (line.hasOption(option.getOpt())) {
-				pa.addCommandArgument(option.getOpt(), option.getValue());
-				pa.addCommandArgument(option.getLongOpt(), option.getValue());
+				pa.addCommandArgument(option.getOpt(), line.getOptionValue(option.getOpt()));
+				pa.addCommandArgument(option.getLongOpt(), line.getOptionValue(option.getOpt()));
 			}
 		}
 

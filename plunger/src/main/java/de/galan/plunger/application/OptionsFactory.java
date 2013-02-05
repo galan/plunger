@@ -131,7 +131,7 @@ public class OptionsFactory {
 		Option optionCut = OptionBuilder
                 .withLongOpt("cut")
                 .hasArg()
-                .withType(Long.class)
+                //.withType(Long.class)
                 .withDescription("Cuts the body after n characters, adding ... when characters were removed.")
                 .create("c");
 		Option optionEscape = OptionBuilder
@@ -141,7 +141,7 @@ public class OptionsFactory {
 		Option optionLimit = OptionBuilder
                 .withLongOpt("limit")
                 .hasArg()
-                .withType(Long.class)
+                //.withType(Long.class)
                 .withDescription("Limits the messages to the first n elements in a queue or received by a topic")
                 .create("n");
 		Option optionProperties = OptionBuilder
