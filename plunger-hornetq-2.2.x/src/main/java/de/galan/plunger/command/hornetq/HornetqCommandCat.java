@@ -107,7 +107,7 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 			//TopicSubscriber subscriber = getSession().createDurableSubscriber((Topic)getDestination(), "name", pa.getSelector(), true);
 			MessageConsumer consumer = getSession().createConsumer(getDestination(), pa.getSelector());
 			javax.jms.Message jmsMessage = null;
-			while((jmsMessage = consumer.receive()) != null && !isLimitExceeded(limit, counter)) {
+			while(!isLimitExceeded(limit, counter) && ((jmsMessage = consumer.receive()) != null)) {
 				firstMessage = printSeparator(firstMessage, pa);
 				TextMessage tm = (TextMessage)jmsMessage;
 				Message message = constructMessage(tm, pa);
