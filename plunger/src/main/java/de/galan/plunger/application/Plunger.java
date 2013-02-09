@@ -96,7 +96,6 @@ public class Plunger {
 			target = new Target("hornetq-2.2.x", entry.getUsername(), entry.getPassword(), entry.getHostname(), entry.getPort() == null ? DEFAULT_PORT
 					: entry.getPort());
 			pa.setDestination(entry.getDestination());
-			pa.setSelector(entry.getSelector());
 			pa.setColors(entry.isColors());
 		}
 		else {
@@ -104,7 +103,6 @@ public class Plunger {
 		}
 		pa.setTarget(target); // either config or cli
 		pa.setDestination(line.getOptionValue("destination")); // config can be overriden by cli
-		pa.setSelector(StringUtils.join(line.getOptionValues("selector"), " ")); // config can be overriden by cli
 		boolean colors = StringUtils.equals(line.getOptionValue("colors"), "false") ? false : true;
 		pa.setColors(colors); // config can be overriden by cli
 		Output.setColor(pa.isColors());
@@ -143,11 +141,16 @@ public class Plunger {
 		HelpFormatter helpFormatter = new HelpFormatter();
 		helpFormatter.printHelp("plunger <target> [options]", message, factory.createBasicOptions(), null);
 		if (command != null) {
+			Options commandOptions = factory.createCommandOptions(command);
 			Output.println("\nCommand specific options:");
-			PrintWriter writer = new PrintWriter(System./**/out);
-			helpFormatter.printOptions(writer, HelpFormatter.DEFAULT_WIDTH, factory.createCommandOptions(command), HelpFormatter.DEFAULT_LEFT_PAD,
-				HelpFormatter.DEFAULT_DESC_PAD);
-			writer.flush();
+			if (commandOptions.getOptions().isEmpty()) {
+				Output.println(" (none)");
+			}
+			else {
+				PrintWriter writer = new PrintWriter(System./**/out);
+				helpFormatter.printOptions(writer, HelpFormatter.DEFAULT_WIDTH, commandOptions, HelpFormatter.DEFAULT_LEFT_PAD, HelpFormatter.DEFAULT_DESC_PAD);
+				writer.flush();
+			}
 		}
 		Output.println("\nPlunger homepage: " + DOCUMENTATION_URL);
 

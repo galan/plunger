@@ -1,4 +1,4 @@
-package de.galan.plunger.command.hornetq;
+package de.galan.plunger.command.hornetq2;
 
 import de.galan.plunger.command.Command;
 import de.galan.plunger.command.CommandProvider;
@@ -14,31 +14,32 @@ public class HornetqProvider implements CommandProvider {
 
 	@Override
 	public String getName() {
-		return "hornetq-2.2.x";
+		return "hornetq-2.2";
 	}
 
 
 	@Override
 	public Command ls(PlungerArguments pa) {
-		return new HornetqCommandLs();
+		return new HornetqLsCommand();
 	}
 
 
 	@Override
 	public Command cat(PlungerArguments pa) {
-		return new HornetqCommandCat();
+		//return new HornetqCommandCat();
+		return new HornetqCatCommand();
 	}
 
 
 	@Override
 	public Command put(PlungerArguments pa) {
-		return new HornetqCommandPut();
+		return new HornetqPutCommand();
 	}
 
 
 	@Override
 	public Command count(PlungerArguments pa) {
-		return new HornetqCommandCount();
+		return new HornetqCountCommand();
 	}
 
 }

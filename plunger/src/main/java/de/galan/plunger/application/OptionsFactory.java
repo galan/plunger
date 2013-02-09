@@ -178,11 +178,10 @@ public class OptionsFactory {
 	@SuppressWarnings("static-access")
 	protected Options createOptionsCount() {
 		//[[[
-		Option optionSelector = OptionBuilder //TODO required here?
-		                        .withLongOpt("selector")
-		                        .hasArgs()
-		                        .withDescription("selector to filter the targets result")
-		                        .create("s");
+		Option optionSelector = OptionBuilder
+                .withLongOpt("consumer")
+                .withDescription("Count consumers for destination (instead of messages)")
+                .create("c");
 		//]]]
 		return createOptions(optionSelector);
 	}

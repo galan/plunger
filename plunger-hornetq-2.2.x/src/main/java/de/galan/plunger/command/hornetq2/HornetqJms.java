@@ -31,7 +31,7 @@ public class HornetqJms {
 	private Destination destination;
 
 
-	protected void initialize(PlungerArguments pa, TransportConfiguration transport) throws CommandException {
+	public void initialize(PlungerArguments pa, TransportConfiguration transport) throws CommandException {
 		try {
 			factory = (ConnectionFactory)HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, transport);
 			connection = factory.createConnection(pa.getTarget().getUsername(), pa.getTarget().getPassword());

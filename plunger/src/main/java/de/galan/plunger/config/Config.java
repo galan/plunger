@@ -8,7 +8,6 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.Map;
 
-
 import org.apache.commons.lang.StringUtils;
 
 import de.galan.plunger.util.Output;
@@ -64,9 +63,6 @@ public class Config {
 								}
 								else if (StringUtils.equalsIgnoreCase("Destination", se.getKey())) {
 									entry.setDestination(se.getValue());
-								}
-								else if (StringUtils.equalsIgnoreCase("Selector", se.getKey())) {
-									entry.setSelector(se.getValue());
 								}
 								else if (StringUtils.equalsIgnoreCase("Colors", se.getKey())) {
 									entry.setColors("true".equalsIgnoreCase(se.getValue()));

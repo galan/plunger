@@ -51,18 +51,6 @@ public class PlungerArguments {
 	}
 
 
-	public String getSelector() {
-		return selector;
-	}
-
-
-	public void setSelector(String selector) {
-		if (selector != null) {
-			this.selector = selector;
-		}
-	}
-
-
 	public String getCommand() {
 		return command;
 	}

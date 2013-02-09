@@ -49,7 +49,7 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 			MutableLong counter = new MutableLong();
 			Long limit = pa.getCommandArgumentLong("n");
 			if (browseOnly) {
-				QueueBrowser browser = getSession().createBrowser((Queue)getDestination(), pa.getSelector());
+				QueueBrowser browser = getSession().createBrowser((Queue)getDestination(), pa.getCommandArgument("s"));
 				@SuppressWarnings("unchecked")
 				Enumeration<TextMessage> enumeration = browser.getEnumeration();
 				while(!isLimitExceeded(limit, counter) && enumeration.hasMoreElements()) {
@@ -60,7 +60,7 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 				}
 			}
 			else {
-				MessageConsumer consumer = getSession().createConsumer(getDestination(), pa.getSelector());
+				MessageConsumer consumer = getSession().createConsumer(getDestination(), pa.getCommandArgument("s"));
 				javax.jms.Message jmsMessage = null;
 				while(!isLimitExceeded(limit, counter) && (jmsMessage = consumer.receiveNoWait()) != null) {
 					firstMessage = printSeparator(firstMessage, pa);
@@ -105,7 +105,7 @@ public class HornetqCommandCat extends AbstractHornetqJmsCommand {
 			MutableLong counter = new MutableLong();
 			Long limit = pa.getCommandArgumentLong("n");
 			//TopicSubscriber subscriber = getSession().createDurableSubscriber((Topic)getDestination(), "name", pa.getSelector(), true);
-			MessageConsumer consumer = getSession().createConsumer(getDestination(), pa.getSelector());
+			MessageConsumer consumer = getSession().createConsumer(getDestination(), pa.getCommandArgument("s"));
 			javax.jms.Message jmsMessage = null;
 			while(!isLimitExceeded(limit, counter) && ((jmsMessage = consumer.receive()) != null)) {
 				firstMessage = printSeparator(firstMessage, pa);

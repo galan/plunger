@@ -13,7 +13,6 @@ public class Entry {
 	private String hostname;
 	private Integer port;
 	private String destination;
-	private String selector;
 	private Boolean colors;
 
 
@@ -83,16 +82,6 @@ public class Entry {
 
 	public void setDestination(String destination) {
 		this.destination = destination;
-	}
-
-
-	public String getSelector() {
-		return selector;
-	}
-
-
-	public void setSelector(String selector) {
-		this.selector = selector;
 	}
 
 

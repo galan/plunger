@@ -44,13 +44,13 @@ public class HornetqCatCommand extends AbstractCatCommand {
 			boolean browseOnly = !pa.containsCommandArgument("r");
 
 			if (jms.isQueue() && browseOnly) {
-				QueueBrowser browser = jms.getSession().createBrowser((Queue)jms.getDestination(), pa.getSelector());
+				QueueBrowser browser = jms.getSession().createBrowser((Queue)jms.getDestination(), pa.getCommandArgument("s"));
 				@SuppressWarnings("unchecked")
 				Enumeration<TextMessage> xxx = browser.getEnumeration();
 				enumeration = xxx;
 			}
 			else {
-				consumer = jms.getSession().createConsumer(jms.getDestination(), pa.getSelector());
+				consumer = jms.getSession().createConsumer(jms.getDestination(), pa.getCommandArgument("s"));
 			}
 		}
 		catch (JMSException ex) {
