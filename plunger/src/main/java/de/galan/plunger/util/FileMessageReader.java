@@ -23,7 +23,7 @@ public class FileMessageReader implements MessageReader {
 			sc = new Scanner(new FileInputStream(file));
 		}
 		catch (FileNotFoundException ex) {
-			//
+			Output.error("errr: " + inputFile);
 		}
 	}
 

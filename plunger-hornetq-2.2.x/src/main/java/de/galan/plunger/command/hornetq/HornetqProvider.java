@@ -2,7 +2,8 @@ package de.galan.plunger.command.hornetq;
 
 import de.galan.plunger.command.Command;
 import de.galan.plunger.command.CommandProvider;
-import de.galan.plunger.command.h2.HornetqCatCommand;
+import de.galan.plunger.command.hornetq2.HornetqCatCommand;
+import de.galan.plunger.command.hornetq2.HornetqPutCommand;
 import de.galan.plunger.domain.PlungerArguments;
 
 
@@ -34,7 +35,8 @@ public class HornetqProvider implements CommandProvider {
 
 	@Override
 	public Command put(PlungerArguments pa) {
-		return new HornetqCommandPut();
+		return new HornetqPutCommand();
+		//return new HornetqCommandPut();
 		//cmd = new ActivemqCommandLs();
 	}
 

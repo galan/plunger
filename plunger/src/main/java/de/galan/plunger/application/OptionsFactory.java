@@ -162,11 +162,16 @@ public class OptionsFactory {
 	}
 
 
-	//@SuppressWarnings("static-access")
+	@SuppressWarnings("static-access")
 	protected Options createOptionsPut() {
 		//[[[
+		Option optionFile= OptionBuilder
+                .withLongOpt("file")
+                .hasArg() //TODO args when spaces in filename?
+                .withDescription("file with escaped messages (instead of stdin)")
+                .create("f");
 		//]]]
-		return createOptions();
+		return createOptions(optionFile);
 	}
 
 
