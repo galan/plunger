@@ -1,4 +1,4 @@
-package de.galan.plunger.command.hornetq2;
+package de.galan.plunger.command.hornetq;
 
 import de.galan.plunger.command.Command;
 import de.galan.plunger.command.CommandProvider;

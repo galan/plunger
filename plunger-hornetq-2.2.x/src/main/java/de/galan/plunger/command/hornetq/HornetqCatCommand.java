@@ -1,4 +1,4 @@
-package de.galan.plunger.command.hornetq2;
+package de.galan.plunger.command.hornetq;
 
 import java.util.Date;
 import java.util.Enumeration;

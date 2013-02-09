@@ -1,4 +1,4 @@
-package de.galan.plunger.command.hornetq2;
+package de.galan.plunger.command.hornetq;
 
 import static org.apache.commons.lang.StringUtils.*;
 

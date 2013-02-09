@@ -1,4 +1,4 @@
-package de.galan.plunger.command.hornetq2;
+package de.galan.plunger.command.hornetq;
 
 import org.hornetq.api.core.HornetQException;
 import org.hornetq.api.core.TransportConfiguration;
