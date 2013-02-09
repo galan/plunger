@@ -1,4 +1,4 @@
-package de.galan.plunger.command.hornetq;
+package de.galan.plunger.command.hornetq.obsolete;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;

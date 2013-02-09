@@ -1,4 +1,4 @@
-package de.galan.plunger.command.hornetq;
+package de.galan.plunger.command.hornetq.obsolete;
 
 import de.galan.plunger.command.Command;
 import de.galan.plunger.command.CommandProvider;

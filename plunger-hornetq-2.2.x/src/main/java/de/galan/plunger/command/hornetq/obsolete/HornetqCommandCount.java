@@ -1,4 +1,4 @@
-package de.galan.plunger.command.hornetq;
+package de.galan.plunger.command.hornetq.obsolete;
 
 import org.hornetq.api.core.SimpleString;
 import org.hornetq.api.core.client.ClientSession.QueueQuery;

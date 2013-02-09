@@ -1,4 +1,4 @@
-package de.galan.plunger.command.hornetq;
+package de.galan.plunger.command.hornetq.obsolete;
 
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
