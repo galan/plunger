@@ -167,7 +167,7 @@ public class OptionsFactory {
 		//[[[
 		Option optionFile= OptionBuilder
                 .withLongOpt("file")
-                .hasArg() //TODO args when spaces in filename?
+                .hasArgs()
                 .withDescription("file with escaped messages (instead of stdin)")
                 .create("f");
 		//]]]

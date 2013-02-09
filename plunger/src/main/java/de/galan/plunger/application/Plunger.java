@@ -1,5 +1,7 @@
 package de.galan.plunger.application;
 
+import static org.apache.commons.lang.StringUtils.*;
+
 import java.io.PrintWriter;
 
 import org.apache.commons.cli.CommandLine;
@@ -113,8 +115,9 @@ public class Plunger {
 		for (Object opt: options.getOptions()) {
 			Option option = (Option)opt;
 			if (line.hasOption(option.getOpt())) {
-				pa.addCommandArgument(option.getOpt(), line.getOptionValue(option.getOpt()));
-				pa.addCommandArgument(option.getLongOpt(), line.getOptionValue(option.getOpt()));
+				String value = join(line.getOptionValues(option.getOpt()), " ");
+				pa.addCommandArgument(option.getOpt(), value);
+				pa.addCommandArgument(option.getLongOpt(), value);
 			}
 		}
 

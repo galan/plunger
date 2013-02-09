@@ -109,16 +109,4 @@ public abstract class AbstractCatCommand extends AbstractCommand {
 
 	protected abstract boolean isSystemHeader(String headerName);
 
-
-	protected boolean isQueue() {
-		//return Queue.class.isAssignableFrom(getDestination().getClass());
-		return false;
-	}
-
-
-	protected boolean isTopic() {
-		//return Topic.class.isAssignableFrom(getDestination().getClass());
-		return false;
-	}
-
 }
