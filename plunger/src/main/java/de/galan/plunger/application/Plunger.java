@@ -93,7 +93,7 @@ public class Plunger {
 	protected void mergeArguments(PlungerArguments pa, Entry entry, CommandLine line, Options options) throws Exception {
 		Target target = null;
 		if (entry != null) {
-			target = new Target("hornetq-2.2.x", entry.getUsername(), entry.getPassword(), entry.getHostname(), entry.getPort() == null ? DEFAULT_PORT
+			target = new Target("hornetq-2.2", entry.getUsername(), entry.getPassword(), entry.getHostname(), entry.getPort() == null ? DEFAULT_PORT
 					: entry.getPort());
 			pa.setDestination(entry.getDestination());
 			pa.setColors(entry.isColors());

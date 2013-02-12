@@ -87,37 +87,39 @@ public class HornetqCatCommand extends AbstractCatCommand {
 
 
 	protected Message constructMessage(TextMessage tm, PlungerArguments pa) throws CommandException {
-		try {
-			Message result = new Message();
-			result.setBody(tm.getText());
-			// body
-			if (!pa.containsCommandArgument("p")) { // exclude properties or not
-				@SuppressWarnings("unchecked")
-				Enumeration<String> enumKeys = tm.getPropertyNames();
-				while(enumKeys.hasMoreElements()) {
-					String key = enumKeys.nextElement();
-					result.putProperty(key, tm.getObjectProperty(key));
-				}
+		Message result = null;
+		if (tm != null) {
+			try {
+				result = new Message();
+				result.setBody(tm.getText());
+				// body
+				if (!pa.containsCommandArgument("p")) { // exclude properties or not
+					@SuppressWarnings("unchecked")
+					Enumeration<String> enumKeys = tm.getPropertyNames();
+					while(enumKeys.hasMoreElements()) {
+						String key = enumKeys.nextElement();
+						result.putProperty(key, tm.getObjectProperty(key));
+					}
 
-				result.putProperty("JMSCorrelationID", tm.getJMSCorrelationID());
-				result.putProperty("JMSDeliveryMode", tm.getJMSDeliveryMode());
-				result.putProperty("JMSDestination", "" + tm.getJMSDestination());
-				if (tm.getJMSExpiration() != 0) {
-					result.putProperty("JMSExpiration", tm.getJMSExpiration() + " (" + new Date(tm.getJMSExpiration()) + ")"); //TODO format and write additional in humantime "in 12m10s"
+					result.putProperty("JMSCorrelationID", tm.getJMSCorrelationID());
+					result.putProperty("JMSDeliveryMode", tm.getJMSDeliveryMode());
+					result.putProperty("JMSDestination", "" + tm.getJMSDestination());
+					if (tm.getJMSExpiration() != 0) {
+						result.putProperty("JMSExpiration", tm.getJMSExpiration() + " (" + new Date(tm.getJMSExpiration()) + ")"); //TODO format and write additional in humantime "in 12m10s"
+					}
+					result.putProperty("JMSMessageID", tm.getJMSMessageID());
+					result.putProperty("JMSPriority", tm.getJMSPriority());
+					result.putProperty("JMSRedelivered", tm.getJMSRedelivered());
+					result.putProperty("JMSReplyTo", tm.getJMSReplyTo() == null ? "" : "" + tm.getJMSReplyTo());
+					result.putProperty("JMSTimestamp", tm.getJMSTimestamp() + " (" + new Date(tm.getJMSTimestamp()) + ")"); // TODO abstract and format
+					result.putProperty("JMSType", tm.getJMSType());
 				}
-				result.putProperty("JMSMessageID", tm.getJMSMessageID());
-				result.putProperty("JMSPriority", tm.getJMSPriority());
-				result.putProperty("JMSRedelivered", tm.getJMSRedelivered());
-				result.putProperty("JMSReplyTo", tm.getJMSReplyTo() == null ? "" : "" + tm.getJMSReplyTo());
-				result.putProperty("JMSTimestamp", tm.getJMSTimestamp() + " (" + new Date(tm.getJMSTimestamp()) + ")"); // TODO abstract and format
-				result.putProperty("JMSType", tm.getJMSType());
 			}
-
-			return result;
+			catch (JMSException jex) {
+				throw new CommandException("Could not read message", jex);
+			}
 		}
-		catch (JMSException jex) {
-			throw new CommandException("Could not read message", jex);
-		}
+		return result;
 	}
 
 
