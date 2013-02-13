@@ -1,6 +1,5 @@
 package de.galan.plunger.command.hornetq;
 
-import java.util.Date;
 import java.util.Enumeration;
 
 import javax.jms.JMSException;
@@ -46,6 +45,7 @@ public class HornetqCatCommand extends AbstractCatCommand {
 			if (jms.isQueue() && browseOnly) {
 				QueueBrowser browser = jms.getSession().createBrowser((Queue)jms.getDestination(), pa.getCommandArgument("s"));
 				@SuppressWarnings("unchecked")
+				//TODO why is this step in between required?
 				Enumeration<TextMessage> xxx = browser.getEnumeration();
 				enumeration = xxx;
 			}
@@ -105,13 +105,14 @@ public class HornetqCatCommand extends AbstractCatCommand {
 					result.putProperty("JMSDeliveryMode", tm.getJMSDeliveryMode());
 					result.putProperty("JMSDestination", "" + tm.getJMSDestination());
 					if (tm.getJMSExpiration() != 0) {
-						result.putProperty("JMSExpiration", tm.getJMSExpiration() + " (" + new Date(tm.getJMSExpiration()) + ")"); //TODO format and write additional in humantime "in 12m10s"
+						//TODO implement expiriation in put first
+						result.putPropertyTimestamp("JMSExpiration", tm.getJMSExpiration()); //TODO format and write additional in humantime "in 12m10s"
 					}
 					result.putProperty("JMSMessageID", tm.getJMSMessageID());
 					result.putProperty("JMSPriority", tm.getJMSPriority());
 					result.putProperty("JMSRedelivered", tm.getJMSRedelivered());
 					result.putProperty("JMSReplyTo", tm.getJMSReplyTo() == null ? "" : "" + tm.getJMSReplyTo());
-					result.putProperty("JMSTimestamp", tm.getJMSTimestamp() + " (" + new Date(tm.getJMSTimestamp()) + ")"); // TODO abstract and format
+					result.putPropertyTimestamp("JMSTimestamp", tm.getJMSTimestamp());
 					result.putProperty("JMSType", tm.getJMSType());
 				}
 			}

@@ -98,7 +98,7 @@ public abstract class AbstractCatCommand extends AbstractCommand {
 				else {
 					Output.print(Color.GREEN, key + ":");
 				}
-				Output.println(" " + message.getProperty(key));
+				Output.println(" " + message.getPropertyString(key));
 			}
 			if (StringUtils.isNotBlank(message.getBody())) {
 				Output.println(Color.YELLOW, message.getBody());
