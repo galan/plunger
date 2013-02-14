@@ -170,8 +170,12 @@ public class OptionsFactory {
                 .hasArgs()
                 .withDescription("file with escaped messages (instead of stdin)")
                 .create("f");
+		Option optionSkip= OptionBuilder
+                .withLongOpt("skip")
+                .withDescription("skip lines with errors")
+                .create("s");
 		//]]]
-		return createOptions(optionFile);
+		return createOptions(optionFile, optionSkip);
 	}
 
 

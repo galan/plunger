@@ -14,7 +14,7 @@ import de.galan.plunger.util.SystemMessageReader;
 
 
 /**
- * daniel should have written a comment here.
+ * Provides generic put command, that already handles the plunger arguments.
  * 
  * @author daniel
  */
@@ -29,9 +29,19 @@ public abstract class AbstractPutCommand extends AbstractCommand {
 		String line = null;
 		while((line = reader.read()) != null) {
 			lineCount++;
-			Message msg = mm.unmarshal(line);
-			logMessage(pa, msg);
-			sendMessage(pa, msg, lineCount);
+			try {
+				Message msg = mm.unmarshal(line);
+				logMessage(pa, msg);
+				sendMessage(pa, msg, lineCount);
+			}
+			catch (CommandException cex) {
+				if (pa.isVerbose()) {
+					Output.error("line could not be send: [" + line + "]");
+				}
+				if (!pa.containsCommandArgument("s")) {
+					throw cex;
+				}
+			}
 		}
 	}
 
