@@ -5,6 +5,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 
 import de.galan.plunger.command.Command;
 import de.galan.plunger.command.CommandException;
+import de.galan.plunger.command.CommandName;
 import de.galan.plunger.command.CommandProvider;
 import de.galan.plunger.domain.PlungerArguments;
 import de.galan.plunger.util.Output;
@@ -18,7 +19,9 @@ import de.galan.plunger.util.Output;
 public class Client {
 
 	public void process(PlungerArguments pa) {
-		Command command = determineCommand(pa);
+		CommandProvider provider = determineProvider(pa);
+		mergeProviderSpecificConfiguration(pa, provider);
+		Command command = determineCommand(pa, provider);
 		if (command == null) {
 			if (StringUtils.isBlank(pa.getCommand())) {
 				Output.error("No command given");
@@ -38,6 +41,28 @@ public class Client {
 	}
 
 
+	protected void mergeProviderSpecificConfiguration(PlungerArguments pa, CommandProvider provider) {
+		if (pa.getTarget().getPort() == null) {
+			pa.getTarget().setPort(provider.getDefaultPort());
+		}
+	}
+
+
+	protected CommandProvider determineProvider(PlungerArguments pa) {
+		CommandProvider provider = new CommandProviderServiceLocator().locate(CommandProvider.class, pa.getTarget().getProvider());
+		if (provider == null) {
+			handleError(pa, new CommandException("No provider for '" + pa.getTarget().getProvider() + "' found"));
+		}
+		return provider;
+	}
+
+
+	protected Command determineCommand(PlungerArguments pa, CommandProvider provider) {
+		CommandName commandName = CommandName.get(pa.getCommand());
+		return provider.getCommand(commandName, pa);
+	}
+
+
 	protected void handleError(PlungerArguments pa, CommandException ex) {
 		if (pa.isVerbose()) {
 			Output.error(ex.getMessage() + System.getProperty("line.separator") + ExceptionUtils.getFullStackTrace(ex));
@@ -48,34 +73,6 @@ public class Client {
 			Output.error(ex.getMessage() + causeMessage);
 		}
 		System.exit(4);
-	}
-
-
-	protected Command determineCommand(PlungerArguments pa) {
-		Command cmd = null;
-		CommandProvider provider = new CommandProviderServiceLocator().locate(CommandProvider.class, pa.getTarget().getProvider());
-		if (provider == null) {
-			handleError(pa, new CommandException("No provider for '" + pa.getTarget().getProvider() + "' found"));
-		}
-		else {
-			switch (pa.getCommand()) {
-				case "ls":
-					cmd = provider.ls(pa);
-					break;
-				case "cat":
-					cmd = provider.cat(pa);
-					break;
-				case "put":
-					cmd = provider.put(pa);
-					break;
-				case "count":
-					cmd = provider.count(pa);
-					break;
-				default:
-					break;
-			}
-		}
-		return cmd;
 	}
 
 }

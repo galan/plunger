@@ -14,10 +14,10 @@ public class Target {
 	private String username;
 	private String password;
 	private String host;
-	private int port;
+	private Integer port;
 
 
-	public Target(String provider, String username, String password, String host, int port) {
+	public Target(String provider, String username, String password, String host, Integer port) {
 		this.provider = provider;
 		this.username = username;
 		this.password = password;
@@ -66,12 +66,12 @@ public class Target {
 	}
 
 
-	public int getPort() {
+	public Integer getPort() {
 		return port;
 	}
 
 
-	public void setPort(int port) {
+	public void setPort(Integer port) {
 		this.port = port;
 	}
 
@@ -90,8 +90,10 @@ public class Target {
 			buffer.append("@");
 		}
 		buffer.append(getHost());
-		buffer.append(":");
-		buffer.append(getPort());
+		if (getPort() != null) {
+			buffer.append(":");
+			buffer.append(getPort());
+		}
 		return buffer.toString();
 	}
 

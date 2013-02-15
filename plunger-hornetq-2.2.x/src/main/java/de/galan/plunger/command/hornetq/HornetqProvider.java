@@ -2,6 +2,7 @@ package de.galan.plunger.command.hornetq;
 
 import de.galan.plunger.command.Command;
 import de.galan.plunger.command.CommandProvider;
+import de.galan.plunger.command.CommandName;
 import de.galan.plunger.domain.PlungerArguments;
 
 
@@ -19,27 +20,25 @@ public class HornetqProvider implements CommandProvider {
 
 
 	@Override
-	public Command ls(PlungerArguments pa) {
-		return new HornetqLsCommand();
+	public Command getCommand(CommandName commandName, PlungerArguments pa) {
+		switch (commandName) {
+			case LS:
+				return new HornetqLsCommand();
+			case CAT:
+				return new HornetqCatCommand();
+			case PUT:
+				return new HornetqPutCommand();
+			case COUNT:
+				return new HornetqCountCommand();
+			default:
+				return null;
+		}
 	}
 
 
 	@Override
-	public Command cat(PlungerArguments pa) {
-		//return new HornetqCommandCat();
-		return new HornetqCatCommand();
-	}
-
-
-	@Override
-	public Command put(PlungerArguments pa) {
-		return new HornetqPutCommand();
-	}
-
-
-	@Override
-	public Command count(PlungerArguments pa) {
-		return new HornetqCountCommand();
+	public int getDefaultPort() {
+		return 5445;
 	}
 
 }

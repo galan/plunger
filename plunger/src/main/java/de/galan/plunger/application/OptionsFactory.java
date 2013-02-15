@@ -4,7 +4,7 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 
-import de.galan.plunger.command.Commands;
+import de.galan.plunger.command.CommandName;
 
 
 /**
@@ -14,7 +14,7 @@ import de.galan.plunger.command.Commands;
  */
 public class OptionsFactory {
 
-	public Options createOptions(Commands command) {
+	public Options createOptions(CommandName command) {
 		Options options = createBasicOptions();
 		Options optionsCommand = createCommandOptions(command);
 		appendOptions(options, optionsCommand);
@@ -31,7 +31,7 @@ public class OptionsFactory {
 	}
 
 
-	public Options createCommandOptions(Commands command) {
+	public Options createCommandOptions(CommandName command) {
 		Options result = null;
 		if (command != null) {
 			switch (command) {

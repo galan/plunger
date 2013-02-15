@@ -14,16 +14,16 @@ import de.galan.plunger.domain.Target;
  */
 public class TargetParser {
 
-	public Target parse(String target, int defaultPort) throws Exception {
+	public Target parse(String target) throws Exception {
 		Target result = null;
 		try {
 			URI uri = new URI(target);
 			if (isBlank(uri.getScheme()) || !contains(target, "://")) {
 				throw new Exception("No provider given");
 			}
-			int port = uri.getPort();
-			if (port == -1) {
-				port = defaultPort;
+			Integer port = null;
+			if (uri.getPort() != -1) {
+				port = uri.getPort();
 			}
 
 			String username = null;

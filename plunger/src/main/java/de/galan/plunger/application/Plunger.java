@@ -14,7 +14,7 @@ import org.apache.commons.cli.PosixParser;
 import org.apache.commons.lang.StringUtils;
 import org.fusesource.jansi.AnsiConsole;
 
-import de.galan.plunger.command.Commands;
+import de.galan.plunger.command.CommandName;
 import de.galan.plunger.config.Config;
 import de.galan.plunger.config.Entry;
 import de.galan.plunger.domain.PlungerArguments;
@@ -32,7 +32,6 @@ import de.galan.plunger.util.VersionUtil;
  */
 public class Plunger {
 
-	private static final int DEFAULT_PORT = 5445;
 	private static final String DOCUMENTATION_URL = "https://github.com/d8bitr/plunger";
 
 	private OptionsFactory factory = new OptionsFactory();
@@ -47,11 +46,11 @@ public class Plunger {
 	public void start(String[] args) {
 		Options options = factory.createBasicOptions();
 		CommandLineParser ignoringParser = new IgnoringPosixParser(true);
-		Commands command = null;
+		CommandName command = null;
 		try {
 			CommandLine lineBasic = ignoringParser.parse(options, args);
 
-			command = Commands.get(lineBasic.getOptionValue("command"));
+			command = CommandName.get(lineBasic.getOptionValue("command"));
 			Options optionsCommand = factory.createOptions(command);
 			CommandLineParser parser = new PosixParser();
 			CommandLine line = parser.parse(optionsCommand, args);
@@ -73,12 +72,11 @@ public class Plunger {
 	}
 
 
-	protected void checkInformationSwitches(Options options, CommandLine line, Commands command) throws ParseException {
+	protected void checkInformationSwitches(Options options, CommandLine line, CommandName command) throws ParseException {
 		if (line.hasOption("version")) {
 			printVersion();
 		}
 		if (line.hasOption("help")) {
-			//TODO check if "command" options is given
 			printUsage(command, null, 0);
 		}
 		if (line.getArgs().length == 0) {
@@ -93,13 +91,12 @@ public class Plunger {
 	protected void mergeArguments(PlungerArguments pa, Entry entry, CommandLine line, Options options) throws Exception {
 		Target target = null;
 		if (entry != null) {
-			target = new Target("hornetq-2.2", entry.getUsername(), entry.getPassword(), entry.getHostname(), entry.getPort() == null ? DEFAULT_PORT
-					: entry.getPort());
+			target = new Target("hornetq-2.2", entry.getUsername(), entry.getPassword(), entry.getHostname(), entry.getPort());
 			pa.setDestination(entry.getDestination());
 			pa.setColors(entry.isColors());
 		}
 		else {
-			target = new TargetParser().parse(line.getArgs()[0], DEFAULT_PORT);
+			target = new TargetParser().parse(line.getArgs()[0]);
 		}
 		pa.setTarget(target); // either config or cli
 		pa.setDestination(line.getOptionValue("destination")); // config can be overriden by cli
@@ -118,10 +115,6 @@ public class Plunger {
 				pa.addCommandArgument(option.getLongOpt(), value);
 			}
 		}
-
-		//String[] commandArguments = line.getOptionValues("command");
-		//commandArguments = Arrays.copyOfRange(commandArguments, 1, commandArguments.length);
-		//pa.setCommandArguments(commandArguments);
 	}
 
 
@@ -137,7 +130,7 @@ public class Plunger {
 
 
 	/** Prints the usage and terminates the application */
-	protected void printUsage(Commands command, String message, int status) {
+	protected void printUsage(CommandName command, String message, int status) {
 		HelpFormatter helpFormatter = new HelpFormatter();
 		helpFormatter.printHelp("plunger <target> [options]", message, factory.createBasicOptions(), null);
 		if (command != null) {
