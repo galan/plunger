@@ -15,7 +15,6 @@ public class PlungerArguments {
 
 	private Target target;
 	private String destination;
-	private String selector;
 	private String command;
 	private Map<String, String> commandArguments;
 	private boolean verbose;
@@ -89,19 +88,6 @@ public class PlungerArguments {
 		return ca == null ? null : Long.valueOf(ca);
 	}
 
-
-	/*
-	public String getCommandArgumentMatching(String pattern) {
-		if (getCommandArguments() != null) {
-			for (String arg: getCommandArguments()) {
-				if (arg.matches(pattern)) {
-					return arg;
-				}
-			}
-		}
-		return null;
-	}
-	*/
 
 	public boolean isVerbose() {
 		return verbose;
