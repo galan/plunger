@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.galan</groupId>
-	<artifactId>plunger-hornetq-2.2.x</artifactId>
+	<artifactId>plunger-hornetq-2.2</artifactId>
 	<version>0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
