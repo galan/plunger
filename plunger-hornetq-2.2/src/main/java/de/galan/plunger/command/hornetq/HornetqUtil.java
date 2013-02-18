@@ -13,7 +13,7 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * TODO daniel should have written a comment here.
+ * daniel should have written a comment here.
  * 
  * @author daniel
  */
