@@ -17,14 +17,9 @@ public class FileMessageReader implements MessageReader {
 	private Scanner sc;
 
 
-	public FileMessageReader(String inputFile) {
+	public FileMessageReader(String inputFile) throws FileNotFoundException {
 		file = new File(inputFile);
-		try {
-			sc = new Scanner(new FileInputStream(file));
-		}
-		catch (FileNotFoundException ex) {
-			Output.error("errr: " + inputFile);
-		}
+		sc = new Scanner(new FileInputStream(file));
 	}
 
 

@@ -22,7 +22,7 @@ public abstract class AbstractPutCommand extends AbstractCommand {
 
 	@Override
 	protected void process(PlungerArguments pa) throws CommandException {
-		MessageReader reader = pa.containsCommandArgument("f") ? new FileMessageReader(pa.getCommandArgument("f")) : new SystemMessageReader();
+		MessageReader reader = getMessageReader(pa);
 
 		long lineCount = 0;
 		MessageMarshaller mm = new MessageMarshaller();
@@ -42,6 +42,16 @@ public abstract class AbstractPutCommand extends AbstractCommand {
 					throw cex;
 				}
 			}
+		}
+	}
+
+
+	private MessageReader getMessageReader(PlungerArguments pa) throws CommandException {
+		try {
+			return pa.containsCommandArgument("f") ? new FileMessageReader(pa.getCommandArgument("f")) : new SystemMessageReader();
+		}
+		catch (Exception ex) {
+			throw new CommandException("Messages could not be read", ex);
 		}
 	}
 
