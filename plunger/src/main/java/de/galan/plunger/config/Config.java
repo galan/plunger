@@ -45,8 +45,12 @@ public class Config {
 						SimpleEntry<String, String> se = parsePair(line);
 						if (se != null) {
 							if (StringUtils.equalsIgnoreCase("Host", se.getKey())) {
-								entry = new Entry(se.getValue());
-								entries.put(se.getValue(), entry);
+								entry = new Entry();
+								// Allow aliases, separated by a single whitespace. They will refer the same entry.
+								String[] hosts = StringUtils.split(se.getValue(), " ");
+								for (String host: hosts) {
+									entries.put(host, entry);
+								}
 							}
 							else if (entry != null) {
 								if (StringUtils.equalsIgnoreCase("Hostname", se.getKey())) {
