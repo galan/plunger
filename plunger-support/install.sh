@@ -14,12 +14,16 @@ read -p "Installing ${PLUNGER_NAME} into ${PLUNGER_HOME} (Press enter to continu
 
 
 header "assemblying jar"
+rm -rf ${PLUNGER_HOME}
 mkdir -p ${PLUNGER_LIBS}
 mvn -f ../plunger/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
 cp ../plunger/target/plunger-*.jar ${PLUNGER_LIBS}/plunger.jar
 
 mvn -f ../plunger-hornetq-2.2/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
 cp ../plunger-hornetq-2.2/target/plunger-hornetq-*.jar ${PLUNGER_LIBS}/plunger-hornetq-2.2.jar
+
+mvn -f ../plunger-activemq-x/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
+cp ../plunger-activemq-x/target/plunger-activemq-*.jar ${PLUNGER_LIBS}/plunger-activemq-x.jar
 
 # Workaround, will check assembly-plugin instead.
 rm ${PLUNGER_LIBS}/plunger-*-SNAPSHOT.jar

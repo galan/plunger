@@ -10,6 +10,9 @@ import de.galan.plunger.domain.PlungerArguments;
  */
 public abstract class AbstractCommand implements Command {
 
+	protected boolean closed;
+
+
 	@Override
 	public void execute(PlungerArguments pa) throws CommandException {
 		initialize(pa);
@@ -18,10 +21,19 @@ public abstract class AbstractCommand implements Command {
 
 			@Override
 			public void run() {
-				close();
+				closing();
 			}
 		}));
 		process(pa);
+		closing();
+	}
+
+
+	protected void closing() {
+		if (!closed) {
+			close();
+			closed = true;
+		}
 	}
 
 

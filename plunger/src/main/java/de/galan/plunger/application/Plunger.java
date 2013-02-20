@@ -14,6 +14,7 @@ import org.apache.commons.cli.PosixParser;
 import org.apache.commons.lang.StringUtils;
 import org.fusesource.jansi.AnsiConsole;
 
+import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.CommandName;
 import de.galan.plunger.config.Config;
 import de.galan.plunger.config.Entry;
@@ -100,6 +101,9 @@ public class Plunger {
 		}
 		pa.setTarget(target); // either config or cli
 		pa.setDestination(line.getOptionValue("destination")); // config can be overriden by cli
+		if (isBlank(pa.getDestination())) {
+			throw new CommandException("No destination is set");
+		}
 		boolean colors = StringUtils.equals(line.getOptionValue("colors"), "false") ? false : true;
 		pa.setColors(colors); // config can be overriden by cli
 		Output.setColor(pa.isColors());
