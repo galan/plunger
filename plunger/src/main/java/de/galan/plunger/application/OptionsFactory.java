@@ -8,7 +8,7 @@ import de.galan.plunger.command.CommandName;
 
 
 /**
- * daniel should have written a comment here.
+ * Defines the commandline arguments for the basic usage, as well as for the specific commands (additiv).
  * 
  * @author daniel
  */

@@ -4,7 +4,7 @@ import static org.apache.commons.lang.StringUtils.*;
 
 
 /**
- * daniel should have written a comment here.
+ * In plunger available commands. These should be and behave the same (as far as possible) on all providers.
  * 
  * @author daniel
  */

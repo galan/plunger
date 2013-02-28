@@ -15,6 +15,7 @@ public class Escape {
 
 
 	public String escape(String text) {
+		//TODO evaluate replacement: StringEscapeUtils.escapeJava(text)
 		if (StringUtils.isNotBlank(text)) {
 			return StringUtils.replaceEach(text, REPLACE, WITH);
 		}

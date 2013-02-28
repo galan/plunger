@@ -4,7 +4,7 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * Abstraction for Command interface
+ * Basic abstraction for Command interface
  * 
  * @author daniel
  */

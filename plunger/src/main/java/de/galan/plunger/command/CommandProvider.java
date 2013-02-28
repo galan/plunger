@@ -4,18 +4,21 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * Messaging Provider.
+ * Contract for a messaging provider.
  * 
  * @author daniel
  */
 public interface CommandProvider {
 
+	/** The name of the CommandProvider, used in target URI and therefore locating the SPI. */
 	public String getName();
 
 
+	/** Returns an executable command, defined by the CommandName */
 	public Command getCommand(CommandName commandName, PlungerArguments pa);
 
 
+	/** The port, the messaging provider typically uses (when omitted). */
 	public int getDefaultPort();
 
 }

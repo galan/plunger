@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 
 
 /**
- * The target to query, which is basically an uri with the provider, host, port and authentication information
+ * The target to query, which is basically an uri with the provider, host, port and authentication information.
  * 
  * @author daniel
  */

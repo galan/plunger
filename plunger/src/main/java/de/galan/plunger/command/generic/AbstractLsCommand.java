@@ -9,7 +9,7 @@ import de.galan.plunger.util.Output;
 
 
 /**
- * daniel should have written a comment here.
+ * Generic ls command, that handles most of the plunger arguments already.
  * 
  * @author daniel
  */

@@ -14,7 +14,7 @@ import de.galan.plunger.util.SystemMessageReader;
 
 
 /**
- * Provides generic put command, that already handles the plunger arguments.
+ * Generic put command, that handles most of the plunger arguments already.
  * 
  * @author daniel
  */

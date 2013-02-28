@@ -16,7 +16,7 @@ import de.galan.plunger.util.Output;
 
 
 /**
- * daniel should have written a comment here.
+ * Writes messages to a destination on a HornetQ messaging server.
  * 
  * @author daniel
  */

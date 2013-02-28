@@ -13,7 +13,7 @@ import de.galan.plunger.util.Output;
 
 
 /**
- * daniel should have written a comment here.
+ * Abstraction to deal with HornetQs core-API.
  * 
  * @author daniel
  */

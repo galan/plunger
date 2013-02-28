@@ -1,13 +1,13 @@
 package de.galan.plunger.command.hornetq;
 
 import de.galan.plunger.command.Command;
-import de.galan.plunger.command.CommandProvider;
 import de.galan.plunger.command.CommandName;
+import de.galan.plunger.command.CommandProvider;
 import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * daniel should have written a comment here.
+ * CommandProvider for a HornetQ server, version 2.2.x.
  * 
  * @author daniel
  */

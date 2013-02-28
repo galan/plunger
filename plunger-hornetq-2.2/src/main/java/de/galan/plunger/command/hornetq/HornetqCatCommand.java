@@ -15,7 +15,7 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * daniel should have written a comment here.
+ * Prints messags from a HornetQ messaging server.
  * 
  * @author daniel
  */

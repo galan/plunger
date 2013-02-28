@@ -17,7 +17,7 @@ import de.galan.plunger.util.Output;
 
 
 /**
- * daniel should have written a comment here.
+ * Generic cat command, that handles most of the plunger arguments already.
  * 
  * @author daniel
  */

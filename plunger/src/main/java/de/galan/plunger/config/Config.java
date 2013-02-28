@@ -15,7 +15,7 @@ import de.galan.plunger.util.PlungerCharsets;
 
 
 /**
- * Reads the configuration.
+ * Reads the configuration, located at ~/.plunger. The configurationfile syntax is based on the .ssh/config file.
  * 
  * @author daniel
  */

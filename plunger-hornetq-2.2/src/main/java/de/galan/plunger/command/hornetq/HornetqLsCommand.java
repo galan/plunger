@@ -16,7 +16,7 @@ import de.galan.plunger.util.StringCaseInsensitiveComparator;
 
 
 /**
- * daniel should have written a comment here.
+ * Lists all destinations on a HornetQ messaging server.
  * 
  * @author daniel
  */

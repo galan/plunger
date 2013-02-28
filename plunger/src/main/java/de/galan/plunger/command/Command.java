@@ -4,7 +4,7 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * A Command plunger could execute
+ * A command plunger could execute
  * 
  * @author daniel
  */

@@ -1,6 +1,5 @@
 package de.galan.plunger.util;
 
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
@@ -11,7 +10,10 @@ import de.galan.plunger.domain.Message;
 
 
 /**
- * Marshalls message
+ * Marshalls and unmarshalles messages using the basic notation:<br/>
+ * json-properties(tab)marshalled-body<br/>
+ * eg.:<br/>
+ * {"property":"value"}\tHello world
  * 
  * @author daniel
  */
@@ -58,7 +60,7 @@ public class MessageMarshaller {
 			}
 		}
 		catch (ParseException ex) {
-			//TODO
+			//TODO handling of failed lines
 			Output.error("xxx" + ExceptionUtils.getStackTrace(ex));
 		}
 		return result;
