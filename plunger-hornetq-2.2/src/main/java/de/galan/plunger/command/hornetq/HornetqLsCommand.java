@@ -46,6 +46,7 @@ public class HornetqLsCommand extends AbstractLsCommand {
 			String[] array = Arrays.copyOf(arrayObjects, arrayObjects.length, String[].class);
 			Arrays.sort(array, new StringCaseInsensitiveComparator());
 			for (String address: array) {
+				//TODO filter jms.queue.hornetq.management.012398ea-12b2-4ce8-8bff-20988678aa95
 				QueueQuery queueQuery = core.getSession().queueQuery(SimpleString.toSimpleString(address));
 				printDestination(pa, address, queueQuery.getConsumerCount(), queueQuery.getMessageCount(), queueQuery.isDurable());
 			}

@@ -1,16 +1,19 @@
 #!/bin/bash -e
-JAVA_HOME=${JAVA_HOME-${HOME}/bin/jdk7}
 PLUNGER_NAME=plunger
 PLUNGER_HOME=${PLUNGER_HOME-${HOME}/bin/${PLUNGER_NAME}}
 PLUNGER_LIBS=${PLUNGER_HOME}/libs
 PLUNGER_PREFIX=${PLUNGER_PREFIX-p}
+if [ ! -d "${JAVA_HOME}" ]; then
+	echo "JAVA_HOME is not set, exiting."
+	exit 1
+fi
 
 function header() {
 	echo -e "\n---------------- $1 ----------------"
 }
 
-read -p "Installing ${PLUNGER_NAME} into ${PLUNGER_HOME} (Press enter to continue)"
-
+#read -p "Installing ${PLUNGER_NAME} into ${PLUNGER_HOME} (Press enter to continue)"
+echo "Installing ${PLUNGER_NAME} into ${PLUNGER_HOME} (Press enter to continue)"
 
 
 header "assemblying jar"
@@ -37,7 +40,7 @@ header "creating launch-scripts"
 
 echo "#!/bin/bash
 PATH_SCRIPT=\$(dirname \$(readlink -f \$0))
-JAVA_HOME=\${JAVA_HOME-\${HOME}/bin/jdk7}
+JAVA_HOME=\${JAVA_HOME}
 if [ -f \"\${PATH_SCRIPT}/plunger-environment.sh\" ]; then
 	. \${PATH_SCRIPT}/plunger-environment.sh
 fi
@@ -67,7 +70,6 @@ createScript cat
 createScript ls
 createScript put
 createScript count
-
 
 
 header "finished"

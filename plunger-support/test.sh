@@ -1,6 +1,7 @@
-echo "#!/bin/bash
-blabla
-echo -e \"\${JAVA_HOME}\"
-echo 
-" > output.txt
+#!/bin/bash
+if [ ! -d "${XXX}" ]; then
+	echo "${XXX} does not exist"
+else
+	echo "${XXX} does exist"
+fi
 
