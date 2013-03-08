@@ -13,7 +13,7 @@ function header() {
 }
 
 #read -p "Installing ${PLUNGER_NAME} into ${PLUNGER_HOME} (Press enter to continue)"
-echo "Installing ${PLUNGER_NAME} into ${PLUNGER_HOME} (Press enter to continue)"
+echo "Installing ${PLUNGER_NAME} into ${PLUNGER_HOME}"
 
 
 header "assemblying jar"
@@ -60,9 +60,11 @@ chmod +x ${PLUNGER_HOME}/${PLUNGER_NAME}
 
 createScript() {
 	SCRIPT_NAME=${PLUNGER_HOME}/${PLUNGER_PREFIX}$1
-	echo "#!/bin/bash" > ${SCRIPT_NAME}
-	echo "target=\$1; shift 1" >> ${SCRIPT_NAME}
-	echo "plunger \$target -C $1 \$*" >> ${SCRIPT_NAME}
+	echo "#!/bin/bash
+PATH_SCRIPT=\$(dirname \$(readlink -f \$0))
+target=\$1; shift 1
+\${PATH_SCRIPT}/plunger \$target -C $1 \$*
+	" > ${SCRIPT_NAME}
 	chmod +x ${SCRIPT_NAME}
 }
 
