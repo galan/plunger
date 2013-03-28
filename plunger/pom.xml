@@ -77,6 +77,15 @@
 			<artifactId>jansi</artifactId>
 			<version>1.9</version>
 		</dependency>
+		
+		<!-- JMS Spec -->
+		<dependency>
+			<groupId>org.jboss.javaee</groupId>
+			<artifactId>jboss-jms-api</artifactId>
+			<version>1.1.0.GA</version>
+			<optional>true</optional>
+		</dependency>
+
 	</dependencies>
 
 	<build>

@@ -31,8 +31,8 @@ public class HornetqPutCommand extends AbstractPutCommand {
 	@Override
 	protected void initialize(PlungerArguments pa) throws CommandException {
 		util = new HornetqUtil();
-		jms = new HornetqJms();
-		jms.initialize(pa, util.getTransportConfiguration(pa));
+		jms = new HornetqJms(util.getTransportConfiguration(pa));
+		jms.initialize(pa);
 		try {
 			producer = jms.getSession().createProducer(jms.getDestination());
 		}
