@@ -1,6 +1,7 @@
 package de.galan.plunger.command.activemq;
 
 import static org.apache.commons.lang.StringUtils.*;
+import de.galan.plunger.command.jms.ProviderInformation;
 
 
 /**
@@ -8,8 +9,9 @@ import static org.apache.commons.lang.StringUtils.*;
  * 
  * @author daniel
  */
-public class AmqUtil {
+public class AmqUtil implements ProviderInformation {
 
+	@Override
 	public boolean isSystemHeader(String headerName) {
 		return startsWith(headerName, "JMS") || startsWith(headerName, "HQ");
 	}

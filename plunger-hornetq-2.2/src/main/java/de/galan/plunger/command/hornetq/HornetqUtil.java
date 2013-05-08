@@ -9,6 +9,7 @@ import org.hornetq.api.core.TransportConfiguration;
 import org.hornetq.core.remoting.impl.netty.NettyConnectorFactory;
 import org.hornetq.core.remoting.impl.netty.TransportConstants;
 
+import de.galan.plunger.command.jms.ProviderInformation;
 import de.galan.plunger.domain.PlungerArguments;
 
 
@@ -17,7 +18,7 @@ import de.galan.plunger.domain.PlungerArguments;
  * 
  * @author daniel
  */
-public class HornetqUtil {
+public class HornetqUtil implements ProviderInformation {
 
 	public TransportConfiguration getTransportConfiguration(PlungerArguments pa) {
 		Map<String, Object> connectionMap = new HashMap<>();
@@ -27,6 +28,7 @@ public class HornetqUtil {
 	}
 
 
+	@Override
 	public boolean isSystemHeader(String headerName) {
 		return startsWith(headerName, "JMS") || startsWith(headerName, "HQ");
 	}

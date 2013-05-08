@@ -4,9 +4,9 @@ import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 
+import de.galan.plunger.command.jms.AbstractJms;
 import de.galan.plunger.domain.PlungerArguments;
 import de.galan.plunger.domain.Target;
-import de.galan.plunger.protocol.jms.AbstractJms;
 
 
 /**
