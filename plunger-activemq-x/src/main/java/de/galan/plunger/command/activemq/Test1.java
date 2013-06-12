@@ -22,6 +22,10 @@ public class Test1 {
 			ObjectName mbeanName = new ObjectName("org.apache.activemq:brokerName=localhost,type=Broker");
 			BrokerViewMBean mbean = MBeanServerInvocationHandler.newProxyInstance(connection, mbeanName, BrokerViewMBean.class, true);
 
+			for (ObjectName on: mbean.getQueues()) {
+				System./**/out.println("queue: " + on.getCanonicalName());
+			}
+
 			System./**/out.println("Id:" + mbean.getBrokerId());
 		}
 		catch (Exception x) {

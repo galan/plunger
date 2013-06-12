@@ -34,54 +34,52 @@ public class Config {
 	public boolean parse(File file) {
 		boolean result = true;
 		entries.clear();
-		if (file != null) {
-			if (file.exists() && file.isFile()) {
-				int lineCount = 0;
-				try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), PlungerCharsets.UTF8))) {
-					String line = null;
-					Entry entry = null;
-					while((line = br.readLine()) != null) {
-						lineCount++;
-						SimpleEntry<String, String> se = parsePair(line);
-						if (se != null) {
-							if (StringUtils.equalsIgnoreCase("Host", se.getKey())) {
-								entry = new Entry();
-								// Allow aliases, separated by a single whitespace. They will refer the same entry.
-								String[] hosts = StringUtils.split(se.getValue(), " ");
-								for (String host: hosts) {
-									entries.put(host, entry);
-								}
+		if ((file != null) && file.exists() && file.isFile()) {
+			int lineCount = 0;
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), PlungerCharsets.UTF8))) {
+				String line = null;
+				Entry entry = null;
+				while((line = br.readLine()) != null) {
+					lineCount++;
+					SimpleEntry<String, String> se = parsePair(line);
+					if (se != null) {
+						if (StringUtils.equalsIgnoreCase("Host", se.getKey())) {
+							entry = new Entry();
+							// Allow aliases, separated by a single whitespace. They will refer the same entry.
+							String[] hosts = StringUtils.split(se.getValue(), " ");
+							for (String host: hosts) {
+								entries.put(host, entry);
 							}
-							else if (entry != null) {
-								if (StringUtils.equalsIgnoreCase("Hostname", se.getKey())) {
-									entry.setHostname(se.getValue());
-								}
-								else if (StringUtils.equalsIgnoreCase("Port", se.getKey())) {
-									entry.setPort(Integer.parseInt(se.getValue()));
-								}
-								else if (StringUtils.equalsIgnoreCase("Username", se.getKey())) {
-									entry.setUsername(se.getValue());
-								}
-								else if (StringUtils.equalsIgnoreCase("Password", se.getKey())) {
-									entry.setPassword(se.getValue());
-								}
-								else if (StringUtils.equalsIgnoreCase("Destination", se.getKey())) {
-									entry.setDestination(se.getValue());
-								}
-								else if (StringUtils.equalsIgnoreCase("Colors", se.getKey())) {
-									entry.setColors("true".equalsIgnoreCase(se.getValue()));
-								}
+						}
+						else if (entry != null) {
+							if (StringUtils.equalsIgnoreCase("Hostname", se.getKey())) {
+								entry.setHostname(se.getValue());
 							}
-							else {
-								throw new Exception("No Host defined");
+							else if (StringUtils.equalsIgnoreCase("Port", se.getKey())) {
+								entry.setPort(Integer.parseInt(se.getValue()));
 							}
+							else if (StringUtils.equalsIgnoreCase("Username", se.getKey())) {
+								entry.setUsername(se.getValue());
+							}
+							else if (StringUtils.equalsIgnoreCase("Password", se.getKey())) {
+								entry.setPassword(se.getValue());
+							}
+							else if (StringUtils.equalsIgnoreCase("Destination", se.getKey())) {
+								entry.setDestination(se.getValue());
+							}
+							else if (StringUtils.equalsIgnoreCase("Colors", se.getKey())) {
+								entry.setColors("true".equalsIgnoreCase(se.getValue()));
+							}
+						}
+						else {
+							throw new Exception("No Host defined");
 						}
 					}
 				}
-				catch (Exception ex) {
-					result = false;
-					Output.error("Error parsing file '" + file.getAbsolutePath() + "' in line " + lineCount + ": " + ex.getMessage());
-				}
+			}
+			catch (Exception ex) {
+				result = false;
+				Output.error("Error parsing file '" + file.getAbsolutePath() + "' in line " + lineCount + ": " + ex.getMessage());
 			}
 		}
 		return result;
