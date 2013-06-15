@@ -1,5 +1,10 @@
 package de.galan.plunger.domain;
 
+import static org.apache.commons.lang.StringUtils.*;
+
+import java.net.URI;
+import java.net.URISyntaxException;
+
 import org.apache.commons.lang.StringUtils;
 
 
@@ -10,19 +15,53 @@ import org.apache.commons.lang.StringUtils;
  */
 public class Target {
 
+	private static final String DUMMY_PROTOCOL = "gopher";
+
 	private String provider;
 	private String username;
 	private String password;
 	private String host;
 	private Integer port;
+	private String destination;
+
+
+	public Target(String uri) throws URISyntaxException {
+		this(new URI(contains(uri, "://") ? uri : DUMMY_PROTOCOL + "://" + uri));
+	}
+
+
+	public Target(URI uri) {
+		initialize(uri);
+	}
+
+
+	protected void initialize(URI uri) {
+		setProvider(StringUtils.equals(uri.getScheme(), DUMMY_PROTOCOL) ? null : uri.getScheme());
+		setHost(uri.getHost());
+		setPort(uri.getPort());
+		String userInfo = uri.getUserInfo();
+		if (isNotBlank(userInfo)) {
+			if (contains(userInfo, ":")) {
+				String[] split = userInfo.split(":");
+				setUsername(split[0]);
+				setPassword(split[1]);
+			}
+			else {
+				setUsername(userInfo);
+			}
+		}
+		if (isNotBlank(uri.getRawPath())) {
+			setDestination(removeStart(uri.getRawPath(), "/"));
+		}
+	}
 
 
 	public Target(String provider, String username, String password, String host, Integer port) {
-		this.provider = provider;
-		this.username = username;
-		this.password = password;
-		this.host = host;
-		this.port = port;
+		setProvider(provider);
+		setUsername(username);
+		setPassword(password);
+		setHost(host);
+		setPort(port);
 	}
 
 
@@ -76,11 +115,23 @@ public class Target {
 	}
 
 
+	public String getDestination() {
+		return destination;
+	}
+
+
+	public void setDestination(String destination) {
+		this.destination = destination;
+	}
+
+
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append(getProvider());
-		buffer.append("://");
+		if (isNotBlank(getProvider())) {
+			buffer.append(getProvider());
+			buffer.append("://");
+		}
 		if (StringUtils.isNotBlank(getUsername())) {
 			buffer.append(getUsername());
 			if (getPassword() != null) {
@@ -93,6 +144,10 @@ public class Target {
 		if (getPort() != null) {
 			buffer.append(":");
 			buffer.append(getPort());
+		}
+		if (isNotBlank(getDestination())) {
+			buffer.append("/");
+			buffer.append(getDestination());
 		}
 		return buffer.toString();
 	}

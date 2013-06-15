@@ -3,6 +3,7 @@ package de.galan.plunger.application;
 import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -57,12 +58,14 @@ public class Plunger {
 			CommandLine line = parser.parse(optionsCommand, args);
 
 			checkInformationSwitches(optionsCommand, line, command);
+			//PlungerArguments pa = new PlungerArguments();
 
-			PlungerArguments pa = new PlungerArguments();
 			Config config = new Config();
 			if (!config.parse(System.getProperty("user.home") + System.getProperty("file.separator") + ".plunger")) {
 				System.exit(2);
 			}
+			PlungerArguments pa = determinePlungerArguments(line.getArgs()[0], config);
+
 			Entry entry = config.getEntry(line.getArgs()[0]);
 			mergeArguments(pa, entry, line, factory.createCommandOptions(command));
 			new Client().process(pa);
@@ -70,6 +73,22 @@ public class Plunger {
 		catch (Exception ex) {
 			printUsage(command, ex.getMessage(), 1);
 		}
+	}
+
+
+	protected PlungerArguments determinePlungerArguments(String input, Config config) throws Exception {
+		PlungerArguments result = new PlungerArguments();
+		try {
+			Target target = new Target(input);
+			Entry entry = config.getEntry(target.getHost());
+			if (entry != null) {
+				// merge
+			}
+		}
+		catch (URISyntaxException ex) {
+			throw new Exception("todo", ex);
+		}
+		return result;
 	}
 
 
