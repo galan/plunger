@@ -1,5 +1,8 @@
 package de.galan.plunger.config;
 
+import de.galan.plunger.domain.Target;
+
+
 /**
  * An entry in the plunger configuration file
  * 
@@ -8,11 +11,7 @@ package de.galan.plunger.config;
 public class Entry {
 
 	private String host;
-	private String username;
-	private String password;
-	private String hostname;
-	private Integer port;
-	private String destination;
+	private Target target;
 	private Boolean colors;
 
 
@@ -35,58 +34,18 @@ public class Entry {
 	}
 
 
-	public String getUsername() {
-		return username;
+	public Target getTarget() {
+		return target;
 	}
 
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-
-	public String getPassword() {
-		return password;
-	}
-
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-
-	public String getHostname() {
-		return hostname;
-	}
-
-
-	public void setHostname(String hostname) {
-		this.hostname = hostname;
-	}
-
-
-	public Integer getPort() {
-		return port;
-	}
-
-
-	public void setPort(Integer port) {
-		this.port = port;
-	}
-
-
-	public String getDestination() {
-		return destination;
-	}
-
-
-	public void setDestination(String destination) {
-		this.destination = destination;
+	public void setTarget(Target target) {
+		this.target = target;
 	}
 
 
 	public Boolean isColors() {
-		return colors;
+		return (colors == null) || colors;
 	}
 
 

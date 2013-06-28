@@ -3,8 +3,6 @@ package de.galan.plunger.domain;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-
 
 /**
  * Container for the parsed arguments, given by the user on the commandline
@@ -14,7 +12,7 @@ import org.apache.commons.lang.StringUtils;
 public class PlungerArguments {
 
 	private Target target;
-	private String destination;
+	//private String destination;
 	private String command;
 	private Map<String, String> commandArguments;
 	private boolean verbose;
@@ -28,25 +26,6 @@ public class PlungerArguments {
 
 	public void setTarget(Target target) {
 		this.target = target;
-	}
-
-
-	public String getDestination() {
-		return destination;
-	}
-
-
-	public String getShortDestination() {
-		String result = StringUtils.removeStart(getDestination(), "jms.queue.");
-		result = StringUtils.removeStart(result, "jms.topic.");
-		return result;
-	}
-
-
-	public void setDestination(String destination) {
-		if (destination != null) {
-			this.destination = destination;
-		}
 	}
 
 

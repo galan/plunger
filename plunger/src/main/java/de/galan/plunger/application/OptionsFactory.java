@@ -72,11 +72,13 @@ public class OptionsFactory {
 		        .hasArg()
 		        .withDescription("The command to execute against the target")
 		        .create("C");
+		/*
 		Option optionDestination = OptionBuilder
 		        .withLongOpt("destination")
 		        .hasArg()
 		        .withDescription("Selects the queue or topic,\nhas to start with 'jms.queue.' or 'jms.topic.'") //TODO remove prefix
 		        .create("d");
+		*/
 		Option optionColors = OptionBuilder
 		        .withDescription("Highlights the output")
 		        .hasArg()
@@ -89,7 +91,7 @@ public class OptionsFactory {
 		        .withDescription("Version")
 		        .create("version");
 		//]]]
-		return createOptions(optionCommand, optionDestination, optionColors, optionHelp, optionVerbose, optionVersion);
+		return createOptions(optionCommand, optionColors, optionHelp, optionVerbose, optionVersion);
 	}
 
 

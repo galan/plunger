@@ -35,7 +35,7 @@ public class AmqCountCommand extends AbstractCountCommand {
 			for (ObjectName name: mbean.getQueues()) {
 				QueueViewMBean queueMbean = MBeanServerInvocationHandler.newProxyInstance(conn, name, QueueViewMBean.class, true);
 
-				if (queueMbean.getName().equals(pa.getDestination())) {
+				if (queueMbean.getName().equals(pa.getTarget().getDestination())) {
 					//queueMbean.getConsumerCount()
 					result = queueMbean.getQueueSize();
 					//queueViewBeanCache.put(cacheKey, queueMbean);

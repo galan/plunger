@@ -1,5 +1,7 @@
 package de.galan.plunger.config;
 
+import static org.apache.commons.lang.StringUtils.*;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +12,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
+import de.galan.plunger.domain.Target;
 import de.galan.plunger.util.Output;
 import de.galan.plunger.util.PlungerCharsets;
 
@@ -32,9 +35,6 @@ public class Config {
 
 
 	public boolean parse(File file) {
-		if (true) {
-			return true;
-		}
 		boolean result = true;
 		entries.clear();
 		if ((file != null) && file.exists() && file.isFile()) {
@@ -55,22 +55,14 @@ public class Config {
 							}
 						}
 						else if (entry != null) {
-							if (StringUtils.equalsIgnoreCase("Hostname", se.getKey())) {
-								entry.setHostname(se.getValue());
+							if (equalsIgnoreCase("Target", se.getKey())) {
+								Target target = new Target(se.getValue());
+								if (!target.hasProvider()) {
+									throw new Exception("Target defined for " + entry.getHost() + " requires a provider");
+								}
+								entry.setTarget(target);
 							}
-							else if (StringUtils.equalsIgnoreCase("Port", se.getKey())) {
-								entry.setPort(Integer.parseInt(se.getValue()));
-							}
-							else if (StringUtils.equalsIgnoreCase("Username", se.getKey())) {
-								entry.setUsername(se.getValue());
-							}
-							else if (StringUtils.equalsIgnoreCase("Password", se.getKey())) {
-								entry.setPassword(se.getValue());
-							}
-							else if (StringUtils.equalsIgnoreCase("Destination", se.getKey())) {
-								entry.setDestination(se.getValue());
-							}
-							else if (StringUtils.equalsIgnoreCase("Colors", se.getKey())) {
+							if (StringUtils.equalsIgnoreCase("Colors", se.getKey())) {
 								entry.setColors("true".equalsIgnoreCase(se.getValue()));
 							}
 						}

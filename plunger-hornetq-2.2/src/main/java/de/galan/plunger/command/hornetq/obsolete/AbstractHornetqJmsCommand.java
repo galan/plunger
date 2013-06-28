@@ -36,11 +36,11 @@ public abstract class AbstractHornetqJmsCommand extends AbstractHornetqCommand {
 			factory = (ConnectionFactory)HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, getTransportConfiguration(pa));
 			connection = factory.createConnection(pa.getTarget().getUsername(), pa.getTarget().getPassword());
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			if (StringUtils.startsWith(pa.getDestination(), "jms.queue.")) {
-				destination = HornetQJMSClient.createQueue(pa.getShortDestination());
+			if (StringUtils.startsWith(pa.getTarget().getDestination(), "jms.queue.")) {
+				destination = HornetQJMSClient.createQueue(pa.getTarget().getShortDestination());
 			}
-			else if (StringUtils.startsWith(pa.getDestination(), "jms.topic.")) {
-				destination = HornetQJMSClient.createTopic(pa.getShortDestination());
+			else if (StringUtils.startsWith(pa.getTarget().getDestination(), "jms.topic.")) {
+				destination = HornetQJMSClient.createTopic(pa.getTarget().getShortDestination());
 			}
 		}
 		catch (Exception ex) {

@@ -22,7 +22,7 @@ public class HornetqCountCommand extends AbstractCountCommand {
 	@Override
 	protected long getCount(PlungerArguments pa) throws CommandException {
 		try {
-			QueueQuery queueQuery = core.getSession().queueQuery(SimpleString.toSimpleString(pa.getDestination()));
+			QueueQuery queueQuery = core.getSession().queueQuery(SimpleString.toSimpleString(pa.getTarget().getDestination()));
 			return queueQuery.getMessageCount();
 		}
 		catch (Exception ex) {

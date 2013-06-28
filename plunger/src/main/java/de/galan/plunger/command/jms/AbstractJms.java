@@ -33,11 +33,11 @@ public abstract class AbstractJms {
 			factory = createConnectionFactory(pa);
 			connection = factory.createConnection(pa.getTarget().getUsername(), pa.getTarget().getPassword());
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			if (StringUtils.startsWith(pa.getDestination(), "jms.queue.")) {
-				destination = session.createQueue(pa.getShortDestination());
+			if (StringUtils.startsWith(pa.getTarget().getDestination(), "jms.queue.")) {
+				destination = session.createQueue(pa.getTarget().getShortDestination());
 			}
-			else if (StringUtils.startsWith(pa.getDestination(), "jms.topic.")) {
-				destination = session.createTopic(pa.getShortDestination());
+			else if (StringUtils.startsWith(pa.getTarget().getDestination(), "jms.topic.")) {
+				destination = session.createTopic(pa.getTarget().getShortDestination());
 			}
 		}
 		catch (Exception ex) {

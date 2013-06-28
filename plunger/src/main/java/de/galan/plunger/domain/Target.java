@@ -38,7 +38,7 @@ public class Target {
 	protected void initialize(URI uri) {
 		setProvider(StringUtils.equals(uri.getScheme(), DUMMY_PROTOCOL) ? null : uri.getScheme());
 		setHost(uri.getHost());
-		setPort(uri.getPort());
+		setPort(uri.getPort() == -1 ? null : uri.getPort());
 		String userInfo = uri.getUserInfo();
 		if (isNotBlank(userInfo)) {
 			if (contains(userInfo, ":")) {
@@ -75,6 +75,11 @@ public class Target {
 	}
 
 
+	public boolean hasProvider() {
+		return isNotBlank(getProvider());
+	}
+
+
 	public String getUsername() {
 		return username;
 	}
@@ -85,6 +90,11 @@ public class Target {
 	}
 
 
+	public boolean hasUsername() {
+		return isNotBlank(getUsername());
+	}
+
+
 	public String getPassword() {
 		return password;
 	}
@@ -92,6 +102,11 @@ public class Target {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+
+	public boolean hasPassword() {
+		return isNotBlank(getPassword());
 	}
 
 
@@ -115,13 +130,30 @@ public class Target {
 	}
 
 
+	public boolean hasPort() {
+		return getPort() != null;
+	}
+
+
 	public String getDestination() {
 		return destination;
 	}
 
 
+	public String getShortDestination() {
+		String result = removeStart(getDestination(), "jms.queue.");
+		result = removeStart(result, "jms.topic.");
+		return result;
+	}
+
+
 	public void setDestination(String destination) {
 		this.destination = destination;
+	}
+
+
+	public boolean hasDestination() {
+		return isNotBlank(getDestination());
 	}
 
 

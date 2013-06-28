@@ -17,7 +17,7 @@ public class HornetqCommandCount extends AbstractHornetqCoreCommand {
 	@Override
 	public void process(PlungerArguments pa) {
 		try {
-			QueueQuery queueQuery = getSession().queueQuery(SimpleString.toSimpleString(pa.getDestination()));
+			QueueQuery queueQuery = getSession().queueQuery(SimpleString.toSimpleString(pa.getTarget().getDestination()));
 			Output.println("" + queueQuery.getMessageCount());
 		}
 		catch (Exception ex) {

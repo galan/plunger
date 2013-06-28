@@ -3,7 +3,6 @@ package de.galan.plunger.application;
 import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.PrintWriter;
-import java.net.URISyntaxException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -23,7 +22,6 @@ import de.galan.plunger.domain.PlungerArguments;
 import de.galan.plunger.domain.Target;
 import de.galan.plunger.util.IgnoringPosixParser;
 import de.galan.plunger.util.Output;
-import de.galan.plunger.util.TargetParser;
 import de.galan.plunger.util.VersionUtil;
 
 
@@ -64,29 +62,78 @@ public class Plunger {
 			if (!config.parse(System.getProperty("user.home") + System.getProperty("file.separator") + ".plunger")) {
 				System.exit(2);
 			}
-			PlungerArguments pa = determinePlungerArguments(line.getArgs()[0], config);
+			PlungerArguments pa = determinePlungerArguments(line.getArgs()[0], config, line, options);
+			Output.setColor(pa.isColors());
 
-			Entry entry = config.getEntry(line.getArgs()[0]);
-			mergeArguments(pa, entry, line, factory.createCommandOptions(command));
+			//Entry entry = config.getEntry(line.getArgs()[0]);
+			//mergeArguments(pa, entry, line, factory.createCommandOptions(command));
 			new Client().process(pa);
 		}
 		catch (Exception ex) {
-			printUsage(command, ex.getMessage(), 1);
+			String msg = defaultIfBlank(ex.getMessage(), ex.getClass().getName());
+			printUsage(command, msg, 1);
 		}
 	}
 
 
-	protected PlungerArguments determinePlungerArguments(String input, Config config) throws Exception {
+	protected PlungerArguments determinePlungerArguments(String cmdTarget, Config config, CommandLine line, Options options) throws Exception {
 		PlungerArguments result = new PlungerArguments();
-		try {
-			Target target = new Target(input);
-			Entry entry = config.getEntry(target.getHost());
-			if (entry != null) {
-				// merge
+		Target commandTarget = new Target(cmdTarget);
+		Entry entry = config.getEntry(commandTarget.getHost());
+		if ((entry != null) && (entry.getTarget() != null)) {
+			result.setTarget(mergeTarget(commandTarget, entry.getTarget())); // merge targets
+		}
+
+		result.setColors(mergeColors(line, result, entry));
+
+		result.setVerbose(line.hasOption("verbose"));
+		result.setCommand(line.getOptionValue("command"));
+
+		for (Object opt: options.getOptions()) {
+			Option option = (Option)opt;
+			if (line.hasOption(option.getOpt())) {
+				String value = join(line.getOptionValues(option.getOpt()), " ");
+				result.addCommandArgument(option.getOpt(), value);
+				result.addCommandArgument(option.getLongOpt(), value);
 			}
 		}
-		catch (URISyntaxException ex) {
-			throw new Exception("todo", ex);
+
+		return result;
+	}
+
+
+	private boolean mergeColors(CommandLine line, PlungerArguments pa, Entry entry) {
+		boolean result = true;
+		if (!entry.isColors()) {
+			result = false;
+		}
+		if (StringUtils.equals(line.getOptionValue("colors"), "false")) {
+			result = false;
+		}
+		return result;
+	}
+
+
+	protected Target mergeTarget(Target ct, Target et) throws Exception {
+		Target result = new Target(et.toString());
+		if (ct.hasProvider()) {
+			result.setProvider(ct.getProvider());
+		}
+		if (ct.hasUsername()) {
+			result.setUsername(ct.getUsername());
+		}
+		if (ct.hasPassword()) {
+			result.setPassword(ct.getPassword());
+		}
+		if (ct.hasPort()) {
+			result.setPort(ct.getPort());
+		}
+		if (ct.hasDestination()) {
+			result.setDestination(ct.getDestination());
+		}
+
+		if (!result.hasDestination()) {
+			throw new CommandException("No destination is set");
 		}
 		return result;
 	}
@@ -108,6 +155,7 @@ public class Plunger {
 	}
 
 
+	/*
 	protected void mergeArguments(PlungerArguments pa, Entry entry, CommandLine line, Options options) throws Exception {
 		Target target = null;
 		if (entry != null) {
@@ -139,7 +187,7 @@ public class Plunger {
 			}
 		}
 	}
-
+	*/
 
 	protected void printVersion() {
 		try {
