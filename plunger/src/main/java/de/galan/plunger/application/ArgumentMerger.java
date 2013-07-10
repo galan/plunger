@@ -28,6 +28,9 @@ public class ArgumentMerger {
 		if ((entry != null) && (entry.getTarget() != null)) {
 			result.setTarget(mergeTarget(commandTarget, entry.getTarget())); // merge targets
 		}
+		else {
+			result.setTarget(commandTarget);
+		}
 
 		result.setColors(mergeColors(line, result, entry));
 

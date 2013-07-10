@@ -40,10 +40,26 @@ public class ArgumentMergerTest {
 	@Test
 	public void testName() throws Exception {
 		Options options = new OptionsFactory().createOptions(CommandName.LS);
-		CommandLine line = constructCommandLine(options, "provider://host:1234/destination", "-C", "ls", "-m");
+		CommandLine line = constructCommandLine(options, "-C", "ls", "-m");
 
 		ArgumentMerger am = new ArgumentMerger();
-		PlungerArguments pa = am.merge("host", config, line, options);
+		PlungerArguments pa = am.merge("provider://host:1234/jms.queue.destination", config, line, options);
+		assertEquals("ls", pa.getCommand());
+
+		assertEquals("provider", pa.getTarget().getProvider());
+		assertEquals("host", pa.getTarget().getHost());
+		assertEquals(1234, pa.getTarget().getPort().intValue());
+		assertEquals("jms.queue.destination", pa.getTarget().getDestination());
+		assertNull(pa.getTarget().getUsername());
+		assertNull(pa.getTarget().getPassword());
+		assertEquals("destination", pa.getTarget().getShortDestination());
+
+		assertTrue(pa.isColors());
+		assertFalse(pa.isVerbose());
+		assertFalse(pa.containsCommandArgument("c"));
+		assertFalse(pa.containsCommandArgument("consumer"));
+		assertTrue(pa.containsCommandArgument("m"));
+		assertTrue(pa.containsCommandArgument("messages"));
 		assertNotNull(pa);
 	}
 
