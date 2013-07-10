@@ -62,7 +62,7 @@ public class Plunger {
 			if (!config.parse(System.getProperty("user.home") + System.getProperty("file.separator") + ".plunger")) {
 				System.exit(2);
 			}
-			PlungerArguments pa = determinePlungerArguments(line.getArgs()[0], config, line, options);
+			PlungerArguments pa = determinePlungerArguments(line.getArgs()[0], config, line, optionsCommand);
 			Output.setColor(pa.isColors());
 
 			//Entry entry = config.getEntry(line.getArgs()[0]);
