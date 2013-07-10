@@ -8,7 +8,7 @@ import de.galan.plunger.domain.Target;
 
 
 /**
- * Parses a given target in form provider://[username[:password]@]host[:port]
+ * Parses a given target in form [provider://][username[:password]@]host[:port]
  * 
  * @author daniel
  */

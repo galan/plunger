@@ -47,4 +47,16 @@ public class TargetTest {
 		assertEquals(5445, t.getPort().intValue());
 	}
 
+
+	@Test
+	public void onlyHost() throws Exception {
+		Target t = new Target("localhost");
+		assertNull(t.getProvider());
+		assertNull(t.getUsername());
+		assertNull(t.getPassword());
+		assertEquals("localhost", t.getHost());
+		assertNull(t.getDestination());
+		assertNull(t.getPort());
+	}
+
 }

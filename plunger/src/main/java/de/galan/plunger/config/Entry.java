@@ -10,7 +10,7 @@ import de.galan.plunger.domain.Target;
  */
 public class Entry {
 
-	private String host;
+	private String alias;
 	private Target target;
 	private Boolean colors;
 
@@ -19,18 +19,18 @@ public class Entry {
 	}
 
 
-	public Entry(String host) {
-		setHost(host);
+	public Entry(String alias) {
+		setAlias(alias);
 	}
 
 
-	public String getHost() {
-		return host;
+	public String getAlias() {
+		return alias;
 	}
 
 
-	public void setHost(String host) {
-		this.host = host;
+	public void setAlias(String alias) {
+		this.alias = alias;
 	}
 
 

@@ -46,19 +46,19 @@ public class Config {
 					lineCount++;
 					SimpleEntry<String, String> se = parsePair(line);
 					if (se != null) {
-						if (StringUtils.equalsIgnoreCase("Host", se.getKey())) {
+						if (StringUtils.equalsIgnoreCase("Alias", se.getKey())) {
 							entry = new Entry();
 							// Allow aliases, separated by a single whitespace. They will refer the same entry.
-							String[] hosts = StringUtils.split(se.getValue(), " ");
-							for (String host: hosts) {
-								entries.put(host, entry);
+							String[] aliases = StringUtils.split(se.getValue(), " ");
+							for (String alias: aliases) {
+								entries.put(alias, entry);
 							}
 						}
 						else if (entry != null) {
 							if (equalsIgnoreCase("Target", se.getKey())) {
 								Target target = new Target(se.getValue());
 								if (!target.hasProvider()) {
-									throw new Exception("Target defined for " + entry.getHost() + " requires a provider");
+									throw new Exception("Target defined for " + entry.getAlias() + " requires a provider");
 								}
 								entry.setTarget(target);
 							}
@@ -67,7 +67,7 @@ public class Config {
 							}
 						}
 						else {
-							throw new Exception("No Host defined");
+							throw new Exception("No alias defined");
 						}
 					}
 				}
@@ -98,8 +98,8 @@ public class Config {
 	}
 
 
-	public Entry getEntry(String host) {
-		return entries.get(host);
+	public Entry getEntry(String alias) {
+		return entries.get(alias);
 	}
 
 }
