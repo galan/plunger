@@ -55,176 +55,113 @@ public class OptionsFactory {
 	}
 
 
-	@SuppressWarnings("static-access")
 	public Options createBasicOptions() {
 		OptionBuilder.withLongOpt("help");
 		OptionBuilder.withDescription("Print program usage");
-		//[[[
-		Option optionHelp = OptionBuilder
-                .create("h");
-		OptionBuilder
-		        .withLongOpt("command");
-		OptionBuilder
-		        .hasArg();
-		OptionBuilder
-		        .withDescription("The command to execute against the target");
-		/* TODO
-		Option optionTarget = OptionBuilder
-                .withLongOpt("target")
-                .hasArg()
-                .required
-                .withDescription("the messaging target")
-                .create("t");*/
-		Option optionCommand = OptionBuilder
-		        .create("C");
-		OptionBuilder
-		        .withDescription("Highlights the output");
-		OptionBuilder
-		        .hasArg();
-		/*
-		Option optionDestination = OptionBuilder
-		        .withLongOpt("destination")
-		        .hasArg()
-		        .withDescription("Selects the queue or topic,\nhas to start with 'jms.queue.' or 'jms.topic.'") //TODO remove prefix
-		        .create("d");
-		*/
-		Option optionColors = OptionBuilder
-		        .create("colors"); //TODO
-		OptionBuilder
-		        .withLongOpt("verbose");
-		OptionBuilder
-		        .withDescription("Verbose mode. Causes plunger to print debugging messages about its progress.");
-		Option optionVerbose = OptionBuilder
-		        .create("v");
-		OptionBuilder
-		        .withDescription("Version");
-		Option optionVersion = OptionBuilder
-		        .create("version");
-		//]]]
+		Option optionHelp = OptionBuilder.create("h");
+
+		OptionBuilder.withLongOpt("command");
+		OptionBuilder.hasArg();
+		OptionBuilder.withDescription("The command to execute against the target");
+		Option optionCommand = OptionBuilder.create("C");
+
+		OptionBuilder.withDescription("Highlights the output");
+		OptionBuilder.hasArg();
+		Option optionColors = OptionBuilder.create("colors");
+
+		OptionBuilder.withLongOpt("verbose");
+		OptionBuilder.withDescription("Verbose mode. Causes plunger to print debugging messages about its progress.");
+		Option optionVerbose = OptionBuilder.create("v");
+
+		OptionBuilder.withDescription("Version");
+		Option optionVersion = OptionBuilder.create("version");
+
 		return createOptions(optionCommand, optionColors, optionHelp, optionVerbose, optionVersion);
 	}
 
 
-	@SuppressWarnings("static-access")
 	protected Options createOptionsLs() {
 		OptionBuilder.withLongOpt("consumer");
 		OptionBuilder.withDescription("Only show destinations with consumers");
-		//[[[
-		Option optionSelector = OptionBuilder
-                .create("c");
-		OptionBuilder
-                .withLongOpt("informations");
-		OptionBuilder
-                .withDescription("When set, additional informations (like counters) are omitted.");
-		Option optionInfos = OptionBuilder
-                .create("i");
-		OptionBuilder
-                .withLongOpt("messages");
-		OptionBuilder
-                .withDescription("When set, only show destinations with messages.");
-		Option optionMessages = OptionBuilder
-                .create("m");
-		OptionBuilder
-                .withLongOpt("persistent");
-		OptionBuilder
-                .withDescription("When set, filter persistent (durable) destinations.");
-		Option optionPersistent = OptionBuilder
-                .create("p");
-		OptionBuilder
-                .withLongOpt("temporary");
-		OptionBuilder
-                .withDescription("When set, filter temporary destinations.");
-		Option optionTemp = OptionBuilder
-                .create("t");
-		//]]]
+		Option optionSelector = OptionBuilder.create("c");
+
+		OptionBuilder.withLongOpt("informations");
+		OptionBuilder.withDescription("When set, additional informations (like counters) are omitted.");
+		Option optionInfos = OptionBuilder.create("i");
+
+		OptionBuilder.withLongOpt("messages");
+		OptionBuilder.withDescription("When set, only show destinations with messages.");
+		Option optionMessages = OptionBuilder.create("m");
+
+		OptionBuilder.withLongOpt("persistent");
+		OptionBuilder.withDescription("When set, filter persistent (durable) destinations.");
+		Option optionPersistent = OptionBuilder.create("p");
+
+		OptionBuilder.withLongOpt("temporary");
+		OptionBuilder.withDescription("When set, filter temporary destinations.");
+		Option optionTemp = OptionBuilder.create("t");
+
 		return createOptions(optionSelector, optionInfos, optionMessages, optionPersistent, optionTemp);
 	}
 
 
-	@SuppressWarnings("static-access")
 	protected Options createOptionsCat() {
 		OptionBuilder.withLongOpt("body");
 		OptionBuilder.withDescription("When set, the body will be omitted");
-		//[[[
-		Option optionBody = OptionBuilder
-                .create("b");
-		OptionBuilder
-                .withLongOpt("cut");
-		OptionBuilder
-                .hasArg();
-		OptionBuilder
-                //.withType(Long.class)
-                .withDescription("Cuts the body after n characters, adding ... when characters were removed.");
-		Option optionCut = OptionBuilder
-                .create("c");
-		OptionBuilder
-                .withLongOpt("escape");
-		OptionBuilder
-                .withDescription("Escapes the message.\nWhen the output is intended for further processing, this switch will map all output to single line. JMS-properties are formatted as json, the body is escaped as well. This form is required for put.");
-		Option optionEscape = OptionBuilder
-                .create("e");
-		OptionBuilder
-                .withLongOpt("limit");
-		OptionBuilder
-                .hasArg();
-		OptionBuilder
-                //.withType(Long.class)
-                .withDescription("Limits the messages to the first n elements in a queue or received by a topic");
-		Option optionLimit = OptionBuilder
-                .create("n");
-		OptionBuilder
-                .withLongOpt("properties");
-		OptionBuilder
-                .withDescription("When set, the properties will be omitted");
-		Option optionProperties = OptionBuilder
-                .create("p");
-		OptionBuilder
-                .withLongOpt("remove");
-		OptionBuilder
-                .withDescription("Read messages will also be removed from the queue");
-		Option optionRemove = OptionBuilder
-                .create("r");
-		OptionBuilder
-                .withLongOpt("selector");
-		OptionBuilder
-                .hasArgs() // is required, even we think of the selector query only as single argument
-;
-		OptionBuilder
-                .withDescription("selector to filter the targets result");
-		Option optionSelector = OptionBuilder
-                .create("s");
-		//]]]
+		Option optionBody = OptionBuilder.create("b");
+
+		OptionBuilder.withLongOpt("cut");
+		OptionBuilder.hasArg();
+		OptionBuilder.withDescription("Cuts the body after n characters, adding ... when characters were removed.");
+		Option optionCut = OptionBuilder.create("c");
+		//.withType(Long.class)
+
+		OptionBuilder.withLongOpt("escape");
+		OptionBuilder.withDescription("Escapes the message.\nWhen the output is intended for further processing, this switch will map all output to single line. JMS-properties are formatted as json, the body is escaped as well. This form is required for put.");
+		Option optionEscape = OptionBuilder.create("e");
+
+		OptionBuilder.withLongOpt("limit");
+		OptionBuilder.hasArg();
+		OptionBuilder.withDescription("Limits the messages to the first n elements in a queue or received by a topic");
+		//.withType(Long.class)
+
+		Option optionLimit = OptionBuilder.create("n");
+		OptionBuilder.withLongOpt("properties");
+		OptionBuilder.withDescription("When set, the properties will be omitted");
+		Option optionProperties = OptionBuilder.create("p");
+
+		OptionBuilder.withLongOpt("remove");
+		OptionBuilder.withDescription("Read messages will also be removed from the queue");
+		Option optionRemove = OptionBuilder.create("r");
+
+		OptionBuilder.withLongOpt("selector");
+		OptionBuilder.hasArgs(); // is required, even we think of the selector query only as single argument
+		OptionBuilder.withDescription("selector to filter the targets result");
+		Option optionSelector = OptionBuilder.create("s");
+
 		return createOptions(optionBody, optionCut, optionEscape, optionLimit, optionProperties, optionRemove, optionSelector);
 	}
 
 
-	@SuppressWarnings("static-access")
 	protected Options createOptionsPut() {
 		OptionBuilder.withLongOpt("file");
 		OptionBuilder.hasArgs();
 		OptionBuilder.withDescription("file with escaped messages (instead of stdin)");
-		//[[[
-		Option optionFile= OptionBuilder
-                .create("f");
-		OptionBuilder
-                .withLongOpt("skip");
-		OptionBuilder
-                .withDescription("skip lines with errors");
-		Option optionSkip= OptionBuilder
-                .create("s");
-		//]]]
+		Option optionFile = OptionBuilder.create("f");
+
+		OptionBuilder.withLongOpt("skip");
+		OptionBuilder.withDescription("skip lines with errors");
+		Option optionSkip = OptionBuilder.create("s");
+
 		return createOptions(optionFile, optionSkip);
 	}
 
 
-	@SuppressWarnings("static-access")
 	protected Options createOptionsCount() {
 		OptionBuilder.withLongOpt("consumer");
 		OptionBuilder.withDescription("Count consumers for destination (instead of messages)");
-		//[[[
-		Option optionSelector = OptionBuilder
-                .create("c");
-		//]]]
+		Option optionSelector = OptionBuilder.create("c");
+
 		return createOptions(optionSelector);
 	}
 
