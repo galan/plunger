@@ -2,6 +2,10 @@ package de.galan.plunger.application;
 
 import static org.junit.Assert.*;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
@@ -23,11 +27,37 @@ import de.galan.plunger.domain.PlungerArguments;
 public class ArgumentMergerTest {
 
 	Config config;
+	ArgumentMerger am;
 
 
 	@Before
 	public void before() {
+		am = new ArgumentMerger();
 		config = new Config();
+	}
+
+
+	@Test
+	public void lsM() throws Exception {
+		PlungerArguments pa = merge("provider://host:1234/jms.queue.destination", CommandName.LS, "-m");
+		assertMisc(pa, "ls", true, false);
+		assertTarget(pa, "provider", "host", 1234, null, null, "jms.queue.destination", "destination");
+
+		assertFalse(pa.containsCommandArgument("c"));
+		assertFalse(pa.containsCommandArgument("consumer"));
+		assertTrue(pa.containsCommandArgument("m"));
+		assertTrue(pa.containsCommandArgument("messages"));
+	}
+
+
+	protected PlungerArguments merge(String cmdTarget, CommandName name, String... args) throws Exception {
+		Options options = new OptionsFactory().createOptions(name);
+		List<String> arguments = new ArrayList<>();
+		arguments.add("-C");
+		arguments.add(name.toString().toLowerCase());
+		arguments.addAll(Arrays.asList(args));
+		CommandLine line = constructCommandLine(options, arguments.toArray(new String[] {}));
+		return am.merge(cmdTarget, config, line, options);
 	}
 
 
@@ -37,30 +67,22 @@ public class ArgumentMergerTest {
 	}
 
 
-	@Test
-	public void testName() throws Exception {
-		Options options = new OptionsFactory().createOptions(CommandName.LS);
-		CommandLine line = constructCommandLine(options, "-C", "ls", "-m");
+	private void assertMisc(PlungerArguments pa, String command, boolean colors, boolean verbose) {
+		assertNotNull(pa);
+		assertEquals(command, pa.getCommand());
+		assertEquals(colors, pa.isColors());
+		assertEquals(verbose, pa.isVerbose());
+	}
 
-		ArgumentMerger am = new ArgumentMerger();
-		PlungerArguments pa = am.merge("provider://host:1234/jms.queue.destination", config, line, options);
-		assertEquals("ls", pa.getCommand());
 
-		assertEquals("provider", pa.getTarget().getProvider());
-		assertEquals("host", pa.getTarget().getHost());
-		assertEquals(1234, pa.getTarget().getPort().intValue());
-		assertEquals("jms.queue.destination", pa.getTarget().getDestination());
+	protected void assertTarget(PlungerArguments pa, String provider, String host, Integer port, String username, String password, String destination, String shortDestination) {
+		assertEquals(provider, pa.getTarget().getProvider());
+		assertEquals(host, pa.getTarget().getHost());
+		assertEquals(port, pa.getTarget().getPort());
+		assertEquals(destination, pa.getTarget().getDestination());
 		assertNull(pa.getTarget().getUsername());
 		assertNull(pa.getTarget().getPassword());
-		assertEquals("destination", pa.getTarget().getShortDestination());
-
-		assertTrue(pa.isColors());
-		assertFalse(pa.isVerbose());
-		assertFalse(pa.containsCommandArgument("c"));
-		assertFalse(pa.containsCommandArgument("consumer"));
-		assertTrue(pa.containsCommandArgument("m"));
-		assertTrue(pa.containsCommandArgument("messages"));
-		assertNotNull(pa);
+		assertEquals(shortDestination, pa.getTarget().getShortDestination());
 	}
 
 }

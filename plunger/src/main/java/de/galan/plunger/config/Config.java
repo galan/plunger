@@ -58,7 +58,7 @@ public class Config {
 							if (equalsIgnoreCase("Target", se.getKey())) {
 								Target target = new Target(se.getValue());
 								if (!target.hasProvider()) {
-									throw new Exception("Target defined for " + entry.getAlias() + " requires a provider");
+									throw new Exception("Target defined for '" + entry.getAlias() + "' requires a provider");
 								}
 								entry.setTarget(target);
 							}
