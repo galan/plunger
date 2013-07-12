@@ -1,4 +1,6 @@
 #!/bin/bash -e
+PATH_SCRIPT=$(dirname $(readlink -f $0))
+PATH_BASE=${PATH_SCRIPT}/..
 PLUNGER_NAME=plunger
 PLUNGER_HOME=${PLUNGER_HOME-${HOME}/bin/${PLUNGER_NAME}}
 PLUNGER_LIBS=${PLUNGER_HOME}/libs
@@ -19,14 +21,14 @@ echo "Installing ${PLUNGER_NAME} into ${PLUNGER_HOME}"
 header "assemblying jar"
 rm -rf ${PLUNGER_HOME}
 mkdir -p ${PLUNGER_LIBS}
-mvn -f ../plunger/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
-cp ../plunger/target/plunger-*.jar ${PLUNGER_LIBS}/plunger.jar
+mvn -f ${PATH_BASE}/plunger/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
+cp ${PATH_BASE}/plunger/target/plunger-*.jar ${PLUNGER_LIBS}/plunger.jar
 
-mvn -f ../plunger-hornetq-2.2/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
-cp ../plunger-hornetq-2.2/target/plunger-hornetq-*.jar ${PLUNGER_LIBS}/plunger-hornetq-2.2.jar
+mvn -f ${PATH_BASE}/plunger-hornetq-2.2/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
+cp ${PATH_BASE}/plunger-hornetq-2.2/target/plunger-hornetq-*.jar ${PLUNGER_LIBS}/plunger-hornetq-2.2.jar
 
-mvn -f ../plunger-activemq-x/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
-cp ../plunger-activemq-x/target/plunger-activemq-*.jar ${PLUNGER_LIBS}/plunger-activemq-x.jar
+mvn -f ${PATH_BASE}/plunger-activemq-x/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
+cp ${PATH_BASE}/plunger-activemq-x/target/plunger-activemq-*.jar ${PLUNGER_LIBS}/plunger-activemq-x.jar
 
 # Workaround, will check assembly-plugin instead.
 rm ${PLUNGER_LIBS}/plunger-*-SNAPSHOT.jar
@@ -79,3 +81,4 @@ header "finished"
 if ! [[ -f `which ${PLUNGER_NAME}` ]]; then
 	echo "You should expand your \$PATH to include \"$PLUNGER_HOME\""
 fi
+
