@@ -79,6 +79,9 @@ public class ArgumentMerger {
 		if (ct.hasDestination()) {
 			result.setDestination(ct.getDestination());
 		}
+		for (String key: ct.getParameter().keySet()) {
+			result.getParameter().put(key, ct.getParameter().get(key));
+		}
 
 		if (!result.hasDestination()) {
 			throw new CommandException("No destination is set");

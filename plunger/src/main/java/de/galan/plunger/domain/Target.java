@@ -2,10 +2,18 @@ package de.galan.plunger.domain;
 
 import static org.apache.commons.lang.StringUtils.*;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLDecoder;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import org.apache.commons.lang.StringUtils;
+
+import de.galan.plunger.util.Output;
+import de.galan.plunger.util.PlungerCharsets;
 
 
 /**
@@ -23,6 +31,7 @@ public class Target {
 	private String host;
 	private Integer port;
 	private String destination;
+	private Map<String, String> parameter = new TreeMap<>();
 
 
 	public Target(String uri) throws URISyntaxException {
@@ -53,9 +62,33 @@ public class Target {
 		if (isNotBlank(uri.getRawPath())) {
 			setDestination(removeStart(uri.getRawPath(), "/"));
 		}
+		//query string
+		if (isNotBlank(uri.getQuery())) {
+			for (String pair: StringUtils.split(uri.getQuery(), "&")) {
+				String[] split = StringUtils.split(pair, "=", 2);
+				if (split.length > 0) {
+					String key = split[0];
+					if (isNotBlank(key)) {
+						String value = null;
+						if (split.length > 1) {
+							if (isNotBlank(split[1])) {
+								try {
+									value = URLDecoder.decode(split[1], PlungerCharsets.UTF8.toString());
+								}
+								catch (UnsupportedEncodingException ex) {
+									Output.error("UTF-8 unknown .. O RLY?");
+								}
+							}
+						}
+						getParameter().put(key, value);
+					}
+				}
+			}
+		}
 	}
 
 
+	@Deprecated
 	public Target(String provider, String username, String password, String host, Integer port) {
 		setProvider(provider);
 		setUsername(username);
@@ -157,6 +190,16 @@ public class Target {
 	}
 
 
+	public Map<String, String> getParameter() {
+		return parameter;
+	}
+
+
+	public String getParameterValue(String key) {
+		return getParameter().get(key);
+	}
+
+
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
@@ -180,6 +223,21 @@ public class Target {
 		if (isNotBlank(getDestination())) {
 			buffer.append("/");
 			buffer.append(getDestination());
+		}
+		if (!getParameter().isEmpty()) {
+			buffer.append("?");
+			for (Entry<String, String> entry: getParameter().entrySet()) {
+				buffer.append(entry.getKey());
+				buffer.append("=");
+				if (isNotBlank(entry.getValue())) {
+					try {
+						buffer.append(URLDecoder.decode(entry.getValue(), PlungerCharsets.UTF8.toString()));
+					}
+					catch (UnsupportedEncodingException ex) {
+						Output.error("UTF-8 unknown .. O RLY?");
+					}
+				}
+			}
 		}
 		return buffer.toString();
 	}
