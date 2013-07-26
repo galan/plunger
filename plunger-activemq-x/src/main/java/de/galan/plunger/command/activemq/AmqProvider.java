@@ -23,7 +23,7 @@ public class AmqProvider implements CommandProvider {
 	public Command getCommand(CommandName commandName, PlungerArguments pa) {
 		switch (commandName) {
 			case LS:
-				//return new AmqLsCommand();
+				return new AmqLsCommand();
 			case CAT:
 				return new AmqCatCommand();
 			case PUT:
