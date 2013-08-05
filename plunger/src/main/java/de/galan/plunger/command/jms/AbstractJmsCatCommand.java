@@ -58,6 +58,7 @@ public class AbstractJmsCatCommand extends AbstractCatCommand {
 	protected void beforeFirstMessage(PlungerArguments pa) throws CommandException {
 		try {
 			jms.getConnection().start();
+			//TODO test TemporaryQueue queue = jms.getSession().createTemporaryQueue();
 			boolean browseOnly = !pa.containsCommandArgument("r");
 
 			if (jms.isQueue() && browseOnly) {

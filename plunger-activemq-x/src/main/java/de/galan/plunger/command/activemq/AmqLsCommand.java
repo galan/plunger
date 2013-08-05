@@ -6,12 +6,14 @@ import java.io.IOException;
 
 import javax.management.MBeanServerConnection;
 import javax.management.MBeanServerInvocationHandler;
+import javax.management.MalformedObjectNameException;
 import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
 
 import org.apache.activemq.broker.jmx.BrokerViewMBean;
+import org.apache.activemq.broker.jmx.DestinationViewMBean;
 
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractLsCommand;
@@ -50,16 +52,29 @@ public class AmqLsCommand extends AbstractLsCommand {
 			connector.connect();
 			MBeanServerConnection connection = connector.getMBeanServerConnection();
 
-			ObjectName mbeanName = new ObjectName("org.apache.activemq:brokerName=localhost,type=Broker");
-			BrokerViewMBean mbean = MBeanServerInvocationHandler.newProxyInstance(connection, mbeanName, BrokerViewMBean.class, true);
+			ObjectName nameList = new ObjectName("org.apache.activemq:brokerName=localhost,type=Broker");
+			BrokerViewMBean mbList = MBeanServerInvocationHandler.newProxyInstance(connection, nameList, BrokerViewMBean.class, true);
 
-			for (ObjectName on: mbean.getQueues()) {
-				printDestination(pa, on.getKeyProperty("destinationName"), 0, 0, true);
-			}
-			//System./**/out.println("Id:" + mbean.getBrokerId());
+			mbList.getTemporaryQueues();
+			mbList.getTemporaryTopics();
+			listDestinations(pa, connection, mbList.getQueues(), "Queue");
+			listDestinations(pa, connection, mbList.getTopics(), "Topic");
 		}
 		catch (Exception ex) {
-			throw new CommandException("....", ex);
+			throw new CommandException("to do....", ex);
+		}
+	}
+
+
+	private void listDestinations(PlungerArguments pa, MBeanServerConnection connection, ObjectName[] destinationObjectNames, String destinationType) throws MalformedObjectNameException {
+		for (ObjectName destinationObjectName: destinationObjectNames) {
+			String destinationName = destinationObjectName.getKeyProperty("destinationName");
+			ObjectName nameConsumers = new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=" + destinationType
+					+ ",destinationName=" + destinationName);
+			DestinationViewMBean mbView = MBeanServerInvocationHandler.newProxyInstance(connection, nameConsumers, DestinationViewMBean.class, true);
+			if (!startsWith(destinationName, "ActiveMQ.Advisory.")) {
+				printDestination(pa, destinationName, mbView.getConsumerCount(), mbView.getQueueSize(), true);
+			}
 		}
 	}
 
@@ -73,6 +88,22 @@ public class AmqLsCommand extends AbstractLsCommand {
 			catch (IOException ex) {
 				Output.error("xx");
 			}
+		}
+	}
+
+}
+
+
+/** x */
+class JmxDestination {
+
+	ObjectName[] destinationObjectNames;
+
+
+	public void addDestinations(ObjectName[] destinations) {
+		destinationObjectNames = destinations;
+		for (ObjectName destination: destinations) {
+			String destinationName = destination.getKeyProperty("destinationName");
 		}
 	}
 

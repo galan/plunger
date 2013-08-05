@@ -1,5 +1,7 @@
 package de.galan.plunger.application;
 
+import static org.apache.commons.lang.StringUtils.*;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
@@ -51,7 +53,12 @@ public class Client {
 	protected CommandProvider determineProvider(PlungerArguments pa) {
 		CommandProvider provider = new CommandProviderServiceLocator().locate(CommandProvider.class, pa.getTarget().getProvider());
 		if (provider == null) {
-			handleError(pa, new CommandException("No provider for '" + pa.getTarget().getProvider() + "' found"));
+			if (isBlank(pa.getTarget().getProvider())) {
+				handleError(pa, new CommandException("No provider given, is your target written correctly?"));
+			}
+			else {
+				handleError(pa, new CommandException("No provider for '" + pa.getTarget().getProvider() + "' found"));
+			}
 		}
 		return provider;
 	}
