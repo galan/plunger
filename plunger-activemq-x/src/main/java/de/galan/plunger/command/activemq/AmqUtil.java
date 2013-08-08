@@ -13,7 +13,7 @@ public class AmqUtil implements ProviderInformation {
 
 	@Override
 	public boolean isSystemHeader(String headerName) {
-		return startsWith(headerName, "JMS") || startsWith(headerName, "HQ");
+		return startsWith(headerName, "JMS");
 	}
 
 }
