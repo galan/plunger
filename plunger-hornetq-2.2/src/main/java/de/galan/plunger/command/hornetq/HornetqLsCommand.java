@@ -1,5 +1,7 @@
 package de.galan.plunger.command.hornetq;
 
+import static org.apache.commons.lang.StringUtils.*;
+
 import java.util.Arrays;
 
 import org.hornetq.api.core.SimpleString;
@@ -48,7 +50,8 @@ public class HornetqLsCommand extends AbstractLsCommand {
 			for (String address: array) {
 				//TODO filter jms.queue.hornetq.management.012398ea-12b2-4ce8-8bff-20988678aa95
 				QueueQuery queueQuery = core.getSession().queueQuery(SimpleString.toSimpleString(address));
-				printDestination(pa, address, queueQuery.getConsumerCount(), queueQuery.getMessageCount(), queueQuery.isDurable());
+				String addressPlunger = removeStart(address, "jms.");
+				printDestination(pa, addressPlunger, queueQuery.getConsumerCount(), queueQuery.getMessageCount(), queueQuery.isDurable());
 			}
 		}
 		catch (Exception ex) {

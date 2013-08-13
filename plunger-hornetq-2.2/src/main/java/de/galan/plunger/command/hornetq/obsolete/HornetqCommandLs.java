@@ -46,7 +46,7 @@ public class HornetqCommandLs extends AbstractHornetqCoreCommand {
 				boolean optionMessages = !(pa.containsCommandArgument("m") && (queueQuery.getMessageCount() <= 0));
 				boolean optionConsumer = !(pa.containsCommandArgument("c") && (queueQuery.getConsumerCount() <= 0));
 				if (filterPassed && optionMessages && optionConsumer) {
-					Color destinationColor = StringUtils.startsWith(address, "jms.queue.") ? Color.CYAN : Color.GREEN;
+					Color destinationColor = StringUtils.startsWith(address, "queue.") ? Color.CYAN : Color.GREEN;
 					Output.print(destinationColor, address);
 					if (!pa.containsCommandArgument("i")) {
 						if (!queueQuery.isDurable()) {

@@ -174,9 +174,8 @@ public class Target {
 
 
 	public String getShortDestination() {
-		String result = removeStart(getDestination(), "jms.queue.");
-		result = removeStart(result, "jms.topic.");
-		return result;
+		String result = removeStart(getDestination(), "queue.");
+		return removeStart(result, "topic.");
 	}
 
 

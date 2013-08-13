@@ -23,7 +23,7 @@ public abstract class AbstractLsCommand extends AbstractCommand {
 		boolean optionMessages = !(pa.containsCommandArgument("m") && (countMessages <= 0));
 		boolean optionConsumer = !(pa.containsCommandArgument("c") && (countConsumer <= 0));
 		if (filterPassed && optionMessages && optionConsumer) {
-			Color destinationColor = StringUtils.startsWith(name, "jms.queue.") ? Color.CYAN : Color.GREEN;
+			Color destinationColor = StringUtils.startsWith(name, "queue.") ? Color.CYAN : Color.GREEN;
 			Output.print(destinationColor, name);
 			if (!pa.containsCommandArgument("i")) {
 				if (!persistent) {

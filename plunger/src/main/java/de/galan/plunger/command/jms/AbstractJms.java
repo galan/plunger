@@ -33,10 +33,10 @@ public abstract class AbstractJms {
 			factory = createConnectionFactory(pa);
 			connection = factory.createConnection(pa.getTarget().getUsername(), pa.getTarget().getPassword());
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			if (StringUtils.startsWith(pa.getTarget().getDestination(), "jms.queue.")) {
+			if (StringUtils.startsWith(pa.getTarget().getDestination(), "queue.")) {
 				destination = session.createQueue(pa.getTarget().getShortDestination());
 			}
-			else if (StringUtils.startsWith(pa.getTarget().getDestination(), "jms.topic.")) {
+			else if (StringUtils.startsWith(pa.getTarget().getDestination(), "topic.")) {
 				destination = session.createTopic(pa.getTarget().getShortDestination());
 			}
 		}

@@ -39,9 +39,9 @@ public class ArgumentMergerTest {
 
 	@Test
 	public void lsM() throws Exception {
-		PlungerArguments pa = merge("provider://host:1234/jms.queue.destination", CommandName.LS, "-m");
+		PlungerArguments pa = merge("provider://host:1234/queue.destination", CommandName.LS, "-m");
 		assertMisc(pa, "ls", true, false);
-		assertTarget(pa, "provider", "host", 1234, null, null, "jms.queue.destination", "destination");
+		assertTarget(pa, "provider", "host", 1234, null, null, "queue.destination", "destination");
 
 		assertFalse(pa.containsCommandArgument("c"));
 		assertFalse(pa.containsCommandArgument("consumer"));
