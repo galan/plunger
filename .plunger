@@ -1,14 +1,3 @@
-Host local
-Hostname localhost
-Port 5445
-Username operator
-Password operator123
-Destination jms.queue.testing
-
-Host somewhere
-Hostname my.host.somewhere.com
-Port 5445
-Username myusername
-Password mypassword
-Destination jms.queue.defaultdestination
+Alias local
+Target hornetq://username:password@localhost:5445/queue.test
 

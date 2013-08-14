@@ -24,11 +24,11 @@ mkdir -p ${PLUNGER_LIBS}
 mvn -f ${PATH_BASE}/plunger/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
 cp ${PATH_BASE}/plunger/target/plunger-*.jar ${PLUNGER_LIBS}/plunger.jar
 
-mvn -f ${PATH_BASE}/plunger-hornetq-2.2/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
-cp ${PATH_BASE}/plunger-hornetq-2.2/target/plunger-hornetq-*.jar ${PLUNGER_LIBS}/plunger-hornetq-2.2.jar
+mvn -f ${PATH_BASE}/plunger-hornetq/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
+cp ${PATH_BASE}/plunger-hornetq/target/plunger-hornetq-*.jar ${PLUNGER_LIBS}/plunger-hornetq.jar
 
-mvn -f ${PATH_BASE}/plunger-activemq-x/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
-cp ${PATH_BASE}/plunger-activemq-x/target/plunger-activemq-*.jar ${PLUNGER_LIBS}/plunger-activemq-x.jar
+mvn -f ${PATH_BASE}/plunger-activemq/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
+cp ${PATH_BASE}/plunger-activemq/target/plunger-activemq-*.jar ${PLUNGER_LIBS}/plunger-activemq.jar
 
 # Workaround, will check assembly-plugin instead.
 rm ${PLUNGER_LIBS}/plunger-*-SNAPSHOT.jar
