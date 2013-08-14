@@ -65,7 +65,7 @@ public class OptionsFactory {
 		OptionBuilder.withDescription("The command to execute against the target");
 		Option optionCommand = OptionBuilder.create("C");
 
-		OptionBuilder.withDescription("Highlights the output");
+		OptionBuilder.withDescription("Highlights the output (set to true/false)");
 		OptionBuilder.hasArg();
 		Option optionColors = OptionBuilder.create("colors");
 

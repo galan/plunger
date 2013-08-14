@@ -48,10 +48,11 @@ public class HornetqLsCommand extends AbstractLsCommand {
 			String[] array = Arrays.copyOf(arrayObjects, arrayObjects.length, String[].class);
 			Arrays.sort(array, new StringCaseInsensitiveComparator());
 			for (String address: array) {
-				//TODO filter jms.queue.hornetq.management.012398ea-12b2-4ce8-8bff-20988678aa95
-				QueueQuery queueQuery = core.getSession().queueQuery(SimpleString.toSimpleString(address));
 				String addressPlunger = removeStart(address, "jms.");
-				printDestination(pa, addressPlunger, queueQuery.getConsumerCount(), queueQuery.getMessageCount(), queueQuery.isDurable());
+				if (!addressPlunger.matches("queue.hornetq.management.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}")) {
+					QueueQuery queueQuery = core.getSession().queueQuery(SimpleString.toSimpleString(address));
+					printDestination(pa, addressPlunger, queueQuery.getConsumerCount(), queueQuery.getMessageCount(), queueQuery.isDurable());
+				}
 			}
 		}
 		catch (Exception ex) {
