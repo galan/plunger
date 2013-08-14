@@ -4,9 +4,15 @@ import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.IOException;
 
+import javax.management.MBeanServerConnection;
+import javax.management.MBeanServerInvocationHandler;
+import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
 import javax.management.remote.JMXConnectorFactory;
 import javax.management.remote.JMXServiceURL;
+
+import org.apache.activemq.broker.jmx.BrokerViewMBean;
+import org.apache.activemq.broker.jmx.DestinationViewMBean;
 
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractCountCommand;
@@ -16,7 +22,7 @@ import de.galan.plunger.util.Output;
 
 
 /**
- * daniel should have written a comment here.
+ * Retrieves message/consumer amount for an ActiveMQ Provider.
  * 
  * @author daniel
  */
@@ -41,63 +47,29 @@ public class AmqCountCommand extends AbstractCountCommand {
 
 	@Override
 	protected long getCount(PlungerArguments pa) throws CommandException {
-		long result = 0;
-		/*
+		Long result = null;
 		try {
-			ObjectName activeMQ = new ObjectName("org.apache.activemq:BrokerName=localhost,Type=Broker");
-			BrokerViewMBean mbean = MBeanServerInvocationHandler.newProxyInstance(conn, activeMQ, BrokerViewMBean.class, true);
-			for (ObjectName name: mbean.getQueues()) {
-				QueueViewMBean queueMbean = MBeanServerInvocationHandler.newProxyInstance(conn, name, QueueViewMBean.class, true);
-
-				if (queueMbean.getName().equals(pa.getTarget().getDestination())) {
-					//queueMbean.getConsumerCount()
-					result = queueMbean.getQueueSize();
-					//queueViewBeanCache.put(cacheKey, queueMbean);
-					//return queueMbean;
-				}
-			}
-			
-			//org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Queue,destinationName=bla
-			//org.apache.activemq:type=Broker,brokerName=localhost,destinationType=Topic,destinationName=something
 			connector.connect();
 			MBeanServerConnection connection = connector.getMBeanServerConnection();
 
 			ObjectName nameList = new ObjectName("org.apache.activemq:brokerName=localhost,type=Broker");
 			BrokerViewMBean mbList = MBeanServerInvocationHandler.newProxyInstance(connection, nameList, BrokerViewMBean.class, true);
-
 			for (JmxDestination jd: new JmxDestinations(mbList)) {
-				ObjectName nameConsumers = new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=" + jd.getDestinationType()
-						+ ",destinationName=" + jd.getObjectName());
-				DestinationViewMBean mbView = MBeanServerInvocationHandler.newProxyInstance(connection, nameConsumers, DestinationViewMBean.class, true);
-				if (!startsWith(jd.getObjectName(), "ActiveMQ.Advisory.")) {
-					printDestination(pa, jd.getDisplayName(), mbView.getConsumerCount(), mbView.getQueueSize(), !jd.isTemporary());
+				if (jd.getDisplayName().equals(pa.getTarget().getDestination())) {
+					ObjectName nameConsumers = new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=" + jd.getDestinationType()
+							+ ",destinationName=" + jd.getObjectName());
+					DestinationViewMBean mbView = MBeanServerInvocationHandler.newProxyInstance(connection, nameConsumers, DestinationViewMBean.class, true);
+
+					result = pa.containsCommandArgument("c") ? mbView.getConsumerCount() : mbView.getQueueSize();
 				}
 			}
 		}
 		catch (Exception ex) {
-			throw new CommandException("to do....", ex);
+			throw new CommandException("Could not determine count for target '" + pa.getTarget() + "'", ex);
 		}
-
-		
-		try {
-			//ObjectName activeMQ = new ObjectName("org.apache.activemq:BrokerName=localhost,Type=Broker,Destination=testing");
-			ObjectName activeMQ = new ObjectName("org.apache.activemq:BrokerName=localhost,Type=Broker");
-			BrokerViewMBean mbean = MBeanServerInvocationHandler.newProxyInstance(conn, activeMQ, BrokerViewMBean.class, true);
-			for (ObjectName name: mbean.getQueues()) {
-				QueueViewMBean queueMbean = MBeanServerInvocationHandler.newProxyInstance(conn, name, QueueViewMBean.class, true);
-
-				if (queueMbean.getName().equals(pa.getTarget().getDestination())) {
-					//queueMbean.getConsumerCount()
-					result = queueMbean.getQueueSize();
-					//queueViewBeanCache.put(cacheKey, queueMbean);
-					//return queueMbean;
-				}
-			}
+		if (result == null) {
+			throw new CommandException("No destination '" + pa.getTarget().getDestination() + "' found");
 		}
-		catch (Exception ex) {
-			throw new CommandException("uff", ex);
-		}
-		*/
 		return result;
 	}
 

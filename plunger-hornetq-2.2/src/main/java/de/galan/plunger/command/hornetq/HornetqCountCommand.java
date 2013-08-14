@@ -23,7 +23,7 @@ public class HornetqCountCommand extends AbstractCountCommand {
 	protected long getCount(PlungerArguments pa) throws CommandException {
 		try {
 			QueueQuery queueQuery = core.getSession().queueQuery(SimpleString.toSimpleString("jms." + pa.getTarget().getDestination()));
-			return queueQuery.getMessageCount();
+			return pa.containsCommandArgument("c") ? queueQuery.getConsumerCount() : queueQuery.getMessageCount();
 		}
 		catch (Exception ex) {
 			throw new CommandException("Failed retrieving count", ex);
