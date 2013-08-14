@@ -7,7 +7,7 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * CommandProvider for a HornetQ server, version 2.2.x.
+ * CommandProvider for a HornetQ server, >= version 2.2.x.
  * 
  * @author daniel
  */
@@ -15,7 +15,7 @@ public class HornetqProvider implements CommandProvider {
 
 	@Override
 	public String getName() {
-		return "hornetq-2.2";
+		return "hornetq";
 	}
 
 

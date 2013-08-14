@@ -7,7 +7,7 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * daniel should have written a comment here.
+ * CommandProvider for a HornetQ server, >= version 5.8.x.
  * 
  * @author daniel
  */
