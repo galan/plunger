@@ -60,7 +60,7 @@ public class Target {
 			}
 		}
 		if (isNotBlank(uri.getRawPath())) {
-			setDestination(removeStart(uri.getRawPath(), "/"));
+			setDestination(length(uri.getRawPath()) > 1 ? removeStart(uri.getRawPath(), "/") : uri.getRawPath());
 		}
 		//query string
 		if (isNotBlank(uri.getQuery())) {
@@ -220,7 +220,9 @@ public class Target {
 			buffer.append(getPort());
 		}
 		if (isNotBlank(getDestination())) {
-			buffer.append("/");
+			if (!"/".equals(getDestination())) {
+				buffer.append("/");
+			}
 			buffer.append(getDestination());
 		}
 		if (!getParameter().isEmpty()) {
@@ -240,5 +242,4 @@ public class Target {
 		}
 		return buffer.toString();
 	}
-
 }
