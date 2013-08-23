@@ -84,7 +84,7 @@ public class ArgumentMerger {
 		}
 
 		if (!result.hasDestination()) {
-			throw new CommandException("No destination is set");
+			throw new CommandException("No destination is given");
 		}
 		return result;
 	}
