@@ -90,15 +90,15 @@ public class OptionsFactory {
 		Option optionInfos = OptionBuilder.create("i");
 
 		OptionBuilder.withLongOpt("messages");
-		OptionBuilder.withDescription("When set, only show destinations with messages.");
+		OptionBuilder.withDescription("Only show destinations with messages.");
 		Option optionMessages = OptionBuilder.create("m");
 
 		OptionBuilder.withLongOpt("persistent");
-		OptionBuilder.withDescription("When set, filter persistent (durable) destinations.");
+		OptionBuilder.withDescription("Filters temporary destinations.");
 		Option optionPersistent = OptionBuilder.create("p");
 
 		OptionBuilder.withLongOpt("temporary");
-		OptionBuilder.withDescription("When set, filter temporary destinations.");
+		OptionBuilder.withDescription("Filters persistent (durable) destinations.");
 		Option optionTemp = OptionBuilder.create("t");
 
 		return createOptions(optionSelector, optionInfos, optionMessages, optionPersistent, optionTemp);

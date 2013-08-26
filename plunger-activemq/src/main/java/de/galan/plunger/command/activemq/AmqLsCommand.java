@@ -55,11 +55,14 @@ public class AmqLsCommand extends AbstractLsCommand {
 			BrokerViewMBean mbList = MBeanServerInvocationHandler.newProxyInstance(connection, nameList, BrokerViewMBean.class, true);
 
 			for (JmxDestination jd: new JmxDestinations(mbList)) {
-				ObjectName nameConsumers = new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=" + jd.getDestinationType()
-						+ ",destinationName=" + jd.getObjectName());
-				DestinationViewMBean mbView = MBeanServerInvocationHandler.newProxyInstance(connection, nameConsumers, DestinationViewMBean.class, true);
-				if (!startsWith(jd.getObjectName(), "ActiveMQ.Advisory.")) {
-					printDestination(pa, jd.getDisplayName(), mbView.getConsumerCount(), mbView.getQueueSize(), !jd.isTemporary());
+				boolean matchesTarget = pa.getTarget().getDestination().equals("/") || jd.getDisplayName().equals(pa.getTarget().getDestination());
+				if (matchesTarget) {
+					ObjectName nameConsumers = new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=" + jd.getDestinationType()
+							+ ",destinationName=" + jd.getObjectName());
+					DestinationViewMBean mbView = MBeanServerInvocationHandler.newProxyInstance(connection, nameConsumers, DestinationViewMBean.class, true);
+					if (!startsWith(jd.getObjectName(), "ActiveMQ.Advisory.")) {
+						printDestination(pa, jd.getDisplayName(), mbView.getConsumerCount(), mbView.getQueueSize(), !jd.isTemporary());
+					}
 				}
 			}
 		}
