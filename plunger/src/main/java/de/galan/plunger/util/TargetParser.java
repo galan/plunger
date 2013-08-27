@@ -2,47 +2,68 @@ package de.galan.plunger.util;
 
 import static org.apache.commons.lang.StringUtils.*;
 
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URLDecoder;
+
+import org.apache.commons.lang.StringUtils;
 
 import de.galan.plunger.domain.Target;
 
 
 /**
- * Parses a given target in form [provider://][username[:password]@]host[:port]
+ * Parses a given target in form [provider://][username[:password]@]host[:port][/destination]
  * 
  * @author daniel
  */
 public class TargetParser {
 
-	public Target parse(String target) throws Exception {
-		Target result = null;
-		try {
-			URI uri = new URI(target);
-			if (isBlank(uri.getScheme()) || !contains(target, "://")) {
-				throw new Exception("No provider given");
-			}
-			Integer port = null;
-			if (uri.getPort() != -1) {
-				port = uri.getPort();
-			}
+	private static final String DUMMY_PROTOCOL = "gopher";
 
-			String username = null;
-			String password = null;
-			if (isNotEmpty(uri.getUserInfo())) {
-				String[] authSplit = split(uri.getUserInfo(), ":", 2);
-				username = authSplit[0];
-				if (authSplit.length == 2) {
-					password = authSplit[1];
+
+	public Target parse(String target) throws Exception {
+		URI uri = new URI(contains(target, "://") ? target : DUMMY_PROTOCOL + "://" + target);
+		Target result = new Target();
+		result.setProvider(StringUtils.equals(uri.getScheme(), DUMMY_PROTOCOL) ? null : uri.getScheme());
+		result.setHost(uri.getHost());
+		result.setPort(uri.getPort() == -1 ? null : uri.getPort());
+		String userInfo = uri.getUserInfo();
+		if (isNotBlank(userInfo)) {
+			if (contains(userInfo, ":")) {
+				String[] split = userInfo.split(":");
+				result.setUsername(split[0]);
+				result.setPassword(split[1]);
+			}
+			else {
+				result.setUsername(userInfo);
+			}
+		}
+		if (isNotBlank(uri.getRawPath())) {
+			result.setDestination(length(uri.getRawPath()) > 1 ? removeStart(uri.getRawPath(), "/") : uri.getRawPath());
+		}
+		//query string
+		if (isNotBlank(uri.getQuery())) {
+			for (String pair: StringUtils.split(uri.getQuery(), "&")) {
+				String[] split = StringUtils.split(pair, "=", 2);
+				if (split.length > 0) {
+					String key = split[0];
+					if (isNotBlank(key)) {
+						String value = null;
+						if (split.length > 1) {
+							if (isNotBlank(split[1])) {
+								try {
+									value = URLDecoder.decode(split[1], PlungerCharsets.UTF8.toString());
+								}
+								catch (UnsupportedEncodingException ex) {
+									Output.error("UTF-8 unknown");
+								}
+							}
+						}
+						result.getParameter().put(key, value);
+					}
 				}
 			}
-			result = new Target(uri.getScheme(), username, password, uri.getHost(), port);
-
 		}
-		catch (Exception ex) {
-			result = null;
-			Output.error(ex.getMessage());
-		}
-
 		return result;
 	}
 

@@ -3,8 +3,6 @@ package de.galan.plunger.domain;
 import static org.apache.commons.lang.StringUtils.*;
 
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URLDecoder;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -23,8 +21,6 @@ import de.galan.plunger.util.PlungerCharsets;
  */
 public class Target {
 
-	private static final String DUMMY_PROTOCOL = "gopher";
-
 	private String provider;
 	private String username;
 	private String password;
@@ -34,67 +30,8 @@ public class Target {
 	private Map<String, String> parameter = new TreeMap<>();
 
 
-	public Target(String uri) throws URISyntaxException {
-		this(new URI(contains(uri, "://") ? uri : DUMMY_PROTOCOL + "://" + uri));
-	}
-
-
-	public Target(URI uri) {
-		initialize(uri);
-	}
-
-
-	protected void initialize(URI uri) {
-		setProvider(StringUtils.equals(uri.getScheme(), DUMMY_PROTOCOL) ? null : uri.getScheme());
-		setHost(uri.getHost());
-		setPort(uri.getPort() == -1 ? null : uri.getPort());
-		String userInfo = uri.getUserInfo();
-		if (isNotBlank(userInfo)) {
-			if (contains(userInfo, ":")) {
-				String[] split = userInfo.split(":");
-				setUsername(split[0]);
-				setPassword(split[1]);
-			}
-			else {
-				setUsername(userInfo);
-			}
-		}
-		if (isNotBlank(uri.getRawPath())) {
-			setDestination(length(uri.getRawPath()) > 1 ? removeStart(uri.getRawPath(), "/") : uri.getRawPath());
-		}
-		//query string
-		if (isNotBlank(uri.getQuery())) {
-			for (String pair: StringUtils.split(uri.getQuery(), "&")) {
-				String[] split = StringUtils.split(pair, "=", 2);
-				if (split.length > 0) {
-					String key = split[0];
-					if (isNotBlank(key)) {
-						String value = null;
-						if (split.length > 1) {
-							if (isNotBlank(split[1])) {
-								try {
-									value = URLDecoder.decode(split[1], PlungerCharsets.UTF8.toString());
-								}
-								catch (UnsupportedEncodingException ex) {
-									Output.error("UTF-8 unknown .. O RLY?");
-								}
-							}
-						}
-						getParameter().put(key, value);
-					}
-				}
-			}
-		}
-	}
-
-
-	@Deprecated
-	public Target(String provider, String username, String password, String host, Integer port) {
-		setProvider(provider);
-		setUsername(username);
-		setPassword(password);
-		setHost(host);
-		setPort(port);
+	public Target() {
+		// nada
 	}
 
 
@@ -235,7 +172,7 @@ public class Target {
 						buffer.append(URLDecoder.decode(entry.getValue(), PlungerCharsets.UTF8.toString()));
 					}
 					catch (UnsupportedEncodingException ex) {
-						Output.error("UTF-8 unknown .. O RLY?");
+						Output.error("UTF-8 unknown");
 					}
 				}
 			}

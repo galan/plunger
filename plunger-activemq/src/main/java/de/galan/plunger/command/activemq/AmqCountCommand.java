@@ -40,7 +40,7 @@ public class AmqCountCommand extends AbstractCountCommand {
 			connector = JMXConnectorFactory.connect(new JMXServiceURL(url));
 		}
 		catch (IOException ex) {
-			throw new CommandException("...", ex);
+			throw new CommandException("Failed initializing ActiveMQ JMX connector", ex);
 		}
 	}
 
@@ -81,7 +81,7 @@ public class AmqCountCommand extends AbstractCountCommand {
 				connector.close();
 			}
 			catch (IOException ex) {
-				Output.error("xx");
+				Output.error("Exception while closing the JMX connector");
 			}
 		}
 	}

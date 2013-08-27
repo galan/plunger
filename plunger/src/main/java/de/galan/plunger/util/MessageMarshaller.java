@@ -1,10 +1,8 @@
 package de.galan.plunger.util;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 
 import de.galan.plunger.domain.Message;
 
@@ -35,7 +33,6 @@ public class MessageMarshaller {
 
 	@SuppressWarnings("unchecked")
 	public String[] marshalParts(Message message) {
-		//JSONObject jo = new JSONObject(message.getProperties());
 		String[] result = new String[3];
 		JSONObject jo = new JSONObject();
 		for (String key: message.getProperties().keySet()) {
@@ -48,20 +45,14 @@ public class MessageMarshaller {
 	}
 
 
-	public Message unmarshal(String line) {
+	public Message unmarshal(String line) throws Exception {
 		String json = StringUtils.substringBefore(line, getSeparator());
 		String body = StringUtils.substringAfter(line, getSeparator());
 		Message result = new Message();
 		result.setBody(new Escape().unescape(body));
-		try {
-			JSONObject jo = (JSONObject)new JSONParser().parse(json);
-			for (Object key: jo.keySet()) {
-				result.putProperty((String)key, jo.get(key));
-			}
-		}
-		catch (ParseException ex) {
-			//TODO handling of failed lines
-			Output.error("xxx" + ExceptionUtils.getStackTrace(ex));
+		JSONObject jo = (JSONObject)new JSONParser().parse(json);
+		for (Object key: jo.keySet()) {
+			result.putProperty((String)key, jo.get(key));
 		}
 		return result;
 	}

@@ -30,7 +30,13 @@ public abstract class AbstractPutCommand extends AbstractCommand {
 		while((line = reader.read()) != null) {
 			lineCount++;
 			try {
-				Message msg = mm.unmarshal(line);
+				Message msg = null;
+				try {
+					msg = mm.unmarshal(line);
+				}
+				catch (Exception ex) {
+					throw new CommandException("Parsing message failed", ex);
+				}
 				logMessage(pa, msg);
 				sendMessage(pa, msg, lineCount);
 			}

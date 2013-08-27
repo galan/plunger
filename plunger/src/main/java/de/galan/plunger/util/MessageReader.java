@@ -1,7 +1,7 @@
 package de.galan.plunger.util;
 
 /**
- * Reads message
+ * Read messages line by line
  * 
  * @author daniel
  */

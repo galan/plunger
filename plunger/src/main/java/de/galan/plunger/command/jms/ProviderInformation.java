@@ -1,7 +1,7 @@
 package de.galan.plunger.command.jms;
 
 /**
- * daniel should have written a comment here.
+ * Provider meta-contract.
  * 
  * @author daniel
  */

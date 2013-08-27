@@ -22,7 +22,7 @@ import de.galan.plunger.util.Output;
 
 
 /**
- * daniel should have written a comment here.
+ * Lists all available destinations from a ActiveMQ-provider.
  * 
  * @author daniel
  */
@@ -40,7 +40,7 @@ public class AmqLsCommand extends AbstractLsCommand {
 			connector = JMXConnectorFactory.connect(new JMXServiceURL(url));
 		}
 		catch (IOException ex) {
-			throw new CommandException("...", ex);
+			throw new CommandException("Failed initializing ActiveMQ JMX connector", ex);
 		}
 	}
 
@@ -67,7 +67,7 @@ public class AmqLsCommand extends AbstractLsCommand {
 			}
 		}
 		catch (Exception ex) {
-			throw new CommandException("to do....", ex);
+			throw new CommandException("Failed retrieving ActiveMQ destinations", ex);
 		}
 	}
 
@@ -79,7 +79,7 @@ public class AmqLsCommand extends AbstractLsCommand {
 				connector.close();
 			}
 			catch (IOException ex) {
-				Output.error("xx");
+				Output.error("Exception while closing the JMX connector");
 			}
 		}
 	}

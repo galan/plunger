@@ -15,6 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import de.galan.plunger.domain.Target;
 import de.galan.plunger.util.Output;
 import de.galan.plunger.util.PlungerCharsets;
+import de.galan.plunger.util.TargetParser;
 
 
 /**
@@ -36,6 +37,7 @@ public class Config {
 
 	public boolean parse(File file) {
 		boolean result = true;
+		TargetParser parser = new TargetParser();
 		entries.clear();
 		if ((file != null) && file.exists() && file.isFile()) {
 			int lineCount = 0;
@@ -56,7 +58,7 @@ public class Config {
 						}
 						else if (entry != null) {
 							if (equalsIgnoreCase("Target", se.getKey())) {
-								Target target = new Target(se.getValue());
+								Target target = parser.parse(se.getValue());
 								if (!target.hasProvider()) {
 									throw new Exception("Target defined for '" + entry.getAlias() + "' requires a provider");
 								}

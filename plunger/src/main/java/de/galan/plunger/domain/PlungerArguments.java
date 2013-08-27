@@ -12,7 +12,6 @@ import java.util.Map;
 public class PlungerArguments {
 
 	private Target target;
-	//private String destination;
 	private String command;
 	private Map<String, String> commandArguments;
 	private boolean verbose;

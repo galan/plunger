@@ -6,7 +6,7 @@ import org.apache.commons.lang.ObjectUtils;
 
 
 /**
- * ActiveMq abstraction for a destination.
+ * ActiveMQ abstraction for a destination.
  * 
  * @author daniel
  */

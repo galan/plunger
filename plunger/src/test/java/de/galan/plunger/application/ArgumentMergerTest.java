@@ -20,7 +20,7 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * daniel should have written a comment here.
+ * CUT ArgumentMerger
  * 
  * @author daniel
  */

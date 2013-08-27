@@ -64,9 +64,8 @@ public class AbstractJmsCatCommand extends AbstractCatCommand {
 			if (jms.isQueue() && browseOnly) {
 				QueueBrowser browser = jms.getSession().createBrowser((Queue)jms.getDestination(), pa.getCommandArgument("s"));
 				@SuppressWarnings("unchecked")
-				//TODO why is this step in between required?
-				Enumeration<TextMessage> xxx = browser.getEnumeration();
-				enumeration = xxx;
+				Enumeration<TextMessage> genericResult = browser.getEnumeration();
+				enumeration = genericResult;
 			}
 			else {
 				consumer = jms.getSession().createConsumer(jms.getDestination(), pa.getCommandArgument("s"));

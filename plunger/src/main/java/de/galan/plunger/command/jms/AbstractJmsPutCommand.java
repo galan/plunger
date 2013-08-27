@@ -16,7 +16,7 @@ import de.galan.plunger.util.Output;
 
 
 /**
- * daniel should have written a comment here.
+ * Puts messages on a JMS message-server.
  * 
  * @author daniel
  */

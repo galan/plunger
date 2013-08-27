@@ -12,6 +12,7 @@ import de.galan.plunger.config.Config;
 import de.galan.plunger.config.Entry;
 import de.galan.plunger.domain.PlungerArguments;
 import de.galan.plunger.domain.Target;
+import de.galan.plunger.util.TargetParser;
 
 
 /**
@@ -23,7 +24,7 @@ public class ArgumentMerger {
 
 	public PlungerArguments merge(String cmdTarget, Config config, CommandLine line, Options options) throws Exception {
 		PlungerArguments result = new PlungerArguments();
-		Target commandTarget = new Target(cmdTarget);
+		Target commandTarget = new TargetParser().parse(cmdTarget);
 		Entry entry = config.getEntry(commandTarget.getHost());
 		if ((entry != null) && (entry.getTarget() != null)) {
 			result.setTarget(mergeTarget(commandTarget, entry.getTarget())); // merge targets
@@ -63,7 +64,7 @@ public class ArgumentMerger {
 
 
 	protected Target mergeTarget(Target ct, Target et) throws Exception {
-		Target result = new Target(et.toString());
+		Target result = new TargetParser().parse(et.toString());
 		if (ct.hasProvider()) {
 			result.setProvider(ct.getProvider());
 		}

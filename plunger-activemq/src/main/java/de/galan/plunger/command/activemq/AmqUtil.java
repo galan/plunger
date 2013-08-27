@@ -5,7 +5,7 @@ import de.galan.plunger.command.jms.ProviderInformation;
 
 
 /**
- * daniel should have written a comment here.
+ * Helper for ActiveMQ.
  * 
  * @author daniel
  */
