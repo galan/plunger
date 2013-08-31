@@ -28,6 +28,9 @@ public class AbstractJmsPutCommand extends AbstractPutCommand {
 
 	@Override
 	protected void initialize(PlungerArguments pa) throws CommandException {
+		if (!pa.getTarget().hasDestination()) {
+			throw new CommandException("No destination has been specified");
+		}
 		jms.initialize(pa);
 		try {
 			producer = jms.getSession().createProducer(jms.getDestination());

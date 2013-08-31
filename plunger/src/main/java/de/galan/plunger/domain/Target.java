@@ -122,7 +122,7 @@ public class Target {
 
 
 	public boolean hasDestination() {
-		return isNotBlank(getDestination());
+		return isNotBlank(getDestination()) && !getDestination().equals("/");
 	}
 
 

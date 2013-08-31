@@ -50,7 +50,7 @@ public class HornetqLsCommand extends AbstractLsCommand {
 			for (String address: array) {
 				String addressPlunger = removeStart(address, "jms.");
 				boolean managementQueue = addressPlunger.matches("queue.hornetq.management.[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}");
-				boolean matchesTarget = pa.getTarget().getDestination().equals("/") || addressPlunger.equals(pa.getTarget().getDestination());
+				boolean matchesTarget = !pa.getTarget().hasDestination() || addressPlunger.equals(pa.getTarget().getDestination());
 				if (!managementQueue && matchesTarget) {
 					QueueQuery queueQuery = core.getSession().queueQuery(SimpleString.toSimpleString(address));
 					printDestination(pa, addressPlunger, queueQuery.getConsumerCount(), queueQuery.getMessageCount(), queueQuery.isDurable());
