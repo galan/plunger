@@ -21,6 +21,14 @@ import de.galan.plunger.util.SystemMessageReader;
 public abstract class AbstractPutCommand extends AbstractCommand {
 
 	@Override
+	protected void initialize(PlungerArguments pa) throws CommandException {
+		if (!pa.getTarget().hasDestination()) {
+			throw new CommandException("No destination has been specified");
+		}
+	}
+
+
+	@Override
 	protected void process(PlungerArguments pa) throws CommandException {
 		MessageReader reader = getMessageReader(pa);
 

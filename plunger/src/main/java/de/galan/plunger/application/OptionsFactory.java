@@ -153,7 +153,17 @@ public class OptionsFactory {
 		OptionBuilder.withDescription("skip lines with errors");
 		Option optionSkip = OptionBuilder.create("s");
 
-		return createOptions(optionFile, optionSkip);
+		OptionBuilder.withLongOpt("ttl");
+		OptionBuilder.hasArgs(); // is required, see selector
+		OptionBuilder.withDescription("Time to live, see documentation for format");
+		Option optionTtl = OptionBuilder.create("t");
+
+		OptionBuilder.withLongOpt("priority");
+		OptionBuilder.hasArg();
+		OptionBuilder.withDescription("Priority");
+		Option optionPrio = OptionBuilder.create("p");
+
+		return createOptions(optionFile, optionSkip, optionTtl, optionPrio);
 	}
 
 

@@ -36,6 +36,7 @@ public class HornetqCountCommand extends AbstractCountCommand {
 		util = new HornetqUtil();
 		core = new HornetqCore();
 		core.initialize(pa, util.getTransportConfiguration(pa));
+		super.initialize(pa);
 	}
 
 

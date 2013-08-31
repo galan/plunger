@@ -14,6 +14,14 @@ import de.galan.plunger.util.Output;
 public abstract class AbstractCountCommand extends AbstractCommand {
 
 	@Override
+	protected void initialize(PlungerArguments pa) throws CommandException {
+		if (!pa.getTarget().hasDestination()) {
+			throw new CommandException("No destination has been specified");
+		}
+	}
+
+
+	@Override
 	protected void process(PlungerArguments pa) throws CommandException {
 		Output.println("" + getCount(pa));
 	}

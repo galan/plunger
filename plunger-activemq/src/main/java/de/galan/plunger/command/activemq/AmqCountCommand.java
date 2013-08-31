@@ -42,6 +42,7 @@ public class AmqCountCommand extends AbstractCountCommand {
 		catch (IOException ex) {
 			throw new CommandException("Failed initializing ActiveMQ JMX connector", ex);
 		}
+		super.initialize(pa);
 	}
 
 

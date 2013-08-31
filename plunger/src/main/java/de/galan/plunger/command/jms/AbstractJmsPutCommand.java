@@ -12,6 +12,7 @@ import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractPutCommand;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
+import de.galan.plunger.util.HumanTime;
 import de.galan.plunger.util.Output;
 
 
@@ -28,9 +29,7 @@ public class AbstractJmsPutCommand extends AbstractPutCommand {
 
 	@Override
 	protected void initialize(PlungerArguments pa) throws CommandException {
-		if (!pa.getTarget().hasDestination()) {
-			throw new CommandException("No destination has been specified");
-		}
+		super.initialize(pa);
 		jms.initialize(pa);
 		try {
 			producer = jms.getSession().createProducer(jms.getDestination());
@@ -63,9 +62,15 @@ public class AbstractJmsPutCommand extends AbstractPutCommand {
 				}
 			}
 
-			// TODO ttl
-			//producer.send(textMessge, producer.getDeliveryMode(), producer.getPriority(), 120000);
-			producer.send(textMessge);
+			Long ttl = producer.getTimeToLive();
+			if (pa.containsCommandArgument("t")) {
+				ttl = HumanTime.dehumanizeTime(pa.getCommandArgument("t"));
+			}
+			Integer prio = producer.getPriority();
+			if (pa.containsCommandArgument("p")) {
+				prio = pa.getCommandArgumentLong("p").intValue();
+			}
+			producer.send(textMessge, producer.getDeliveryMode(), prio, ttl);
 		}
 		catch (Exception ex) {
 			//TODO option to skip failed lines >> abstract class Output.error("Skipping failed line " + lineCount + ": " + line);

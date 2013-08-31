@@ -30,6 +30,7 @@ public class AbstractJmsCatCommand extends AbstractCatCommand {
 
 	@Override
 	protected void initialize(PlungerArguments pa) throws CommandException {
+		super.initialize(pa);
 		jms.initialize(pa);
 	}
 

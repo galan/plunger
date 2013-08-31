@@ -24,6 +24,14 @@ import de.galan.plunger.util.Output;
 public abstract class AbstractCatCommand extends AbstractCommand {
 
 	@Override
+	protected void initialize(PlungerArguments pa) throws CommandException {
+		if (!pa.getTarget().hasDestination()) {
+			throw new CommandException("No destination has been specified");
+		}
+	}
+
+
+	@Override
 	public void process(PlungerArguments pa) throws CommandException {
 		Message message = null;
 		boolean firstMessage = true;
