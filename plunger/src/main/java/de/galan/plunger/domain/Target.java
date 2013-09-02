@@ -121,8 +121,13 @@ public class Target {
 	}
 
 
-	public boolean hasDestination() {
-		return isNotBlank(getDestination()) && !getDestination().equals("/");
+	public boolean isDestinationSet() {
+		return isNotBlank(getDestination());
+	}
+
+
+	public boolean isDestinationErased() {
+		return isBlank(getDestination()) || getDestination().equals("/");
 	}
 
 

@@ -22,7 +22,7 @@ public abstract class AbstractPutCommand extends AbstractCommand {
 
 	@Override
 	protected void initialize(PlungerArguments pa) throws CommandException {
-		if (!pa.getTarget().hasDestination()) {
+		if (pa.getTarget().isDestinationErased()) {
 			throw new CommandException("No destination has been specified");
 		}
 	}

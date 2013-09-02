@@ -7,7 +7,6 @@ import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.lang.StringUtils;
 
-import de.galan.plunger.command.CommandException;
 import de.galan.plunger.config.Config;
 import de.galan.plunger.config.Entry;
 import de.galan.plunger.domain.PlungerArguments;
@@ -77,16 +76,18 @@ public class ArgumentMerger {
 		if (ct.hasPort()) {
 			result.setPort(ct.getPort());
 		}
-		if (ct.hasDestination()) {
+		if (ct.isDestinationSet()) {
 			result.setDestination(ct.getDestination());
 		}
 		for (String key: ct.getParameter().keySet()) {
 			result.getParameter().put(key, ct.getParameter().get(key));
 		}
 
-		if (!result.hasDestination()) {
+		/*
+		if (!result.isDestinationSet()) {
 			throw new CommandException("No destination is given");
 		}
+		*/
 		return result;
 	}
 
