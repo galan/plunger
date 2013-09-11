@@ -10,6 +10,6 @@ With plunger you can:
 - get the amount of messages or consumers for a specific destination
 
 
-Check the [wiki](https://github.com/d8bitr/plunger/wiki) for more information.
+See the [full documentation in the wiki](https://github.com/d8bitr/plunger/wiki).
 
 Acknowledgement: plungers development started during work at [SEOlytics GmbH](http://www.seolytics.com)
