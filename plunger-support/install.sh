@@ -1,4 +1,15 @@
 #!/bin/bash -e
+
+#
+# This script builds plunger and puts it to the default location at ~/bin/plunger/*
+# In order to use it everywhere, you should add that path to your PATH environment variable.
+#
+# Hints:
+# - You can override that location by setting PLUNGER_HOME.
+# - If the shortcuts like pls, pcat, pput and pcount are conflicting with other programs, you
+#   can override the prefix used by setting PLUNGER_PREFIX (default is 'p')
+#
+
 PATH_SCRIPT=$(dirname $(readlink -f $0))
 PATH_BASE=${PATH_SCRIPT}/..
 PLUNGER_NAME=plunger
@@ -77,8 +88,10 @@ createScript count
 
 
 header "finished"
+echo "Installed ${PLUNGER_NAME} into ${PLUNGER_HOME}"
 
 if ! [[ -f `which ${PLUNGER_NAME}` ]]; then
 	echo "You should expand your \$PATH to include \"$PLUNGER_HOME\""
 fi
+
 
