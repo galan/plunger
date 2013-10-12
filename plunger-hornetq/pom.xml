@@ -4,7 +4,7 @@
 
 	<groupId>de.galan</groupId>
 	<artifactId>plunger-hornetq</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<prerequisites>
@@ -28,7 +28,7 @@
 		<dependency>
 			<groupId>de.galan</groupId>
 			<artifactId>plunger</artifactId>
-			<version>0.1-SNAPSHOT</version>
+			<version>1.0</version>
 			<scope>provided</scope>
 		</dependency>
 	
