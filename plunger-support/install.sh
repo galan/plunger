@@ -33,7 +33,8 @@ header "assemblying jar"
 rm -rf ${PLUNGER_HOME}
 mkdir -p ${PLUNGER_LIBS}
 mvn -f ${PATH_BASE}/plunger/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
-cp ${PATH_BASE}/plunger/target/plunger-*.jar ${PLUNGER_LIBS}/plunger.jar
+# Not required, inside the following dependencies as transient dependency
+#cp ${PATH_BASE}/plunger/target/plunger-*.jar ${PLUNGER_LIBS}/plunger.jar
 
 mvn -f ${PATH_BASE}/plunger-hornetq/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
 cp ${PATH_BASE}/plunger-hornetq/target/plunger-hornetq-*.jar ${PLUNGER_LIBS}/plunger-hornetq.jar
@@ -42,7 +43,7 @@ mvn -f ${PATH_BASE}/plunger-activemq/pom.xml clean install dependency:copy-depen
 cp ${PATH_BASE}/plunger-activemq/target/plunger-activemq-*.jar ${PLUNGER_LIBS}/plunger-activemq.jar
 
 # Workaround, will check assembly-plugin instead.
-rm ${PLUNGER_LIBS}/plunger-*-SNAPSHOT.jar
+#rm ${PLUNGER_LIBS}/plunger-*-SNAPSHOT.jar
  
 #rm -f ${PLUNGER_HOME}/assembly-plunger.jar
 #cp target/plunger-*-jar-with-dependencies.jar $PLUNGER_HOME/assembly-plunger.jar
