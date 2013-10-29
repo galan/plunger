@@ -36,6 +36,9 @@ mvn -f ${PATH_BASE}/plunger/pom.xml clean install dependency:copy-dependencies -
 # Not required, inside the following dependencies as transient dependency
 #cp ${PATH_BASE}/plunger/target/plunger-*.jar ${PLUNGER_LIBS}/plunger.jar
 
+mvn -f ${PATH_BASE}/plunger-stomp/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
+cp ${PATH_BASE}/plunger-stomp/target/plunger-stomp-*.jar ${PLUNGER_LIBS}/plunger-stomp.jar
+
 mvn -f ${PATH_BASE}/plunger-hornetq/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
 cp ${PATH_BASE}/plunger-hornetq/target/plunger-hornetq-*.jar ${PLUNGER_LIBS}/plunger-hornetq.jar
 

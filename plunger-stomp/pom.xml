@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>de.galan</groupId>
-	<artifactId>plunger-hornetq</artifactId>
+	<artifactId>plunger-stomp</artifactId>
 	<version>1.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
@@ -15,7 +15,6 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<plugin.checkstyle.version>2.9.1</plugin.checkstyle.version>
 		<jdk.compiler.version>1.7</jdk.compiler.version>
-		<hornetq.version>2.2.5.Final</hornetq.version>
 	</properties>
 
 
@@ -54,30 +53,13 @@
 		</dependency>
 
 
-		<!-- JMS Spec -->
-		<dependency>
-			<groupId>org.jboss.javaee</groupId>
-			<artifactId>jboss-jms-api</artifactId>
-			<version>1.1.0.GA</version>
-		</dependency>
-		
 		<!-- Utility libraries -->
 		
-		<!-- HornetQ -->
+
 		<dependency>
-			<groupId>org.hornetq</groupId>
-			<artifactId>hornetq-core</artifactId>
-			<version>${hornetq.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.hornetq</groupId>
-			<artifactId>hornetq-jms-client</artifactId>
-			<version>${hornetq.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss.netty</groupId>
-			<artifactId>netty</artifactId>
-			<version>3.2.3.Final</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.4</version>
 		</dependency>
 	</dependencies>
 
