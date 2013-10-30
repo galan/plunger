@@ -21,7 +21,18 @@ public class StompProvider implements CommandProvider {
 
 	@Override
 	public Command getCommand(CommandName commandName, PlungerArguments pa) {
-		return null;
+		switch (commandName) {
+			case LS:
+				return new StompLsCommand();
+			case CAT:
+				return new StompCatCommand();
+			case PUT:
+				return new StompPutCommand();
+			case COUNT:
+				return new StompCountCommand();
+			default:
+				return null;
+		}
 	}
 
 

@@ -54,7 +54,18 @@
 
 
 		<!-- Utility libraries -->
-		
+		<!--
+		<dependency>
+			<groupId>asia.stampy</groupId>
+			<artifactId> stampy-NETTY-client-server-RI</artifactId>
+			<version>1.0-RELEASE</version>
+		</dependency>
+		-->
+		<dependency>
+			<groupId>org.projectodd.stilts</groupId>
+			<artifactId>stilts-stomp-client</artifactId>
+			<version>0.1.40</version>
+		</dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
