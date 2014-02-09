@@ -31,7 +31,7 @@
 	</developers>
 
 	<scm>
-		<developerConnection>scm:svn:https://github.com../plunger/trunk</developerConnection>
+		<developerConnection>scm:svn:https://github.com/d8bitr/plunger/trunk</developerConnection>
 		<url>https://github.com../plunger/trunk</url>
 	</scm>
 
