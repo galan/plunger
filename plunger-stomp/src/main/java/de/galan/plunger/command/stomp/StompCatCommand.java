@@ -87,7 +87,7 @@ public class StompCatCommand extends AbstractCatCommand {
 			throw new CommandException("bam5", ex);
 		}
 
-		SubscriptionBuilder builder = client.subscribe("jms.queue.allwissend-events");
+		SubscriptionBuilder builder = client.subscribe("queue.testing");
 		//builder.withSelector(selector)
 		//builder.withAckMode(AckMode.AUTO);
 		builder.withMessageHandler(new MessageHandler() {
