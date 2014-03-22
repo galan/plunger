@@ -14,6 +14,6 @@ See the [full documentation in the wiki](https://github.com/d8bitr/plunger/wiki)
 
 Demo
 ====
-![Visual demonstration of plunger)](https://github.com/d8bitr/plunger/raw/master/plunger-support/tty-plunger.gif)
+![Visual demonstration of plunger (loading gif..)](https://github.com/d8bitr/plunger/raw/master/plunger-support/tty-plunger.gif)
 
 Acknowledgement: plungers development started during work at [SEOlytics GmbH](http://www.seolytics.com)
