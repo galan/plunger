@@ -1,0 +1,60 @@
+# Instructions
+# terminator size: 88x26
+export PS1='\n\[\033[01;33m\]\$ \[\033[00m\]'
+ttyrec <file>
+ttygif <file>
+./convert.sh
+
+
+
+# Plunger is a commandline tool to interact with message-providers
+# https://github.com/d8bitr/plunger
+# This demo shows some example of the basic usage (v1.0)
+
+
+# Listing all destinations
+pls hornetq
+
+# hornetq is a predefined target, see how my targets are defined
+cat ~/.plunger
+
+# Adding a message to a queue
+# One-line notation is "properties-as-json<tab>body-as-string"
+echo -e "{}\tHello, plunger" > mymessage.msg
+pput hornetq/queue.foo -f mymessage.msg
+
+# Listing the messages in a queue (pretty)
+pcat hornetq/queue.foo
+
+# Listing the messages in a queue (one line - one message, for further piping)
+pcat hornetq/queue.foo -e
+
+# Listing all destinations with messages
+pls hornetq -m
+
+# Moving messages to a different destination, and modifying the content
+pcat hornetq/queue.foo -e | sed -e "s/plunger/world/g" | pput hornetq/queue.bar
+
+# Showing all queues
+pls hornetq
+
+# Printing modified message
+pcat hornetq/queue.bar
+
+# Moving a message from HornetQ to ActiveMQ
+# First list destinations on ActiveMQ
+pls activemq
+
+# move messages
+pcat hornetq/queue.bar -er | pput activemq/queue.here
+
+# List messages on HornetQ
+pls hornetq
+
+# List messages on ActiveMQ
+pls activemq
+
+# Print messages in target destination
+pcat activemq/queue.here
+
+# Thanks for watching
