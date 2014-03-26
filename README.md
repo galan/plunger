@@ -1,7 +1,7 @@
 plunger
 =======
 
-Simple messaging client for the shell - provides basic access to messaging-providers, such as JBoss HornetQ or Apache ActiveMQ.
+Simple messaging client for the shell - provides basic access to messaging-providers, such as [JBoss HornetQ](http://www.jboss.org/hornetq) or [Apache ActiveMQ](http://activemq.apache.org).
 
 With plunger you can:
 - list all available queues and topics (including the amount of messages and consumers)
