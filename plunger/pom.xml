@@ -31,8 +31,8 @@
 	</developers>
 
 	<scm>
-		<developerConnection>scm:svn:https://github.com/d8bitr/plunger/trunk</developerConnection>
-		<url>https://github.com../plunger/trunk</url>
+		<developerConnection>scm:git:ssh://git@github.com/galan/verjson.git</developerConnection>
+		<url>https://github.com/galan/plunger</url>
 	</scm>
 
 	<dependencies>

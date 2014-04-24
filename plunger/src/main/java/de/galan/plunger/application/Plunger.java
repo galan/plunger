@@ -27,7 +27,7 @@ import de.galan.plunger.util.VersionUtil;
  */
 public class Plunger {
 
-	private static final String DOCUMENTATION_URL = "https://github.com/d8bitr/plunger";
+	private static final String DOCUMENTATION_URL = "https://github.com/galan/plunger";
 
 	private OptionsFactory factory = new OptionsFactory();
 

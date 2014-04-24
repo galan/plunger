@@ -8,7 +8,7 @@ ttygif <file>
 
 
 # Plunger is a commandline tool to interact with message-providers
-# https://github.com/d8bitr/plunger
+# https://github.com/galan/plunger
 # This demo shows some example of the basic usage (v1.0)
 
 
