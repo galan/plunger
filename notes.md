@@ -1,4 +1,4 @@
-= Stomp
+# Stomp
 * http://stomp.github.io/index.html
 * http://en.wikipedia.org/wiki/Streaming_Text_Oriented_Messaging_Protocol
 * http://www.germane-software.com/software/Java/Gozirra/
@@ -9,5 +9,5 @@
 * https://www.rabbitmq.com/stomp.html
 * https://community.jboss.org/thread/163011 - Performance = Stomp vs JMS (gozirra)
 
-= Misc
+# Misc
 * https://github.com/icholy/ttygif - for demo gif
