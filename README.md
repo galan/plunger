@@ -12,6 +12,8 @@ With plunger you can:
 
 See the [full documentation in the wiki](https://github.com/galan/plunger/wiki).
 
+The [installation](https://github.com/galan/plunger/wiki/Building-plunger) will build the sources and create the required scripts.
+
 Demo
 ====
 ![Visual demonstration of plunger (loading gif..)](https://github.com/galan/plunger/raw/master/plunger-support/tty-plunger.gif)
