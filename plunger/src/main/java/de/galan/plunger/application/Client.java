@@ -1,9 +1,8 @@
 package de.galan.plunger.application;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.exception.ExceptionUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import de.galan.plunger.command.Command;
 import de.galan.plunger.command.CommandException;
@@ -15,7 +14,7 @@ import de.galan.plunger.util.Output;
 
 /**
  * Executes the request provided by the PlungerArguments.
- * 
+ *
  * @author daniel
  */
 public class Client {
@@ -25,7 +24,7 @@ public class Client {
 		mergeProviderSpecificConfiguration(pa, provider);
 		Command command = determineCommand(pa, provider);
 		if (command == null) {
-			if (StringUtils.isBlank(pa.getCommand())) {
+			if (isBlank(pa.getCommand())) {
 				Output.error("No command given");
 			}
 			else {
@@ -72,11 +71,11 @@ public class Client {
 
 	protected void handleError(PlungerArguments pa, CommandException ex) {
 		if (pa.isVerbose()) {
-			Output.error(ex.getMessage() + System.getProperty("line.separator") + ExceptionUtils.getFullStackTrace(ex));
+			Output.error(ex.getMessage() + System.getProperty("line.separator") + ExceptionUtils.getStackTrace(ex));
 		}
 		else {
 			Throwable cause = ex.getCause();
-			String causeMessage = (cause != null && StringUtils.isNotBlank(cause.getMessage())) ? ": " + cause.getMessage() : "";
+			String causeMessage = (cause != null && isNotBlank(cause.getMessage())) ? ": " + cause.getMessage() : "";
 			Output.error(ex.getMessage() + causeMessage);
 		}
 		System.exit(4);

@@ -1,6 +1,6 @@
 package de.galan.plunger.command.activemq;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.IOException;
 
@@ -23,7 +23,7 @@ import de.galan.plunger.util.Output;
 
 /**
  * Lists all available destinations from a ActiveMQ-provider.
- * 
+ *
  * @author daniel
  */
 public class AmqLsCommand extends AbstractLsCommand {
@@ -58,7 +58,7 @@ public class AmqLsCommand extends AbstractLsCommand {
 				boolean matchesTarget = pa.getTarget().isDestinationErased() || jd.getDisplayName().equals(pa.getTarget().getDestination());
 				if (matchesTarget) {
 					ObjectName nameConsumers = new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=" + jd.getDestinationType()
-							+ ",destinationName=" + jd.getObjectName());
+						+ ",destinationName=" + jd.getObjectName());
 					DestinationViewMBean mbView = MBeanServerInvocationHandler.newProxyInstance(connection, nameConsumers, DestinationViewMBean.class, true);
 					if (!startsWith(jd.getObjectName(), "ActiveMQ.Advisory.")) {
 						printDestination(pa, jd.getDisplayName(), mbView.getConsumerCount(), mbView.getQueueSize(), !jd.isTemporary());

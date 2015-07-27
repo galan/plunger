@@ -1,6 +1,6 @@
 package de.galan.plunger.config;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -10,8 +10,6 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.galan.plunger.domain.Target;
 import de.galan.plunger.util.Output;
 import de.galan.plunger.util.PlungerCharsets;
@@ -20,7 +18,7 @@ import de.galan.plunger.util.TargetParser;
 
 /**
  * Reads the configuration, located at ~/.plunger. The configurationfile syntax is based on the .ssh/config file.
- * 
+ *
  * @author daniel
  */
 public class Config {
@@ -48,10 +46,10 @@ public class Config {
 					lineCount++;
 					SimpleEntry<String, String> se = parsePair(line);
 					if (se != null) {
-						if (StringUtils.equalsIgnoreCase("Alias", se.getKey())) {
+						if (equalsIgnoreCase("Alias", se.getKey())) {
 							entry = new Entry();
 							// Allow aliases, separated by a single whitespace. They will refer the same entry.
-							String[] aliases = StringUtils.split(se.getValue(), " ");
+							String[] aliases = split(se.getValue(), " ");
 							for (String alias: aliases) {
 								entries.put(alias, entry);
 							}
@@ -64,7 +62,7 @@ public class Config {
 								}
 								entry.setTarget(target);
 							}
-							if (StringUtils.equalsIgnoreCase("Colors", se.getKey())) {
+							if (equalsIgnoreCase("Colors", se.getKey())) {
 								entry.setColors("true".equalsIgnoreCase(se.getValue()));
 							}
 						}
@@ -85,13 +83,13 @@ public class Config {
 
 	protected SimpleEntry<String, String> parsePair(String line) {
 		SimpleEntry<String, String> result = null;
-		String input = StringUtils.substringBefore(line, LINE_COMMENT);
-		if (StringUtils.isNotBlank(input)) {
-			int indexKey = StringUtils.indexOfAny(line, " \t");
+		String input = substringBefore(line, LINE_COMMENT);
+		if (isNotBlank(input)) {
+			int indexKey = indexOfAny(line, " \t");
 			if (indexKey > 0) {
-				String key = StringUtils.substring(line, 0, indexKey);
-				String value = StringUtils.substring(line, indexKey, line.length());
-				if (StringUtils.isNotBlank(value)) {
+				String key = substring(line, 0, indexKey);
+				String value = substring(line, indexKey, line.length());
+				if (isNotBlank(value)) {
 					result = new SimpleEntry<>(key.trim(), value.trim());
 				}
 			}

@@ -1,6 +1,6 @@
 package de.galan.plunger.util;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
@@ -12,7 +12,7 @@ import de.galan.plunger.domain.Message;
  * json-properties(tab)marshalled-body<br/>
  * eg.:<br/>
  * {"property":"value"}\tHello world
- * 
+ *
  * @author daniel
  */
 public class MessageMarshaller {

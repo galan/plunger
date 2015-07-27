@@ -1,6 +1,6 @@
 package de.galan.plunger.command.hornetq;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang.StringUtils.*;
 
 import java.util.Arrays;
 
@@ -19,7 +19,7 @@ import de.galan.plunger.util.StringCaseInsensitiveComparator;
 
 /**
  * Lists all destinations on a HornetQ messaging server.
- *
+ * 
  * @author daniel
  */
 public class HornetqLsCommand extends AbstractLsCommand {

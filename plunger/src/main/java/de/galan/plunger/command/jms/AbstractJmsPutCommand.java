@@ -1,24 +1,24 @@
 package de.galan.plunger.command.jms;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
 import javax.jms.TextMessage;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import de.galan.commons.time.Durations;
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractPutCommand;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
-import de.galan.plunger.util.HumanTime;
 import de.galan.plunger.util.Output;
 
 
 /**
  * Puts messages on a JMS message-server.
- * 
+ *
  * @author daniel
  */
 public class AbstractJmsPutCommand extends AbstractPutCommand {
@@ -64,7 +64,7 @@ public class AbstractJmsPutCommand extends AbstractPutCommand {
 
 			Long ttl = producer.getTimeToLive();
 			if (pa.containsCommandArgument("t")) {
-				ttl = HumanTime.dehumanizeTime(pa.getCommandArgument("t"));
+				ttl = Durations.dehumanize(pa.getCommandArgument("t"));
 			}
 			Integer prio = producer.getPriority();
 			if (pa.containsCommandArgument("p")) {

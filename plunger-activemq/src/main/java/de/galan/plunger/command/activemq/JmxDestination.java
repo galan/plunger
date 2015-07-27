@@ -1,13 +1,13 @@
 package de.galan.plunger.command.activemq;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
-import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang3.ObjectUtils;
 
 
 /**
  * ActiveMQ abstraction for a destination.
- * 
+ *
  * @author daniel
  */
 class JmxDestination implements Comparable<JmxDestination> {

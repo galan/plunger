@@ -3,7 +3,7 @@ package de.galan.plunger.application;
 import java.util.Iterator;
 import java.util.ServiceLoader;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import de.galan.plunger.command.CommandProvider;
 import de.galan.plunger.util.Output;

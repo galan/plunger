@@ -1,4 +1,4 @@
-package de.galan.plunger.command.stomp;
+package de.galan.plunger.command.hornetq;
 
 import de.galan.plunger.command.Command;
 import de.galan.plunger.command.CommandName;
@@ -7,15 +7,15 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * daniel should have written a comment here.
+ * CommandProvider for a HornetQ server, >= version 2.2.5.
  * 
  * @author daniel
  */
-public class StompProvider implements CommandProvider {
+public class HornetqProvider implements CommandProvider {
 
 	@Override
 	public String getName() {
-		return "stomp";
+		return "hornetq";
 	}
 
 
@@ -23,13 +23,13 @@ public class StompProvider implements CommandProvider {
 	public Command getCommand(CommandName commandName, PlungerArguments pa) {
 		switch (commandName) {
 			case LS:
-				return new StompLsCommand();
+				return new HornetqLsCommand();
 			case CAT:
-				return new StompCatCommand();
+				return new HornetqCatCommand();
 			case PUT:
-				return new StompPutCommand();
+				return new HornetqPutCommand();
 			case COUNT:
-				return new StompCountCommand();
+				return new HornetqCountCommand();
 			default:
 				return null;
 		}
@@ -38,7 +38,7 @@ public class StompProvider implements CommandProvider {
 
 	@Override
 	public int getDefaultPort() {
-		return 61613;
+		return 5445;
 	}
 
 }

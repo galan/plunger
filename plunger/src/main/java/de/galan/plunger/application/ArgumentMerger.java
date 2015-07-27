@@ -1,11 +1,11 @@
 package de.galan.plunger.application;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import de.galan.plunger.config.Config;
 import de.galan.plunger.config.Entry;
@@ -16,7 +16,7 @@ import de.galan.plunger.util.TargetParser;
 
 /**
  * Merges the possible stored configuration entry with the arguments from the commandline.
- * 
+ *
  * @author daniel
  */
 public class ArgumentMerger {
@@ -87,7 +87,7 @@ public class ArgumentMerger {
 		if (!result.isDestinationSet()) {
 			throw new CommandException("No destination is given");
 		}
-		*/
+		 */
 		return result;
 	}
 

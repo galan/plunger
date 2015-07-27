@@ -1,20 +1,20 @@
 package de.galan.plunger.util;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLDecoder;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import de.galan.plunger.domain.Target;
 
 
 /**
  * Parses a given target in form [provider://][username[:password]@]host[:port][/destination]
- * 
+ *
  * @author daniel
  */
 public class TargetParser {

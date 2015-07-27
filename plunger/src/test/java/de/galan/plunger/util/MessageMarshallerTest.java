@@ -1,19 +1,17 @@
 package de.galan.plunger.util;
 
-import static org.hamcrest.Matchers.*;
+import static org.assertj.core.api.StrictAssertions.*;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import de.galan.plunger.domain.Message;
-import de.galan.plunger.util.MessageMarshaller;
-import de.galan.plunger.util.Output;
 
 
 /**
  * CUT MessageMarshaller
- * 
+ *
  * @author daniel
  */
 public class MessageMarshallerTest {
@@ -65,11 +63,11 @@ public class MessageMarshallerTest {
 		// marshall
 		String marshal = mm.marshal(m);
 		Output.print(marshal);
-		assertThat(marshal, containsString("\"a\":\"a\""));
-		assertThat(marshal, containsString("\"b\":123"));
-		assertThat(marshal, containsString("\"c\":true"));
-		assertThat(marshal, containsString("\"d\":\"äöü}{\\n\\tß \\u20AC\""));
-		assertThat(marshal, endsWith("\thello world }{\\t\\näöüß€"));
+		assertThat(marshal).contains("\"a\":\"a\"");
+		assertThat(marshal).contains("\"b\":123");
+		assertThat(marshal).contains("\"c\":true");
+		assertThat(marshal).contains("\"d\":\"äöü}{\\n\\tß \\u20AC\"");
+		assertThat(marshal).contains("\thello world }{\\t\\näöüß€");
 		// unmarshall
 		Message m2 = mm.unmarshal(marshal);
 		assertEquals(body, m2.getBody());
@@ -80,5 +78,4 @@ public class MessageMarshallerTest {
 		assertEquals(field4, m2.getProperty("d"));
 
 	}
-
 }

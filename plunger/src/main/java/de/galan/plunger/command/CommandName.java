@@ -1,11 +1,11 @@
 package de.galan.plunger.command;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 
 /**
  * Available commands.
- * 
+ *
  * @author daniel
  */
 public enum CommandName {

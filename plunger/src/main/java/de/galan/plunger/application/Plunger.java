@@ -1,6 +1,6 @@
 package de.galan.plunger.application;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.PrintWriter;
 
@@ -22,7 +22,7 @@ import de.galan.plunger.util.VersionUtil;
 
 /**
  * Shell client to a Messaging Provider
- * 
+ *
  * @author daniel
  */
 public class Plunger {

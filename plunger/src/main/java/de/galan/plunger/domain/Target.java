@@ -1,6 +1,6 @@
 package de.galan.plunger.domain;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import de.galan.plunger.util.Output;
 import de.galan.plunger.util.PlungerCharsets;
@@ -16,7 +16,7 @@ import de.galan.plunger.util.PlungerCharsets;
 
 /**
  * The target to query, which is basically an uri with the provider, host, port and authentication information.
- * 
+ *
  * @author daniel
  */
 public class Target {

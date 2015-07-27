@@ -1,6 +1,6 @@
 package de.galan.plunger.command.activemq;
 
-import static org.apache.commons.lang.StringUtils.*;
+import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.IOException;
 
@@ -23,7 +23,7 @@ import de.galan.plunger.util.Output;
 
 /**
  * Retrieves message/consumer amount for an ActiveMQ Provider.
- * 
+ *
  * @author daniel
  */
 public class AmqCountCommand extends AbstractCountCommand {
@@ -58,7 +58,7 @@ public class AmqCountCommand extends AbstractCountCommand {
 			for (JmxDestination jd: new JmxDestinations(mbList)) {
 				if (jd.getDisplayName().equals(pa.getTarget().getDestination())) {
 					ObjectName nameConsumers = new ObjectName("org.apache.activemq:type=Broker,brokerName=localhost,destinationType=" + jd.getDestinationType()
-							+ ",destinationName=" + jd.getObjectName());
+						+ ",destinationName=" + jd.getObjectName());
 					DestinationViewMBean mbView = MBeanServerInvocationHandler.newProxyInstance(connection, nameConsumers, DestinationViewMBean.class, true);
 
 					result = pa.containsCommandArgument("c") ? mbView.getConsumerCount() : mbView.getQueueSize();

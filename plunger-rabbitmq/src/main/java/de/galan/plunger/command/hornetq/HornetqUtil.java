@@ -1,6 +1,6 @@
 package de.galan.plunger.command.hornetq;
 
-import static org.apache.commons.lang3.StringUtils.*;
+import static org.apache.commons.lang.StringUtils.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +15,7 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * Common HornetQ abstractions.
- *
+ * 
  * @author daniel
  */
 public class HornetqUtil implements ProviderInformation {

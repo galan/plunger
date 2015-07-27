@@ -1,6 +1,7 @@
 package de.galan.plunger.command.generic;
 
-import org.apache.commons.lang.StringUtils;
+import static org.apache.commons.lang3.StringUtils.*;
+
 import org.fusesource.jansi.Ansi.Color;
 
 import de.galan.plunger.command.AbstractCommand;
@@ -10,7 +11,7 @@ import de.galan.plunger.util.Output;
 
 /**
  * Generic ls command, that handles most of the plunger arguments already.
- * 
+ *
  * @author daniel
  */
 public abstract class AbstractLsCommand extends AbstractCommand {
@@ -23,7 +24,7 @@ public abstract class AbstractLsCommand extends AbstractCommand {
 		boolean optionMessages = !(pa.containsCommandArgument("m") && (countMessages <= 0));
 		boolean optionConsumer = !(pa.containsCommandArgument("c") && (countConsumer <= 0));
 		if (filterPassed && optionMessages && optionConsumer) {
-			Color destinationColor = StringUtils.startsWith(name, "queue.") ? Color.CYAN : Color.GREEN;
+			Color destinationColor = startsWith(name, "queue.") ? Color.CYAN : Color.GREEN;
 			Output.print(destinationColor, name);
 			if (!pa.containsCommandArgument("i")) {
 				if (!persistent) {

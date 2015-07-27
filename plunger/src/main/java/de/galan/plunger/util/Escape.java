@@ -1,11 +1,11 @@
 package de.galan.plunger.util;
 
-import org.apache.commons.lang.StringUtils;
+import static org.apache.commons.lang3.StringUtils.*;
 
 
 /**
  * Escapes and unescapes characters (some of <= 0x20) with a slash
- * 
+ *
  * @author daniel
  */
 public class Escape {
@@ -15,16 +15,16 @@ public class Escape {
 
 
 	public String escape(String text) {
-		if (StringUtils.isNotBlank(text)) {
-			return StringUtils.replaceEach(text, REPLACE, WITH);
+		if (isNotBlank(text)) {
+			return replaceEach(text, REPLACE, WITH);
 		}
 		return "";
 	}
 
 
 	public String unescape(String text) {
-		if (StringUtils.isNotBlank(text)) {
-			return StringUtils.replaceEach(text, WITH, REPLACE);
+		if (isNotBlank(text)) {
+			return replaceEach(text, WITH, REPLACE);
 		}
 		return "";
 	}

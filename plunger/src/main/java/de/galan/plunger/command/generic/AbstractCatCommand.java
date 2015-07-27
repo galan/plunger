@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.mutable.MutableLong;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.mutable.MutableLong;
 import org.fusesource.jansi.Ansi.Color;
 
 import de.galan.plunger.command.AbstractCommand;
@@ -18,7 +18,7 @@ import de.galan.plunger.util.Output;
 
 /**
  * Generic cat command, that handles most of the plunger arguments already.
- * 
+ *
  * @author daniel
  */
 public abstract class AbstractCatCommand extends AbstractCommand {

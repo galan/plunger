@@ -1,5 +1,7 @@
 package de.galan.plunger.command.jms;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
@@ -8,8 +10,6 @@ import javax.jms.Queue;
 import javax.jms.Session;
 import javax.jms.Topic;
 
-import org.apache.commons.lang.StringUtils;
-
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.domain.PlungerArguments;
 import de.galan.plunger.util.Output;
@@ -17,7 +17,7 @@ import de.galan.plunger.util.Output;
 
 /**
  * Basic connectivity for JMS-providers
- * 
+ *
  * @author daniel
  */
 public abstract class AbstractJms {
@@ -33,10 +33,10 @@ public abstract class AbstractJms {
 			factory = createConnectionFactory(pa);
 			connection = factory.createConnection(pa.getTarget().getUsername(), pa.getTarget().getPassword());
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			if (StringUtils.startsWith(pa.getTarget().getDestination(), "queue.")) {
+			if (startsWith(pa.getTarget().getDestination(), "queue.")) {
 				destination = session.createQueue(pa.getTarget().getShortDestination());
 			}
-			else if (StringUtils.startsWith(pa.getTarget().getDestination(), "topic.")) {
+			else if (startsWith(pa.getTarget().getDestination(), "topic.")) {
 				destination = session.createTopic(pa.getTarget().getShortDestination());
 			}
 		}
