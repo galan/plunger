@@ -4,6 +4,7 @@ import static com.google.common.base.Charsets.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.IOException;
+import java.util.concurrent.TimeoutException;
 
 import com.google.common.collect.Maps;
 import com.rabbitmq.client.AMQP.BasicProperties;
@@ -14,6 +15,7 @@ import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractPutCommand;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
+import de.galan.plunger.util.Output;
 
 
 /**
@@ -30,7 +32,8 @@ public class RabbitmqPutCommand extends AbstractPutCommand {
 
 
 	@Override
-	protected void sendMessage(PlungerArguments pa, Message message, long count) throws CommandException {
+	protected void initialize(PlungerArguments pa) throws CommandException {
+		super.initialize(pa);
 		core = new RabbitmqCore();
 		core.initialize(pa);
 		try {
@@ -39,7 +42,11 @@ public class RabbitmqPutCommand extends AbstractPutCommand {
 		catch (IOException ex) {
 			throw new CommandException("Failed creating channel", ex);
 		}
+	}
 
+
+	@Override
+	protected void sendMessage(PlungerArguments pa, Message message, long count) throws CommandException {
 		byte[] bodyBytes = defaultString(message.getBody()).getBytes(UTF_8);
 		BasicProperties basic = mapProperties(message);
 		//TODO routingkey parameter
@@ -84,6 +91,12 @@ public class RabbitmqPutCommand extends AbstractPutCommand {
 
 	@Override
 	protected void close() {
+		try {
+			channel.close();
+		}
+		catch (IOException | TimeoutException ex) {
+			Output.error("Failed to close channel: " + ex.getMessage());
+		}
 		core.close();
 	}
 

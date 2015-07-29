@@ -32,18 +32,18 @@ echo "Installing ${PLUNGER_NAME} into ${PLUNGER_HOME}"
 header "assemblying jar"
 rm -rf ${PLUNGER_HOME}
 mkdir -p ${PLUNGER_LIBS}
-mvn -f ${PATH_BASE}/plunger/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
+mvn -f ${PATH_BASE}/plunger/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS} -Dgpg.skip=true
 # Not required, inside the following dependencies as transient dependency
 #cp ${PATH_BASE}/plunger/target/plunger-*.jar ${PLUNGER_LIBS}/plunger.jar
 
-mvn -f ${PATH_BASE}/plunger-stomp/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
-cp ${PATH_BASE}/plunger-stomp/target/plunger-stomp-*.jar ${PLUNGER_LIBS}/plunger-stomp.jar
+mvn -f ${PATH_BASE}/plunger-rabbitmq/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS} -Dgpg.skip=true
+cp ${PATH_BASE}/plunger-rabbitmq/target/plunger-rabbitmq-*-SNAPSHOT.jar ${PLUNGER_LIBS}/plunger-rabbitmq.jar
 
-mvn -f ${PATH_BASE}/plunger-hornetq/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
-cp ${PATH_BASE}/plunger-hornetq/target/plunger-hornetq-*.jar ${PLUNGER_LIBS}/plunger-hornetq.jar
+mvn -f ${PATH_BASE}/plunger-hornetq/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS} -Dgpg.skip=true
+cp ${PATH_BASE}/plunger-hornetq/target/plunger-hornetq-*-SNAPSHOT.jar ${PLUNGER_LIBS}/plunger-hornetq.jar
 
-mvn -f ${PATH_BASE}/plunger-activemq/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS}
-cp ${PATH_BASE}/plunger-activemq/target/plunger-activemq-*.jar ${PLUNGER_LIBS}/plunger-activemq.jar
+mvn -f ${PATH_BASE}/plunger-activemq/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS} -Dgpg.skip=true
+cp ${PATH_BASE}/plunger-activemq/target/plunger-activemq-*-SNAPSHOT.jar ${PLUNGER_LIBS}/plunger-activemq.jar
 
 # Workaround, will check assembly-plugin instead.
 #rm ${PLUNGER_LIBS}/plunger-*-SNAPSHOT.jar
