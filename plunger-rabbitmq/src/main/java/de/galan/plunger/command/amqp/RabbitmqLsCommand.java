@@ -1,43 +1,32 @@
-package de.galan.plunger.command.hornetq;
-
-import static org.apache.commons.lang.StringUtils.*;
-
-import java.util.Arrays;
-
-import org.hornetq.api.core.SimpleString;
-import org.hornetq.api.core.client.ClientMessage;
-import org.hornetq.api.core.client.ClientRequestor;
-import org.hornetq.api.core.client.ClientSession.QueueQuery;
-import org.hornetq.api.core.management.ManagementHelper;
-import org.hornetq.api.core.management.ResourceNames;
+package de.galan.plunger.command.amqp;
 
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractLsCommand;
 import de.galan.plunger.domain.PlungerArguments;
-import de.galan.plunger.util.StringCaseInsensitiveComparator;
 
 
 /**
  * Lists all destinations on a HornetQ messaging server.
- * 
+ *
  * @author daniel
  */
-public class HornetqLsCommand extends AbstractLsCommand {
+public class RabbitmqLsCommand extends AbstractLsCommand {
 
-	HornetqCore core;
-	HornetqUtil util;
+	RabbitmqCore core;
+	RabbitmqUtil util;
 
 
 	@Override
 	protected void initialize(PlungerArguments pa) throws CommandException {
-		util = new HornetqUtil();
-		core = new HornetqCore();
-		core.initialize(pa, util.getTransportConfiguration(pa));
+		util = new RabbitmqUtil();
+		core = new RabbitmqCore();
+		//core.initialize(pa, util.getTransportConfiguration(pa));
 	}
 
 
 	@Override
 	protected void process(PlungerArguments pa) throws CommandException {
+		/*
 		try {
 			ClientRequestor requestor = new ClientRequestor(core.getSession(), "jms.queue.hornetq.management");
 			ClientMessage message = core.getSession().createMessage(false);
@@ -60,6 +49,7 @@ public class HornetqLsCommand extends AbstractLsCommand {
 		catch (Exception ex) {
 			throw new CommandException("Could not process ls", ex);
 		}
+		 */
 	}
 
 

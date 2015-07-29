@@ -1,11 +1,10 @@
-package de.galan.plunger.command.hornetq;
+package de.galan.plunger.command.amqp;
 
-import org.hornetq.api.core.HornetQException;
-import org.hornetq.api.core.TransportConfiguration;
-import org.hornetq.api.core.client.ClientSession;
-import org.hornetq.api.core.client.ClientSessionFactory;
-import org.hornetq.api.core.client.HornetQClient;
-import org.hornetq.api.core.client.ServerLocator;
+import java.io.IOException;
+import java.util.concurrent.TimeoutException;
+
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
 
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.domain.PlungerArguments;
@@ -13,25 +12,26 @@ import de.galan.plunger.util.Output;
 
 
 /**
- * Abstraction to deal with HornetQs core-API.
- * 
+ * Abstraction to deal with RabbitMQ API.
+ *
  * @author daniel
  */
-public class HornetqCore {
+public class RabbitmqCore {
 
-	private ClientSession session;
-	private ClientSessionFactory factory;
-	private ServerLocator locator;
+	private Connection connection;
 
 
-	public void initialize(PlungerArguments pa, TransportConfiguration transport) throws CommandException {
+	public void initialize(PlungerArguments pa) throws CommandException {
+		ConnectionFactory factory = new ConnectionFactory();
+		factory.setUsername(pa.getTarget().getUsername());
+		factory.setPassword(pa.getTarget().getPassword());
+		//factory.setVirtualHost(virtualHost);
+		factory.setHost(pa.getTarget().getHost());
+		factory.setPort(pa.getTarget().getPort());
 		try {
-			locator = HornetQClient.createServerLocatorWithoutHA(transport);
-			factory = locator.createSessionFactory();
-			session = factory.createSession(pa.getTarget().getUsername(), pa.getTarget().getPassword(), false, true, true, false, 0);
-			session.start();
+			connection = factory.newConnection();
 		}
-		catch (Exception ex) {
+		catch (IOException | TimeoutException ex) {
 			throw new CommandException("Could not connect to server", ex);
 		}
 	}
@@ -39,34 +39,18 @@ public class HornetqCore {
 
 	protected void close() {
 		try {
-			if (getSession() != null) {
-				getSession().close();
-			}
-			if (getFactory() != null) {
-				getFactory().close();
-			}
-			if (getLocator() != null) {
-				getLocator().close();
+			if (getConnection() != null) {
+				getConnection().close();
 			}
 		}
-		catch (HornetQException hqex) {
-			Output.error("Failed to close connection: " + hqex.getMessage());
+		catch (IOException ioex) {
+			Output.error("Failed to close connection: " + ioex.getMessage());
 		}
 	}
 
 
-	public ClientSession getSession() {
-		return session;
-	}
-
-
-	public ClientSessionFactory getFactory() {
-		return factory;
-	}
-
-
-	public ServerLocator getLocator() {
-		return locator;
+	public Connection getConnection() {
+		return connection;
 	}
 
 }

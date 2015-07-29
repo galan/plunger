@@ -1,4 +1,4 @@
-package de.galan.plunger.command.hornetq;
+package de.galan.plunger.command.amqp;
 
 import de.galan.plunger.command.Command;
 import de.galan.plunger.command.CommandName;
@@ -7,15 +7,15 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * CommandProvider for a HornetQ server, >= version 2.2.5.
- * 
+ * CommandProvider for a RabbitMQ message-broker
+ *
  * @author daniel
  */
 public class HornetqProvider implements CommandProvider {
 
 	@Override
 	public String getName() {
-		return "hornetq";
+		return "rabbitmq";
 	}
 
 
@@ -23,13 +23,13 @@ public class HornetqProvider implements CommandProvider {
 	public Command getCommand(CommandName commandName, PlungerArguments pa) {
 		switch (commandName) {
 			case LS:
-				return new HornetqLsCommand();
+				return new RabbitmqLsCommand();
 			case CAT:
-				return new HornetqCatCommand();
+				return new RabbitmqCatCommand();
 			case PUT:
-				return new HornetqPutCommand();
+				return new RabbitmqPutCommand();
 			case COUNT:
-				return new HornetqCountCommand();
+				return new RabbitmqCountCommand();
 			default:
 				return null;
 		}
@@ -38,7 +38,7 @@ public class HornetqProvider implements CommandProvider {
 
 	@Override
 	public int getDefaultPort() {
-		return 5445;
+		return 5672;
 	}
 
 }
