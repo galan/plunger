@@ -1,1 +1,1 @@
-de.galan.plunger.command.hornetq.HornetqProvider
+de.galan.plunger.command.rabbitmq.RabbitmqProvider

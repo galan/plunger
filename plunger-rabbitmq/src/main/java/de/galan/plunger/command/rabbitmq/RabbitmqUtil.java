@@ -1,4 +1,4 @@
-package de.galan.plunger.command.amqp;
+package de.galan.plunger.command.rabbitmq;
 
 import static org.apache.commons.lang3.StringUtils.*;
 import de.galan.plunger.command.jms.ProviderInformation;

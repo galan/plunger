@@ -1,4 +1,4 @@
-package de.galan.plunger.command.amqp;
+package de.galan.plunger.command.rabbitmq;
 
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractLsCommand;

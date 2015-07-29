@@ -74,7 +74,7 @@ public class AbstractJmsPutCommand extends AbstractPutCommand {
 		}
 		catch (Exception ex) {
 			//TODO option to skip failed lines >> abstract class Output.error("Skipping failed line " + lineCount + ": " + line);
-			throw new CommandException("", ex);
+			throw new CommandException("Failed sending message", ex);
 		}
 	}
 

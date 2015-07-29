@@ -1,4 +1,4 @@
-package de.galan.plunger.command.amqp;
+package de.galan.plunger.command.rabbitmq;
 
 import java.io.IOException;
 import java.util.Map.Entry;
@@ -12,7 +12,6 @@ import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractCatCommand;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
-import de.galan.plunger.util.Output;
 
 
 /**
@@ -39,11 +38,13 @@ public class RabbitmqCatCommand extends AbstractCatCommand {
 		try {
 			Connection connection = core.getConnection();
 			channel = connection.createChannel();
-			//TODO test TemporaryQueue queue = jms.getSession().createTemporaryQueue();
-			//boolean browseOnly = !pa.containsCommandArgument("r"); // TODO not supported by rabbitmq
+
+			// TODO not supported by rabbitmq
+			// maybe https://www.rabbitmq.com/consumer-cancel.html
+			//boolean browseOnly = !pa.containsCommandArgument("r");
 		}
 		catch (IOException ex) {
-			Output.error("Failed creating channel: " + ex.getMessage());
+			throw new CommandException("Failed creating channel", ex);
 		}
 	}
 
@@ -56,13 +57,13 @@ public class RabbitmqCatCommand extends AbstractCatCommand {
 			result = constructMessage(response, pa);
 		}
 		catch (IOException ex) {
-			Output.error("Failed creating messages: " + ex.getMessage());
+			throw new CommandException("Failed creating message", ex);
 		}
 		return result;
 	}
 
 
-	protected Message constructMessage(GetResponse response, PlungerArguments pa) throws CommandException {
+	protected Message constructMessage(GetResponse response, PlungerArguments pa) {
 		Message result = null;
 		if (response != null) {
 			result = new Message();

@@ -1,4 +1,4 @@
-package de.galan.plunger.command.amqp;
+package de.galan.plunger.command.rabbitmq;
 
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;

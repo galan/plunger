@@ -1,4 +1,4 @@
-package de.galan.plunger.command.amqp;
+package de.galan.plunger.command.rabbitmq;
 
 import de.galan.plunger.command.Command;
 import de.galan.plunger.command.CommandName;
@@ -11,7 +11,7 @@ import de.galan.plunger.domain.PlungerArguments;
  *
  * @author daniel
  */
-public class HornetqProvider implements CommandProvider {
+public class RabbitmqProvider implements CommandProvider {
 
 	@Override
 	public String getName() {
