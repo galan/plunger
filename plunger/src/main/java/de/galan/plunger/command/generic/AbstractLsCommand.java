@@ -24,7 +24,7 @@ public abstract class AbstractLsCommand extends AbstractCommand {
 		boolean optionMessages = !(pa.containsCommandArgument("m") && (countMessages <= 0));
 		boolean optionConsumer = !(pa.containsCommandArgument("c") && (countConsumer <= 0));
 		if (filterPassed && optionMessages && optionConsumer) {
-			Color destinationColor = startsWith(name, "queue.") ? Color.CYAN : Color.GREEN;
+			Color destinationColor = getDestinationColor(name);
 			Output.print(destinationColor, name);
 			if (!pa.containsCommandArgument("i")) {
 				if (!persistent) {
@@ -38,6 +38,11 @@ public abstract class AbstractLsCommand extends AbstractCommand {
 			}
 			Output.println("");
 		}
+	}
+
+
+	protected Color getDestinationColor(String name) {
+		return startsWith(name, "queue.") ? Color.CYAN : Color.GREEN;
 	}
 
 }
