@@ -3,10 +3,16 @@ package de.galan.plunger.command.rabbitmq;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.Ansi.Color;
 
@@ -14,10 +20,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
-import de.galan.flux.FluentHttpClient.HttpBuilder;
-import de.galan.flux.Flux;
-import de.galan.flux.HttpClientException;
-import de.galan.flux.Response;
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractLsCommand;
 import de.galan.plunger.domain.PlungerArguments;
@@ -51,9 +53,6 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 		try {
 			items.addAll(collectQueues(pa));
 			items.addAll(collectExchanges(pa));
-		}
-		catch (HttpClientException ex) {
-			throw new CommandException("Unable to retrieve queues from RabbitMQs API (management extension must be installed)", ex);
 		}
 		catch (IOException ex) {
 			throw new CommandException("Unable to process response", ex);
@@ -100,69 +99,73 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 	}
 
 
-	private void x(String url) {
-		//String url = "http://" + t.getHost() + ":" + mgmtPort + "/api/queues";
-		//Unirest.get("http://" + t.getHost() + ":" + mgmtPort + "/api/queues").asJson().getBody();
-	}
-
-
-	private List<Item> collectQueues(PlungerArguments pa) throws HttpClientException, IOException {
-		List<Item> result = new ArrayList<>();
-
-		Target t = pa.getTarget();
-		String mgmtPort = t.getParameterValue("managementPort");
-		/*
+	protected String readUrl(String url, String username, String password) throws IOException {
+		String result = null;
+		HttpURLConnection connection = null;
 		try {
-			HttpResponse<String> response2 = Unirest.get("http://" + t.getHost() + ":" + mgmtPort + "/api/queues").basicAuth(t.getUsername(), t.getPassword()).asString();
+			connection = (HttpURLConnection)new URL(url).openConnection();
+			if (isNotBlank(username) && isNotBlank(password)) {
+				String pair = username + ":" + password;
+				String encodedAuthorization = trim(Base64.encodeBase64String(pair.getBytes(Charsets.UTF_8)));
+				connection.setRequestProperty("Authorization", "Basic " + encodedAuthorization);
+			}
+			//connection.setConnectTimeout(..);
+			//connection.setReadTimeout(..);
+			connection.setRequestMethod("GET");
+			//int statusCode = connection.getResponseCode();
+			InputStream stream = connection.getInputStream();
+			result = IOUtils.toString(stream, Charsets.UTF_8);
+			stream.close();
 		}
-		catch (UnirestException ex) {
-			//Say.warn("Unspecified error from daniel", ex);
+		catch (Exception ex) {
+			throw new IOException(ex);
 		}
-		 */
-
-		HttpBuilder request = Flux.request("http://" + t.getHost() + ":" + mgmtPort + "/api/queues");
-		if (isNotBlank(t.getUsername()) && isNotBlank(t.getPassword())) {
-			request.authentication(t.getUsername(), t.getPassword());
-		}
-		try (Response response = request.get()) {
-			ArrayNode queueNodes = (ArrayNode)mapper.readTree(response.getStream());
-			for (JsonNode node: queueNodes) {
-				Item item = new Item();
-				item.entity = "queue";
-				item.vhost = node.get("vhost").textValue();
-				item.name = node.get("name").textValue();
-				item.messages = node.get("messages_ready").longValue();
-				item.consumer = node.get("consumers").longValue();
-				item.durable = node.get("durable").booleanValue();
-				result.add(item);
+		finally {
+			if (connection != null) {
+				connection.disconnect();
 			}
 		}
 		return result;
 	}
 
 
-	private List<Item> collectExchanges(PlungerArguments pa) throws HttpClientException, IOException {
+	private List<Item> collectQueues(PlungerArguments pa) throws IOException {
 		List<Item> result = new ArrayList<>();
 
 		Target t = pa.getTarget();
 		String mgmtPort = t.getParameterValue("managementPort");
-		HttpBuilder request = Flux.request("http://" + t.getHost() + ":" + mgmtPort + "/api/exchanges");
-		if (isNotBlank(t.getUsername()) && isNotBlank(t.getPassword())) {
-			request.authentication(t.getUsername(), t.getPassword());
+		String response = readUrl("http://" + t.getHost() + ":" + mgmtPort + "/api/queues", t.getUsername(), t.getPassword());
+		ArrayNode queueNodes = (ArrayNode)mapper.readTree(response);
+		for (JsonNode node: queueNodes) {
+			Item item = new Item();
+			item.entity = "queue";
+			item.vhost = node.get("vhost").textValue();
+			item.name = node.get("name").textValue();
+			item.messages = node.get("messages_ready").longValue();
+			item.consumer = node.get("consumers").longValue();
+			item.durable = node.get("durable").booleanValue();
+			result.add(item);
 		}
-		try (Response response = request.get()) {
-			ArrayNode queueNodes = (ArrayNode)mapper.readTree(response.getStream());
-			for (JsonNode node: queueNodes) {
-				Item item = new Item();
-				item.entity = "exchange";
-				item.vhost = node.get("vhost").textValue();
-				item.name = node.get("name").textValue();
-				item.type = node.get("type").textValue();
-				item.durable = node.get("durable").booleanValue();
-				boolean internal = node.get("internal").booleanValue();
-				if (!internal && isNotBlank(item.name)) {
-					result.add(item);
-				}
+		return result;
+	}
+
+
+	private List<Item> collectExchanges(PlungerArguments pa) throws IOException {
+		List<Item> result = new ArrayList<>();
+		Target t = pa.getTarget();
+		String mgmtPort = t.getParameterValue("managementPort");
+		String response = readUrl("http://" + t.getHost() + ":" + mgmtPort + "/api/exchanges", t.getUsername(), t.getPassword());
+		ArrayNode queueNodes = (ArrayNode)mapper.readTree(response);
+		for (JsonNode node: queueNodes) {
+			Item item = new Item();
+			item.entity = "exchange";
+			item.vhost = node.get("vhost").textValue();
+			item.name = node.get("name").textValue();
+			item.type = node.get("type").textValue();
+			item.durable = node.get("durable").booleanValue();
+			boolean internal = node.get("internal").booleanValue();
+			if (!internal && isNotBlank(item.name)) {
+				result.add(item);
 			}
 		}
 		return result;
