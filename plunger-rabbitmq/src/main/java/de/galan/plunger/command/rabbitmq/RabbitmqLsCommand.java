@@ -35,13 +35,11 @@ import de.galan.plunger.util.Output;
 public class RabbitmqLsCommand extends AbstractLsCommand {
 
 	RabbitmqCore core;
-	RabbitmqUtil util; // TODO useable?
 	ObjectMapper mapper;
 
 
 	@Override
 	protected void initialize(PlungerArguments pa) throws CommandException {
-		util = new RabbitmqUtil();
 		core = new RabbitmqCore();
 		mapper = new ObjectMapper();
 	}
@@ -49,6 +47,8 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 
 	@Override
 	protected void process(PlungerArguments pa) throws CommandException {
+		String vhost = pa.getCommandArgument("vhost");
+
 		List<Item> items = new ArrayList<>();
 		try {
 			items.addAll(collectQueues(pa));
@@ -60,11 +60,15 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 
 		items.sort(Comparator.comparing(i -> i.name));
 		for (Item item: items) {
-			if (StringUtils.equals("queue", item.entity)) {
-				printDestination(pa, item.name, item.consumer, item.messages, item.durable);
-			}
-			else {
-				printExchange(pa, item.name, item.type, item.durable);
+			boolean matchesTarget = pa.getTarget().isDestinationErased() || item.name.equals(pa.getTarget().getDestination());
+			boolean matchesVhost = isBlank(vhost) || StringUtils.equals(vhost, item.vhost);
+			if (matchesTarget && matchesVhost) {
+				if (StringUtils.equals("queue", item.entity)) {
+					printDestination(pa, item.name, item.consumer, item.messages, item.durable);
+				}
+				else {
+					printExchange(pa, item.name, item.type, item.durable);
+				}
 			}
 		}
 
@@ -190,4 +194,5 @@ class Item {
 	Long consumer;
 	Long messages;
 	Boolean durable;
+
 }
