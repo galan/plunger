@@ -1,8 +1,16 @@
 package de.galan.plunger.command.rabbitmq;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
+import de.galan.commons.net.UrlUtil;
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractCountCommand;
 import de.galan.plunger.domain.PlungerArguments;
+import de.galan.plunger.domain.Target;
+import de.galan.plunger.util.Urls;
 
 
 /**
@@ -13,30 +21,33 @@ import de.galan.plunger.domain.PlungerArguments;
 public class RabbitmqCountCommand extends AbstractCountCommand {
 
 	RabbitmqCore core;
-	RabbitmqUtil util;
-
-
-	@Override
-	protected long getCount(PlungerArguments pa) throws CommandException {
-		/*
-		try {
-			QueueQuery queueQuery = core.getSession().queueQuery(SimpleString.toSimpleString("jms." + pa.getTarget().getDestination()));
-			return pa.containsCommandArgument("c") ? queueQuery.getConsumerCount() : queueQuery.getMessageCount();
-		}
-		catch (Exception ex) {
-			throw new CommandException("Failed retrieving count", ex);
-		}
-		 */
-		return 0L;
-	}
 
 
 	@Override
 	protected void initialize(PlungerArguments pa) throws CommandException {
-		util = new RabbitmqUtil();
 		core = new RabbitmqCore();
-		//core.initialize(pa, util.getTransportConfiguration(pa));
-		//super.initialize(pa);
+	}
+
+
+	@Override
+	protected long getCount(PlungerArguments pa) throws CommandException {
+		Target t = pa.getTarget();
+		if (isBlank(t.getDestination())) {
+			throw new CommandException("No queue given");
+		}
+		try {
+			String mgmtPort = t.getParameterValue("managementPort");
+			String vhost = RabbitmqUtil.getBase64Vhost(pa);
+			String destination = "/" + UrlUtil.encode(t.getDestination());
+			String urlString = "http://" + t.getHost() + ":" + mgmtPort + "/api/queues/" + vhost + destination;
+			String response = Urls.read(urlString, t.getUsername(), t.getPassword());
+			ObjectNode tree = (ObjectNode)new ObjectMapper().readTree(response);
+			return tree.get(pa.containsCommandArgument("c") ? "consumers" : "messages").asLong(0L);
+		}
+		catch (Exception ex) {
+			throw new CommandException("Failed retrieving count", ex);
+		}
+
 	}
 
 

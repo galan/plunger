@@ -1,5 +1,7 @@
 package de.galan.plunger.command.rabbitmq;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
@@ -25,7 +27,8 @@ public class RabbitmqCore {
 		ConnectionFactory factory = new ConnectionFactory();
 		factory.setUsername(pa.getTarget().getUsername());
 		factory.setPassword(pa.getTarget().getPassword());
-		//factory.setVirtualHost(virtualHost);
+		String vhost = defaultString(pa.getCommandArgument("vhost"), "/");
+		factory.setVirtualHost(vhost);
 		factory.setHost(pa.getTarget().getHost());
 		factory.setPort(pa.getTarget().getPort());
 		try {

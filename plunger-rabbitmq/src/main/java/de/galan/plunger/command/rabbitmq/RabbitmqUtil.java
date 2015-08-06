@@ -1,7 +1,8 @@
 package de.galan.plunger.command.rabbitmq;
 
 import static org.apache.commons.lang3.StringUtils.*;
-import de.galan.plunger.command.jms.ProviderInformation;
+import de.galan.commons.net.UrlUtil;
+import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
@@ -9,7 +10,7 @@ import de.galan.plunger.command.jms.ProviderInformation;
  *
  * @author daniel
  */
-public class RabbitmqUtil implements ProviderInformation {
+public class RabbitmqUtil {
 
 	/*
 	public TransportConfiguration getTransportConfiguration(PlungerArguments pa) {
@@ -20,9 +21,13 @@ public class RabbitmqUtil implements ProviderInformation {
 	}
 	 */
 
-	@Override
-	public boolean isSystemHeader(String headerName) {
+	public static boolean isSystemHeader(String headerName) {
 		return startsWith(headerName, "JMS") || startsWith(headerName, "HQ");
+	}
+
+
+	public static String getBase64Vhost(PlungerArguments pa) {
+		return UrlUtil.encode(defaultString(pa.getTarget().getParameterValue("vhost"), "/"));
 	}
 
 }

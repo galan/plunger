@@ -3,16 +3,10 @@ package de.galan.plunger.command.rabbitmq;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.Charsets;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.Ansi.Color;
 
@@ -20,11 +14,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
+import de.galan.commons.net.UrlUtil;
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractLsCommand;
 import de.galan.plunger.domain.PlungerArguments;
 import de.galan.plunger.domain.Target;
 import de.galan.plunger.util.Output;
+import de.galan.plunger.util.Urls;
 
 
 /**
@@ -61,8 +57,7 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 		items.sort(Comparator.comparing(i -> i.name));
 		for (Item item: items) {
 			boolean matchesTarget = pa.getTarget().isDestinationErased() || item.name.equals(pa.getTarget().getDestination());
-			boolean matchesVhost = isBlank(vhost) || StringUtils.equals(vhost, item.vhost);
-			if (matchesTarget && matchesVhost) {
+			if (matchesTarget) {
 				if (StringUtils.equals("queue", item.entity)) {
 					printDestination(pa, item.name, item.consumer, item.messages, item.durable);
 				}
@@ -103,42 +98,14 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 	}
 
 
-	protected String readUrl(String url, String username, String password) throws IOException {
-		String result = null;
-		HttpURLConnection connection = null;
-		try {
-			connection = (HttpURLConnection)new URL(url).openConnection();
-			if (isNotBlank(username) && isNotBlank(password)) {
-				String pair = username + ":" + password;
-				String encodedAuthorization = trim(Base64.encodeBase64String(pair.getBytes(Charsets.UTF_8)));
-				connection.setRequestProperty("Authorization", "Basic " + encodedAuthorization);
-			}
-			//connection.setConnectTimeout(..);
-			//connection.setReadTimeout(..);
-			connection.setRequestMethod("GET");
-			//int statusCode = connection.getResponseCode();
-			InputStream stream = connection.getInputStream();
-			result = IOUtils.toString(stream, Charsets.UTF_8);
-			stream.close();
-		}
-		catch (Exception ex) {
-			throw new IOException(ex);
-		}
-		finally {
-			if (connection != null) {
-				connection.disconnect();
-			}
-		}
-		return result;
-	}
-
-
 	private List<Item> collectQueues(PlungerArguments pa) throws IOException {
 		List<Item> result = new ArrayList<>();
 
 		Target t = pa.getTarget();
 		String mgmtPort = t.getParameterValue("managementPort");
-		String response = readUrl("http://" + t.getHost() + ":" + mgmtPort + "/api/queues", t.getUsername(), t.getPassword());
+		String vhost = RabbitmqUtil.getBase64Vhost(pa);
+		String destination = isBlank(t.getDestination()) ? EMPTY : "/" + UrlUtil.encode(t.getDestination());
+		String response = Urls.read("http://" + t.getHost() + ":" + mgmtPort + "/api/queues/" + vhost + destination, t.getUsername(), t.getPassword());
 		ArrayNode queueNodes = (ArrayNode)mapper.readTree(response);
 		for (JsonNode node: queueNodes) {
 			Item item = new Item();
@@ -158,7 +125,9 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 		List<Item> result = new ArrayList<>();
 		Target t = pa.getTarget();
 		String mgmtPort = t.getParameterValue("managementPort");
-		String response = readUrl("http://" + t.getHost() + ":" + mgmtPort + "/api/exchanges", t.getUsername(), t.getPassword());
+		String vhost = RabbitmqUtil.getBase64Vhost(pa);
+		String destination = isBlank(t.getDestination()) ? EMPTY : "/" + UrlUtil.encode(t.getDestination());
+		String response = Urls.read("http://" + t.getHost() + ":" + mgmtPort + "/api/exchanges/" + vhost + destination, t.getUsername(), t.getPassword());
 		ArrayNode queueNodes = (ArrayNode)mapper.readTree(response);
 		for (JsonNode node: queueNodes) {
 			Item item = new Item();
