@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 import de.galan.commons.net.UrlUtil;
+import de.galan.commons.util.Contained;
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractLsCommand;
 import de.galan.plunger.domain.PlungerArguments;
@@ -137,11 +138,16 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 			item.type = node.get("type").textValue();
 			item.durable = node.get("durable").booleanValue();
 			boolean internal = node.get("internal").booleanValue();
-			if (!internal && isNotBlank(item.name)) {
+			if (!internal && !isDefaultExchange(item.name)) {
 				result.add(item);
 			}
 		}
 		return result;
+	}
+
+
+	private boolean isDefaultExchange(String name) {
+		return Contained.inObj(name, EMPTY, "amq.direct", "amq.fanout", "amq.headers", "amq.match", "amq.topic");
 	}
 
 
