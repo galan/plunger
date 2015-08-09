@@ -13,9 +13,9 @@ import org.fusesource.jansi.Ansi.Color;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import de.galan.commons.net.UrlUtil;
-import de.galan.commons.util.Contained;
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractLsCommand;
 import de.galan.plunger.domain.PlungerArguments;
@@ -44,8 +44,6 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 
 	@Override
 	protected void process(PlungerArguments pa) throws CommandException {
-		String vhost = pa.getCommandArgument("vhost");
-
 		List<Item> items = new ArrayList<>();
 		try {
 			items.addAll(collectQueues(pa));
@@ -107,16 +105,19 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 		String vhost = RabbitmqUtil.getBase64Vhost(pa);
 		String destination = isBlank(t.getDestination()) ? EMPTY : "/" + UrlUtil.encode(t.getDestination());
 		String response = Urls.read("http://" + t.getHost() + ":" + mgmtPort + "/api/queues/" + vhost + destination, t.getUsername(), t.getPassword());
-		ArrayNode queueNodes = (ArrayNode)mapper.readTree(response);
-		for (JsonNode node: queueNodes) {
-			Item item = new Item();
-			item.entity = "queue";
-			item.vhost = node.get("vhost").textValue();
-			item.name = node.get("name").textValue();
-			item.messages = node.get("messages_ready").longValue();
-			item.consumer = node.get("consumers").longValue();
-			item.durable = node.get("durable").booleanValue();
-			result.add(item);
+		JsonNode responseNode = mapper.readTree(response);
+		if (!(responseNode.isObject() && ((ObjectNode)responseNode).has("error"))) {
+			ArrayNode queueNodes = isBlank(t.getDestination()) ? (ArrayNode)responseNode : mapper.createArrayNode().add(responseNode);
+			for (JsonNode node: queueNodes) {
+				Item item = new Item();
+				item.entity = "queue";
+				item.vhost = node.get("vhost").textValue();
+				item.name = node.get("name").textValue();
+				item.messages = node.get("messages_ready").longValue();
+				item.consumer = node.get("consumers").longValue();
+				item.durable = node.get("durable").booleanValue();
+				result.add(item);
+			}
 		}
 		return result;
 	}
@@ -129,17 +130,20 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 		String vhost = RabbitmqUtil.getBase64Vhost(pa);
 		String destination = isBlank(t.getDestination()) ? EMPTY : "/" + UrlUtil.encode(t.getDestination());
 		String response = Urls.read("http://" + t.getHost() + ":" + mgmtPort + "/api/exchanges/" + vhost + destination, t.getUsername(), t.getPassword());
-		ArrayNode queueNodes = (ArrayNode)mapper.readTree(response);
-		for (JsonNode node: queueNodes) {
-			Item item = new Item();
-			item.entity = "exchange";
-			item.vhost = node.get("vhost").textValue();
-			item.name = node.get("name").textValue();
-			item.type = node.get("type").textValue();
-			item.durable = node.get("durable").booleanValue();
-			boolean internal = node.get("internal").booleanValue();
-			if (!internal && !isDefaultExchange(item.name)) {
-				result.add(item);
+		JsonNode responseNode = mapper.readTree(response);
+		if (!(responseNode.isObject() && ((ObjectNode)responseNode).has("error"))) {
+			ArrayNode queueNodes = isBlank(t.getDestination()) ? (ArrayNode)responseNode : mapper.createArrayNode().add(responseNode);
+			for (JsonNode node: queueNodes) {
+				Item item = new Item();
+				item.entity = "exchange";
+				item.vhost = node.get("vhost").textValue();
+				item.name = node.get("name").textValue();
+				item.type = node.get("type").textValue();
+				item.durable = node.get("durable").booleanValue();
+				boolean internal = node.get("internal").booleanValue();
+				if (!internal && !isDefaultExchange(item.name)) {
+					result.add(item);
+				}
 			}
 		}
 		return result;
@@ -147,7 +151,7 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 
 
 	private boolean isDefaultExchange(String name) {
-		return Contained.inObj(name, EMPTY, "amq.direct", "amq.fanout", "amq.headers", "amq.match", "amq.topic");
+		return RabbitmqUtil.isSystemHeader(name);
 	}
 
 

@@ -32,8 +32,8 @@ public class Urls {
 			//connection.setConnectTimeout(..);
 			//connection.setReadTimeout(..);
 			connection.setRequestMethod("GET");
+			InputStream stream = (connection.getResponseCode() >= 400) ? connection.getErrorStream() : connection.getInputStream();
 			//int statusCode = connection.getResponseCode();
-			InputStream stream = connection.getInputStream();
 			result = IOUtils.toString(stream, Charsets.UTF_8);
 			stream.close();
 		}

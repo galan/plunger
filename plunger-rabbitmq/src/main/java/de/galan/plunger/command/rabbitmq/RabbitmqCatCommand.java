@@ -1,5 +1,7 @@
 package de.galan.plunger.command.rabbitmq;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
 import java.io.IOException;
 import java.util.Map.Entry;
 
@@ -35,13 +37,16 @@ public class RabbitmqCatCommand extends AbstractCatCommand {
 
 	@Override
 	protected void beforeFirstMessage(PlungerArguments pa) throws CommandException {
+		// TODO not supported by rabbitmq, maybe https://www.rabbitmq.com/consumer-cancel.html
+		boolean browseOnly = !pa.containsCommandArgument("r");
+		if (browseOnly) {
+			throw new CommandException("Only removing reading is supported with RabbitMQ (use -r switch).");
+		}
+
 		try {
 			Connection connection = core.getConnection();
 			channel = connection.createChannel();
 
-			// TODO not supported by rabbitmq
-			// maybe https://www.rabbitmq.com/consumer-cancel.html
-			//boolean browseOnly = !pa.containsCommandArgument("r");
 		}
 		catch (IOException ex) {
 			throw new CommandException("Failed creating channel", ex);
@@ -75,7 +80,15 @@ public class RabbitmqCatCommand extends AbstractCatCommand {
 				for (Entry<String, Object> entry: response.getProps().getHeaders().entrySet()) {
 					result.putProperty(entry.getKey(), entry.getValue());
 				}
+				result.putProperty("rmq.exchange", response.getEnvelope().getExchange());
+				result.putProperty("rmq.redeliver", response.getEnvelope().isRedeliver());
+				result.putProperty("rmq.routingkey", trimToNull(response.getEnvelope().getRoutingKey()));
+				result.putProperty("rmq.contenttype", response.getProps().getContentType());
+				result.putProperty("rmq.priority", response.getProps().getPriority());
+				result.putProperty("rmq.expiration", response.getProps().getExpiration());
+				result.putProperty("rmq.timestamp", response.getProps().getTimestamp());
 			}
+
 			/*
 			try {
 				result = new Message();
@@ -115,7 +128,7 @@ public class RabbitmqCatCommand extends AbstractCatCommand {
 
 	@Override
 	protected boolean isSystemHeader(String headerName) {
-		return false;
+		return startsWith(headerName, "rmq.");
 	}
 
 

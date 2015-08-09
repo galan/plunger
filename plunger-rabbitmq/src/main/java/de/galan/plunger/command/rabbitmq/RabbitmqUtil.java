@@ -2,6 +2,7 @@ package de.galan.plunger.command.rabbitmq;
 
 import static org.apache.commons.lang3.StringUtils.*;
 import de.galan.commons.net.UrlUtil;
+import de.galan.commons.util.Contained;
 import de.galan.plunger.domain.PlungerArguments;
 
 
@@ -12,17 +13,8 @@ import de.galan.plunger.domain.PlungerArguments;
  */
 public class RabbitmqUtil {
 
-	/*
-	public TransportConfiguration getTransportConfiguration(PlungerArguments pa) {
-		Map<String, Object> connectionMap = new HashMap<>();
-		connectionMap.put(TransportConstants.HOST_PROP_NAME, pa.getTarget().getHost());
-		connectionMap.put(TransportConstants.PORT_PROP_NAME, pa.getTarget().getPort());
-		return new TransportConfiguration(NettyConnectorFactory.class.getName(), connectionMap);
-	}
-	 */
-
 	public static boolean isSystemHeader(String headerName) {
-		return startsWith(headerName, "JMS") || startsWith(headerName, "HQ");
+		return Contained.inObj(headerName, EMPTY, "amq.direct", "amq.fanout", "amq.headers", "amq.match", "amq.topic");
 	}
 
 
