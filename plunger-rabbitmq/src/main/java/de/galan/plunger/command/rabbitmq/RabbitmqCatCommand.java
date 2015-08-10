@@ -3,6 +3,8 @@ package de.galan.plunger.command.rabbitmq;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import com.google.common.base.Charsets;
@@ -77,7 +79,8 @@ public class RabbitmqCatCommand extends AbstractCatCommand {
 			String body = new String(response.getBody(), Charsets.UTF_8);
 			result.setBody(body);
 			if (!pa.containsCommandArgument("p")) { // exclude properties or not
-				for (Entry<String, Object> entry: response.getProps().getHeaders().entrySet()) {
+				Map<String, Object> headers = (response.getProps().getHeaders() == null) ? new HashMap<>() : response.getProps().getHeaders();
+				for (Entry<String, Object> entry: headers.entrySet()) {
 					result.putProperty(entry.getKey(), entry.getValue());
 				}
 				result.putProperty("rmq.exchange", response.getEnvelope().getExchange());
@@ -88,39 +91,6 @@ public class RabbitmqCatCommand extends AbstractCatCommand {
 				result.putProperty("rmq.expiration", response.getProps().getExpiration());
 				result.putProperty("rmq.timestamp", response.getProps().getTimestamp());
 			}
-
-			/*
-			try {
-				result = new Message();
-				result.setBody(tm.getText());
-				// body
-				if (!pa.containsCommandArgument("p")) { // exclude properties or not
-					@SuppressWarnings("unchecked")
-					Enumeration<String> enumKeys = tm.getPropertyNames();
-					while(enumKeys.hasMoreElements()) {
-						String key = enumKeys.nextElement();
-						result.putProperty(key, tm.getObjectProperty(key));
-					}
-
-					result.putProperty("JMSCorrelationID", tm.getJMSCorrelationID());
-					result.putProperty("JMSDeliveryMode", tm.getJMSDeliveryMode());
-					result.putProperty("JMSDestination", "" + tm.getJMSDestination());
-					if (tm.getJMSExpiration() != 0) {
-						//TODO implement expiriation in put first
-						result.putPropertyTimestamp("JMSExpiration", tm.getJMSExpiration()); //TODO format and write additional in humantime "in 12m10s"
-					}
-					result.putProperty("JMSMessageID", tm.getJMSMessageID());
-					result.putProperty("JMSPriority", tm.getJMSPriority());
-					result.putProperty("JMSRedelivered", tm.getJMSRedelivered());
-					result.putProperty("JMSReplyTo", tm.getJMSReplyTo() == null ? "" : "" + tm.getJMSReplyTo());
-					result.putPropertyTimestamp("JMSTimestamp", tm.getJMSTimestamp());
-					result.putProperty("JMSType", tm.getJMSType());
-				}f
-			}
-			catch (JMSException jex) {
-				throw new CommandException("Could not read message", jex);
-			}
-			 */
 		}
 		return result;
 	}
@@ -136,15 +106,5 @@ public class RabbitmqCatCommand extends AbstractCatCommand {
 	protected void close() {
 		core.close();
 	}
-
-	/*
-	@Override
-	protected void initialize(PlungerArguments pa) throws CommandException {
-		RabbitmqUtil util = new RabbitmqUtil();
-		setProviderInformation(util);
-		setJms(new RabbitmqJms(util.getTransportConfiguration(pa)));
-		super.initialize(pa);
-	}
-	 */
 
 }
