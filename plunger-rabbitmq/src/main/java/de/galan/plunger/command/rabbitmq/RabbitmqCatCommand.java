@@ -11,6 +11,7 @@ import com.google.common.base.Charsets;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.GetResponse;
+import com.rabbitmq.client.LongString;
 
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractCatCommand;
@@ -81,7 +82,11 @@ public class RabbitmqCatCommand extends AbstractCatCommand {
 			if (!pa.containsCommandArgument("p")) { // exclude properties or not
 				Map<String, Object> headers = (response.getProps().getHeaders() == null) ? new HashMap<>() : response.getProps().getHeaders();
 				for (Entry<String, Object> entry: headers.entrySet()) {
-					result.putProperty(entry.getKey(), entry.getValue());
+					Object value = entry.getValue();
+					if (LongString.class.isAssignableFrom(entry.getValue().getClass())) {
+						value = ((LongString)entry.getValue()).toString();
+					}
+					result.putProperty(entry.getKey(), value);
 				}
 				result.putProperty("rmq.exchange", response.getEnvelope().getExchange());
 				result.putProperty("rmq.redeliver", response.getEnvelope().isRedeliver());
