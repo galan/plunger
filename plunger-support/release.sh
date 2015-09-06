@@ -14,7 +14,7 @@ cp -r ${PLUNGER_HOME} ${PATH_SCRIPT}
 cp ${PATH_SCRIPT}/../README.md ${PATH_TARGET}
 cp ${PATH_SCRIPT}/../LICENCE ${PATH_TARGET}
 
-mkdir ${PATH_RELEASES}
+mkdir -p ${PATH_RELEASES}
 tar czf ${PATH_SCRIPT}/releases/plunger-${VERSION}.tgz -C ${PATH_SCRIPT} plunger
 rm -rf ${PATH_TARGET}
 
