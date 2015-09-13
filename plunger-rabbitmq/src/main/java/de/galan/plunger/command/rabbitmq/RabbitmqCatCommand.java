@@ -43,13 +43,13 @@ public class RabbitmqCatCommand extends AbstractCatCommand {
 		// TODO not supported by rabbitmq, maybe https://www.rabbitmq.com/consumer-cancel.html
 		boolean browseOnly = !pa.containsCommandArgument("r");
 		if (browseOnly) {
-			throw new CommandException("Only removing reading is supported with RabbitMQ (use -r switch).");
+			//throw new CommandException("Only removing reading is supported with RabbitMQ (use -r switch).");
+
 		}
 
 		try {
 			Connection connection = core.getConnection();
 			channel = connection.createChannel();
-
 		}
 		catch (IOException ex) {
 			throw new CommandException("Failed creating channel", ex);
@@ -61,7 +61,8 @@ public class RabbitmqCatCommand extends AbstractCatCommand {
 	protected Message getNextMessage(PlungerArguments pa) throws CommandException {
 		Message result = null;
 		try {
-			GetResponse response = channel.basicGet(pa.getTarget().getDestination(), true);
+			boolean removeMessage = pa.containsCommandArgument("r");
+			GetResponse response = channel.basicGet(pa.getTarget().getDestination(), removeMessage);
 			result = constructMessage(response, pa);
 		}
 		catch (IOException ex) {
