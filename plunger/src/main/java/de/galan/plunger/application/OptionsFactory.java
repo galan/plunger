@@ -9,7 +9,7 @@ import de.galan.plunger.command.CommandName;
 
 /**
  * Defines the commandline arguments for the basic usage, as well as for the specific commands (additiv).
- * 
+ *
  * @author daniel
  */
 public class OptionsFactory {
@@ -117,7 +117,8 @@ public class OptionsFactory {
 		//.withType(Long.class)
 
 		OptionBuilder.withLongOpt("escape");
-		OptionBuilder.withDescription("Escapes the message.\nWhen the output is intended for further processing, this switch will map all output to single line. JMS-properties are formatted as json, the body is escaped as well. This form is required for put.");
+		OptionBuilder.withDescription(
+			"Escapes the message.\nWhen the output is intended for further processing, this switch will map all output to single line. JMS-properties are formatted as json, the body is escaped as well. This form is required for put.");
 		Option optionEscape = OptionBuilder.create("e");
 
 		OptionBuilder.withLongOpt("limit");
@@ -136,7 +137,7 @@ public class OptionsFactory {
 
 		OptionBuilder.withLongOpt("selector");
 		OptionBuilder.hasArgs(); // is required, even we think of the selector query only as single argument
-		OptionBuilder.withDescription("selector to filter the targets result");
+		OptionBuilder.withDescription("selector to filter the targets result (JMS)");
 		Option optionSelector = OptionBuilder.create("s");
 
 		return createOptions(optionBody, optionCut, optionEscape, optionLimit, optionProperties, optionRemove, optionSelector);
@@ -163,7 +164,12 @@ public class OptionsFactory {
 		OptionBuilder.withDescription("Priority");
 		Option optionPrio = OptionBuilder.create("p");
 
-		return createOptions(optionFile, optionSkip, optionTtl, optionPrio);
+		OptionBuilder.withLongOpt("routingkey");
+		OptionBuilder.hasArg();
+		OptionBuilder.withDescription("Routingkey (AMQP)");
+		Option optionRk = OptionBuilder.create("r");
+
+		return createOptions(optionFile, optionSkip, optionTtl, optionPrio, optionRk);
 	}
 
 

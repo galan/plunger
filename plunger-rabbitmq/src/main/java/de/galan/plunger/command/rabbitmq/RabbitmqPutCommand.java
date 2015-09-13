@@ -53,7 +53,7 @@ public class RabbitmqPutCommand extends AbstractPutCommand {
 	protected void sendMessage(PlungerArguments pa, Message message, long count) throws CommandException {
 		byte[] bodyBytes = defaultString(message.getBody()).getBytes(UTF_8);
 		BasicProperties basic = mapProperties(pa, message);
-		String routingkey = defaultString(defaultString(pa.getTarget().getParameterValue("routingkey"), pa.getTarget().getParameterValue("routingKey")));
+		String routingkey = defaultString(pa.getCommandArgument("r"));
 		try {
 			channel.basicPublish(pa.getTarget().getDestination(), routingkey, false, basic, bodyBytes);
 		}
