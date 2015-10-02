@@ -4,6 +4,7 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -87,7 +88,10 @@ public class RabbitmqCatCommand extends AbstractCatCommand {
 					if (LongString.class.isAssignableFrom(entry.getValue().getClass())) {
 						value = ((LongString)entry.getValue()).toString();
 					}
-					result.putProperty(entry.getKey(), value);
+					// will strip arrays away
+					if (!List.class.isAssignableFrom(entry.getValue().getClass())) {
+						result.putProperty(entry.getKey(), value);
+					}
 				}
 				result.putProperty("rmq.exchange", response.getEnvelope().getExchange());
 				result.putProperty("rmq.redeliver", response.getEnvelope().isRedeliver());
