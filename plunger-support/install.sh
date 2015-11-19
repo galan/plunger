@@ -10,7 +10,7 @@
 #   can override the prefix used by setting PLUNGER_PREFIX (default is 'p')
 #
 
-PATH_SCRIPT=$(dirname $(readlink -f $0))
+PATH_SCRIPT=$(cd "$(dirname "$0")" && pwd)
 PATH_BASE=${PATH_SCRIPT}/..
 PLUNGER_NAME=plunger
 PLUNGER_HOME=${PLUNGER_HOME-${HOME}/bin/${PLUNGER_NAME}}
@@ -47,7 +47,7 @@ cp ${PATH_BASE}/plunger-activemq/target/plunger-activemq-*-SNAPSHOT.jar ${PLUNGE
 
 # Workaround, will check assembly-plugin instead.
 #rm ${PLUNGER_LIBS}/plunger-*-SNAPSHOT.jar
- 
+
 #rm -f ${PLUNGER_HOME}/assembly-plunger.jar
 #cp target/plunger-*-jar-with-dependencies.jar $PLUNGER_HOME/assembly-plunger.jar
 
@@ -56,7 +56,7 @@ cp ${PATH_BASE}/plunger-activemq/target/plunger-activemq-*-SNAPSHOT.jar ${PLUNGE
 header "creating launch-scripts"
 
 echo "#!/bin/bash
-PATH_SCRIPT=\$(dirname \$(readlink -f \$0))
+PATH_SCRIPT=\$(cd \"\$(dirname \"\$0\")\" && pwd)
 JAVA_HOME=\${JAVA_HOME}
 if [ -f \"\${PATH_SCRIPT}/plunger-environment.sh\" ]; then
 	. \${PATH_SCRIPT}/plunger-environment.sh
@@ -67,7 +67,7 @@ fi
 #echo "\${JAVA_HOME}/bin/java -cp .:jars/* de.galan.plunger.application.Plunger \$*" >> ${PLUNGER_HOME}/${PLUNGER_NAME}
 
 #echo "#!/bin/bash" > ${PLUNGER_HOME}/${PLUNGER_NAME}
-#echo "PATH_SCRIPT=\$(dirname \$(readlink -f \$0))" >> ${PLUNGER_HOME}/${PLUNGER_NAME}
+#echo "PATH_SCRIPT=\$(cd \"\$(dirname \"\$0\")\" && pwd)" >> ${PLUNGER_HOME}/${PLUNGER_NAME}
 #echo "JAVA_HOME=\${JAVA_HOME-\${HOME}/bin/jdk7}" >> ${PLUNGER_HOME}/${PLUNGER_NAME}
 #echo "if []; then fi . \${PATH_SCRIPT}/plunger-environment.sh" >> ${PLUNGER_HOME}/${PLUNGER_NAME}
 #echo "\${JAVA_HOME}/bin/java -cp \${PATH_SCRIPT}/libs/\* de.galan.plunger.application.Plunger \$*" >> ${PLUNGER_HOME}/${PLUNGER_NAME}
@@ -78,7 +78,7 @@ chmod +x ${PLUNGER_HOME}/${PLUNGER_NAME}
 createScript() {
 	SCRIPT_NAME=${PLUNGER_HOME}/${PLUNGER_PREFIX}$1
 	echo "#!/bin/bash
-PATH_SCRIPT=\$(dirname \$(readlink -f \$0))
+PATH_SCRIPT=\$(cd \"\$(dirname \"\$0\")\" && pwd)
 target=\$1; shift 1
 \${PATH_SCRIPT}/plunger \$target -C $1 \$*
 	" > ${SCRIPT_NAME}
