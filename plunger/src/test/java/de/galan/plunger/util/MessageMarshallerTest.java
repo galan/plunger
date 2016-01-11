@@ -1,6 +1,6 @@
 package de.galan.plunger.util;
 
-import static org.assertj.core.api.StrictAssertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 
 import org.junit.Before;
