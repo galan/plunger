@@ -61,7 +61,11 @@ JAVA_HOME=\${JAVA_HOME}
 if [ -f \"\${PATH_SCRIPT}/plunger-environment.sh\" ]; then
 	. \${PATH_SCRIPT}/plunger-environment.sh
 fi
-\${JAVA_HOME}/bin/java -cp \${PATH_SCRIPT}/libs/\* de.galan.plunger.application.Plunger \$*
+JAVA_BIN=\${JAVA_HOME}/bin/java
+if [ ! -x \"\${JAVA_HOME}\" ]; then
+	JAVA_BIN=java
+fi
+\${JAVA_BIN} -cp \${PATH_SCRIPT}/libs/\* de.galan.plunger.application.Plunger \$*
 " > ${PLUNGER_HOME}/${PLUNGER_NAME}
 
 #echo "\${JAVA_HOME}/bin/java -cp .:jars/* de.galan.plunger.application.Plunger \$*" >> ${PLUNGER_HOME}/${PLUNGER_NAME}
