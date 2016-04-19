@@ -2,6 +2,7 @@ package de.galan.plunger.application;
 
 import static org.apache.commons.lang3.StringUtils.*;
 
+import java.io.File;
 import java.io.PrintWriter;
 
 import org.apache.commons.cli.CommandLine;
@@ -52,10 +53,7 @@ public class Plunger {
 
 			checkInformationSwitches(optionsCommand, line, command);
 
-			Config config = new Config();
-			if (!config.parse(System.getProperty("user.home") + System.getProperty("file.separator") + ".plunger")) {
-				System.exit(2);
-			}
+			Config config = loadConfig();
 			PlungerArguments pa = new ArgumentMerger().merge(line.getArgs()[0], config, line, optionsCommand);
 			Output.setColor(pa.isColors());
 
@@ -65,6 +63,22 @@ public class Plunger {
 			String msg = defaultIfBlank(ex.getMessage(), ex.getClass().getName());
 			printUsage(command, msg, 1);
 		}
+	}
+
+
+	private Config loadConfig() {
+		Config config = new Config();
+		String fs = System.getProperty("file.separator");
+		// consider XDG config first, which is %XDG_CONFIG_HOME/plunger/targets, otherwise $HOME/.plunger
+		String xdgPath = defaultString(System.getenv("XDG_CONFIG_HOME"), System.getProperty("user.home") + fs + ".config");
+		File xdgFile = new File(new File(xdgPath, "plunger"), "targets");
+		boolean xdgExist = xdgFile.exists() && xdgFile.isFile();
+		File configFile = xdgExist ? xdgFile : new File(System.getProperty("user.home"), ".plunger");
+
+		if (!config.parse(configFile)) {
+			System.exit(2);
+		}
+		return config;
 	}
 
 
