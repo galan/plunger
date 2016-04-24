@@ -35,8 +35,11 @@ public class RabbitmqCountCommand extends AbstractCountCommand {
 		if (isBlank(t.getDestination())) {
 			throw new CommandException("No queue given");
 		}
+		String mgmtPort = t.getParameterValue("managementPort");
+		if (!isNumeric(mgmtPort)) {
+			throw new CommandException("No managementPort provided");
+		}
 		try {
-			String mgmtPort = t.getParameterValue("managementPort");
 			String vhost = RabbitmqUtil.getBase64Vhost(pa);
 			String destination = "/" + UrlUtil.encode(t.getDestination());
 			String urlString = "http://" + t.getHost() + ":" + mgmtPort + "/api/queues/" + vhost + destination;

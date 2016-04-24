@@ -97,11 +97,14 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 	}
 
 
-	private List<Item> collectQueues(PlungerArguments pa) throws IOException {
+	private List<Item> collectQueues(PlungerArguments pa) throws IOException, CommandException {
 		List<Item> result = new ArrayList<>();
 
 		Target t = pa.getTarget();
 		String mgmtPort = t.getParameterValue("managementPort");
+		if (!isNumeric(mgmtPort)) {
+			throw new CommandException("No managementPort provided");
+		}
 		String vhost = RabbitmqUtil.getBase64Vhost(pa);
 		String destination = isBlank(t.getDestination()) ? EMPTY : "/" + UrlUtil.encode(t.getDestination());
 		String response = Urls.read("http://" + t.getHost() + ":" + mgmtPort + "/api/queues/" + vhost + destination, t.getUsername(), t.getPassword());
