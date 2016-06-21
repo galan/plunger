@@ -2,15 +2,12 @@ package de.galan.plunger.util;
 
 import static org.junit.Assert.*;
 
-
 import org.junit.Test;
-
-import de.galan.plunger.util.Escape;
 
 
 /**
  * CUT Escape.
- * 
+ *
  * @author daniel
  */
 public class EscapeTest {
@@ -33,6 +30,7 @@ public class EscapeTest {
 		assertEquals("hallo\\fworld", esc.escape("hallo\fworld"));
 		assertEquals("hallo\\'world", esc.escape("hallo'world"));
 		assertEquals("hallo\\\"world", esc.escape("hallo\"world"));
+		assertEquals("hallo\\u2028world", esc.escape("hallo\u2028world"));
 	}
 
 
@@ -51,6 +49,7 @@ public class EscapeTest {
 		assertEquals("hallo\fworld", esc.unescape("hallo\\fworld"));
 		assertEquals("hallo'world", esc.unescape("hallo\\'world"));
 		assertEquals("hallo\"world", esc.unescape("hallo\\\"world"));
+		assertEquals("hallo\u2028world", esc.unescape("hallo\\u2028world"));
 	}
 
 }

@@ -10,8 +10,8 @@ import static org.apache.commons.lang3.StringUtils.*;
  */
 public class Escape {
 
-	private static final String[] REPLACE = new String[] {"\\", "\n", "\r", "\t", "\b", "\f", "\'", "\""};
-	private static final String[] WITH = new String[] {"\\\\", "\\n", "\\r", "\\t", "\\b", "\\f", "\\'", "\\\""};
+	private static final String[] REPLACE = new String[] {"\\", "\n", "\r", "\t", "\b", "\f", "\'", "\"", "\u2028", "\u2029"};
+	private static final String[] WITH = new String[] {"\\\\", "\\n", "\\r", "\\t", "\\b", "\\f", "\\'", "\\\"", "\\u2028", "\\u2029"};
 
 
 	public String escape(String text) {
