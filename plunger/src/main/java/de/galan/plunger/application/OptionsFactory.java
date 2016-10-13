@@ -107,7 +107,7 @@ public class OptionsFactory {
 
 	protected Options createOptionsCat() {
 		OptionBuilder.withLongOpt("body");
-		OptionBuilder.withDescription("When set, the body will be omitted");
+		OptionBuilder.withDescription("Suppresses the body");
 		Option optionBody = OptionBuilder.create("b");
 
 		OptionBuilder.withLongOpt("cut");
@@ -128,8 +128,12 @@ public class OptionsFactory {
 
 		Option optionLimit = OptionBuilder.create("n");
 		OptionBuilder.withLongOpt("properties");
-		OptionBuilder.withDescription("When set, the properties will be omitted");
+		OptionBuilder.withDescription("Suppresses the properties");
 		Option optionProperties = OptionBuilder.create("p");
+
+		OptionBuilder.withLongOpt("seperator");
+		OptionBuilder.withDescription("Suppresses the delimiting separator");
+		Option optionSeparator = OptionBuilder.create("d");
 
 		OptionBuilder.withLongOpt("remove");
 		OptionBuilder.withDescription("Read messages will also be removed from the queue");
@@ -137,21 +141,21 @@ public class OptionsFactory {
 
 		OptionBuilder.withLongOpt("selector");
 		OptionBuilder.hasArgs(); // is required, even we think of the selector query only as single argument
-		OptionBuilder.withDescription("selector to filter the targets result (JMS)");
+		OptionBuilder.withDescription("Selector to filter the targets result (JMS)");
 		Option optionSelector = OptionBuilder.create("s");
 
-		return createOptions(optionBody, optionCut, optionEscape, optionLimit, optionProperties, optionRemove, optionSelector);
+		return createOptions(optionBody, optionCut, optionEscape, optionLimit, optionProperties, optionSeparator, optionRemove, optionSelector);
 	}
 
 
 	protected Options createOptionsPut() {
 		OptionBuilder.withLongOpt("file");
 		OptionBuilder.hasArgs();
-		OptionBuilder.withDescription("file with escaped messages (instead of stdin)");
+		OptionBuilder.withDescription("File with escaped messages (instead of stdin)");
 		Option optionFile = OptionBuilder.create("f");
 
 		OptionBuilder.withLongOpt("skip");
-		OptionBuilder.withDescription("skip lines with errors");
+		OptionBuilder.withDescription("Skip lines with errors");
 		Option optionSkip = OptionBuilder.create("s");
 
 		OptionBuilder.withLongOpt("ttl");

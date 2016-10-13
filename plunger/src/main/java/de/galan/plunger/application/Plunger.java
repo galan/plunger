@@ -7,10 +7,10 @@ import java.io.PrintWriter;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
 import org.fusesource.jansi.AnsiConsole;
 
 import de.galan.plunger.command.CommandName;
@@ -48,7 +48,7 @@ public class Plunger {
 
 			command = CommandName.get(lineBasic.getOptionValue("command"));
 			Options optionsCommand = factory.createOptions(command);
-			CommandLineParser parser = new PosixParser();
+			CommandLineParser parser = new DefaultParser();
 			CommandLine line = parser.parse(optionsCommand, args);
 
 			checkInformationSwitches(optionsCommand, line, command);

@@ -68,7 +68,7 @@ public abstract class AbstractCatCommand extends AbstractCommand {
 
 	protected boolean printSeparator(boolean firstMessage, PlungerArguments pa) {
 		if (!firstMessage) {
-			if (!pa.containsCommandArgument("e")) {
+			if (!pa.containsCommandArgument("e") && !pa.containsCommandArgument("d")) {
 				Output.println(StringUtils.repeat("-", 64));
 			}
 		}
