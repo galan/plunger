@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
-import org.apache.commons.cli.PosixParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * CUT ArgumentMerger
- * 
+ *
  * @author daniel
  */
 public class ArgumentMergerTest {
@@ -62,7 +62,7 @@ public class ArgumentMergerTest {
 
 
 	protected CommandLine constructCommandLine(Options options, String... args) throws ParseException {
-		CommandLineParser parser = new PosixParser();
+		CommandLineParser parser = new DefaultParser();
 		return parser.parse(options, args);
 	}
 

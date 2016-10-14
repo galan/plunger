@@ -8,7 +8,7 @@ import org.apache.commons.cli.PosixParser;
 
 /**
  * Apache commons cli doesn't support ignoring unknown options.
- * 
+ *
  * @author daniel
  */
 public class IgnoringPosixParser extends PosixParser {

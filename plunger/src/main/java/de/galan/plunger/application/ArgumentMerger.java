@@ -39,7 +39,7 @@ public class ArgumentMerger {
 
 		for (Object opt: options.getOptions()) {
 			Option option = (Option)opt;
-			if (line.hasOption(option.getOpt())) {
+			if (option.getOpt() != null && line.hasOption(option.getOpt())) {
 				String value = join(line.getOptionValues(option.getOpt()), " ");
 				result.addCommandArgument(option.getOpt(), value);
 				result.addCommandArgument(option.getLongOpt(), value);
@@ -82,12 +82,9 @@ public class ArgumentMerger {
 		for (String key: ct.getParameter().keySet()) {
 			result.getParameter().put(key, ct.getParameter().get(key));
 		}
-
-		/*
-		if (!result.isDestinationSet()) {
-			throw new CommandException("No destination is given");
-		}
-		 */
+		//if (!result.isDestinationSet()) {
+		//	throw new CommandException("No destination is given");
+		//}
 		return result;
 	}
 
