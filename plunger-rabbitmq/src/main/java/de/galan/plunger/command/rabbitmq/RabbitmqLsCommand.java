@@ -103,24 +103,28 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 		Target t = pa.getTarget();
 		String mgmtPort = t.getParameterValue("managementPort");
 		if (!isNumeric(mgmtPort)) {
-			throw new CommandException("No managementPort provided");
+			throw new CommandException("No 'managementPort' parameter provided");
 		}
 		String vhost = RabbitmqUtil.getBase64Vhost(pa);
 		String destination = isBlank(t.getDestination()) ? EMPTY : "/" + UrlUtil.encode(t.getDestination());
 		String response = Urls.read("http://" + t.getHost() + ":" + mgmtPort + "/api/queues/" + vhost + destination, t.getUsername(), t.getPassword());
 		JsonNode responseNode = mapper.readTree(response);
-		if (!(responseNode.isObject() && ((ObjectNode)responseNode).has("error"))) {
-			ArrayNode queueNodes = isBlank(t.getDestination()) ? (ArrayNode)responseNode : mapper.createArrayNode().add(responseNode);
-			for (JsonNode node: queueNodes) {
-				Item item = new Item();
-				item.entity = "queue";
-				item.vhost = node.get("vhost").textValue();
-				item.name = node.get("name").textValue();
-				item.messages = node.get("messages_ready").longValue();
-				item.consumer = node.get("consumers").longValue();
-				item.durable = node.get("durable").booleanValue();
-				result.add(item);
+		if (responseNode.isObject()) {
+			if (((ObjectNode)responseNode).has("error")) {
+				throw new CommandException("Failed retrieving queues: " + ((ObjectNode)responseNode).get("error").asText());
 			}
+			throw new CommandException("Unexpected json format returned from rabbitmq-management: " + responseNode.toString());
+		}
+		ArrayNode queueNodes = isBlank(t.getDestination()) ? (ArrayNode)responseNode : mapper.createArrayNode().add(responseNode);
+		for (JsonNode node: queueNodes) {
+			Item item = new Item();
+			item.entity = "queue";
+			item.vhost = node.get("vhost").textValue();
+			item.name = node.get("name").textValue();
+			item.messages = node.get("messages_ready").longValue();
+			item.consumer = node.get("consumers").longValue();
+			item.durable = node.get("durable").booleanValue();
+			result.add(item);
 		}
 		return result;
 	}
