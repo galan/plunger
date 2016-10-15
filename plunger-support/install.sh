@@ -16,10 +16,10 @@ PLUNGER_NAME=plunger
 PLUNGER_HOME=${PLUNGER_HOME-${HOME}/bin/${PLUNGER_NAME}}
 PLUNGER_LIBS=${PLUNGER_HOME}/libs
 PLUNGER_PREFIX=${PLUNGER_PREFIX-p}
-if [ ! -d "${JAVA_HOME}" ]; then
-	echo "JAVA_HOME is not set, exiting."
-	exit 1
-fi
+
+command -v mvn >/dev/null 2>&1 || { echo >&2 "maven not in PATH, exiting."; exit 1; }
+command -v java >/dev/null 2>&1 || { echo >&2 "java not in PATH, exiting."; exit 1; }
+command -v javac >/dev/null 2>&1 || { echo >&2 "javac not in PATH, exiting."; exit 1; }
 
 function header() {
 	echo -e "\n---------------- $1 ----------------"
@@ -57,15 +57,11 @@ header "creating launch-scripts"
 
 echo "#!/bin/bash
 PATH_SCRIPT=\$(cd \"\$(dirname \"\$0\")\" && pwd)
-JAVA_HOME=\${JAVA_HOME}
+command -v java >/dev/null 2>&1 || { echo >&2 \"java not in PATH, exiting.\"; exit 1; }
 if [ -f \"\${PATH_SCRIPT}/plunger-environment.sh\" ]; then
 	. \${PATH_SCRIPT}/plunger-environment.sh
 fi
-JAVA_BIN=\${JAVA_HOME}/bin/java
-if [ ! -x \"\${JAVA_HOME}\" ]; then
-	JAVA_BIN=java
-fi
-\${JAVA_BIN} -cp \${PATH_SCRIPT}/libs/\* de.galan.plunger.application.Plunger \$*
+java -cp \${PATH_SCRIPT}/libs/\* de.galan.plunger.application.Plunger \$*
 " > ${PLUNGER_HOME}/${PLUNGER_NAME}
 
 #echo "\${JAVA_HOME}/bin/java -cp .:jars/* de.galan.plunger.application.Plunger \$*" >> ${PLUNGER_HOME}/${PLUNGER_NAME}
