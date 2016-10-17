@@ -4,7 +4,7 @@
 
 	<groupId>de.galan</groupId>
 	<artifactId>plunger</artifactId>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.4</version>
 	<name>plunger</name>
 
 	<parent>
