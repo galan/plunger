@@ -53,16 +53,10 @@
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-assembly-plugin</artifactId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
-					<descriptorRefs>
-						<descriptorRef>jar-with-dependencies</descriptorRef>
-					</descriptorRefs>
-					<archive>
-						<manifest>
-							<mainClass>de.galan.plunger.application.Plunger</mainClass>
-						</manifest>
-					</archive>
+					<finalName>plunger-hornetq</finalName>
 				</configuration>
 			</plugin>
 		</plugins>
