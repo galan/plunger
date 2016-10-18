@@ -1,5 +1,5 @@
 #!/bin/bash -e
-PATH_SCRIPT=$(dirname $(readlink -f $0))
+PATH_SCRIPT=$(dirname $(readlink -f $0)) # Path of this script
 PLUNGER_NAME=plunger
 PLUNGER_HOME=${PLUNGER_HOME-${HOME}/bin/${PLUNGER_NAME}}
 PATH_TARGET=${PATH_SCRIPT}/${PLUNGER_NAME}

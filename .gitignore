@@ -1,2 +1,5 @@
 */target/**/*
 */target/*
+plunger-support/plunger
+*.swp
+
