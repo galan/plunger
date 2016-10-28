@@ -8,9 +8,9 @@ import java.util.List;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
-import org.apache.commons.cli.DefaultParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -50,6 +50,23 @@ public class ArgumentMergerTest {
 	}
 
 
+	/**
+	 * Updating to Apache commons leads to missing command arguments. Eg. the arguments '-n1 -re' were correctly
+	 * interpreted by 1.2 with '-n1 -r -e', but since 1.3.1 the 'e' argument was missing!
+	 */
+	@Test
+	public void catN1RE() throws Exception {
+		PlungerArguments pa = merge("provider://host:1234/queue.destination", CommandName.CAT, "-n1", "-re");
+		assertMisc(pa, "cat", true, false);
+		assertTarget(pa, "provider", "host", 1234, null, null, "queue.destination", "destination");
+
+		assertTrue(pa.containsCommandArgument("n"));
+		assertTrue(pa.getCommandArgument("n").equals("1"));
+		assertTrue(pa.containsCommandArgument("r"));
+		assertTrue(pa.containsCommandArgument("e"));
+	}
+
+
 	protected PlungerArguments merge(String cmdTarget, CommandName name, String... args) throws Exception {
 		Options options = new OptionsFactory().createOptions(name);
 		List<String> arguments = new ArrayList<>();
@@ -62,7 +79,7 @@ public class ArgumentMergerTest {
 
 
 	protected CommandLine constructCommandLine(Options options, String... args) throws ParseException {
-		CommandLineParser parser = new DefaultParser();
+		CommandLineParser parser = new PosixParser();
 		return parser.parse(options, args);
 	}
 
