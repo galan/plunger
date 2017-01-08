@@ -10,16 +10,14 @@ import org.fusesource.jansi.Ansi.Color;
 
 import de.galan.plunger.command.AbstractCommand;
 import de.galan.plunger.command.CommandException;
+import de.galan.plunger.command.MessageMarshaller;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
-import de.galan.plunger.util.MessageMarshaller;
 import de.galan.plunger.util.Output;
 
 
 /**
  * Generic cat command, that handles most of the plunger arguments already.
- *
- * @author daniel
  */
 public abstract class AbstractCatCommand extends AbstractCommand {
 

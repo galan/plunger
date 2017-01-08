@@ -16,8 +16,6 @@ import de.galan.plunger.util.PlungerCharsets;
 
 /**
  * The target to query, which is basically an uri with the provider, host, port and authentication information.
- *
- * @author daniel
  */
 public class Target {
 

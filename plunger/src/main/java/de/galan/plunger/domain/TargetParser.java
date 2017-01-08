@@ -1,4 +1,4 @@
-package de.galan.plunger.util;
+package de.galan.plunger.domain;
 
 import static org.apache.commons.lang3.StringUtils.*;
 
@@ -9,7 +9,8 @@ import java.net.URLDecoder;
 
 import org.apache.commons.lang3.StringUtils;
 
-import de.galan.plunger.domain.Target;
+import de.galan.plunger.util.Output;
+import de.galan.plunger.util.PlungerCharsets;
 
 
 /**

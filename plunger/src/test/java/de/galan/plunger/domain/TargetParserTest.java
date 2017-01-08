@@ -2,73 +2,65 @@ package de.galan.plunger.domain;
 
 import static org.junit.Assert.*;
 
-import org.junit.Before;
 import org.junit.Test;
 
-import de.galan.plunger.util.TargetParser;
+import de.galan.plunger.domain.Target;
+import de.galan.plunger.domain.TargetParser;
 
 
 /**
- * CUT TargetParser/Target.
+ * CUT TargetParser
  * 
- * @author daniel
+ * @author danielt
  */
 public class TargetParserTest {
 
-	private TargetParser parser;
-
-
-	@Before
-	public void before() {
-		parser = new TargetParser();
-	}
+	TargetParser tp = new TargetParser();
 
 
 	@Test
-	public void all() throws Exception {
-		Target t = parser.parse("hornetq://myuser:mypass@localhost:5445/queue.testing");
-		assertEquals("hornetq", t.getProvider());
-		assertEquals("myuser", t.getUsername());
-		assertEquals("mypass", t.getPassword());
-		assertEquals("localhost", t.getHost());
-		assertEquals("queue.testing", t.getDestination());
-		assertEquals(5445, t.getPort().intValue());
+	public void testParse() throws Exception {
+		assertValid("a://1.2.3.4", "a", "1.2.3.4", null, null, null);
+		assertValid("b://1.2.3.4:8888", "b", "1.2.3.4", 8888, null, null);
+		assertValid("c://1.2.3.4:123", "c", "1.2.3.4", 123, null, null);
+		assertValid("d://uuu@1.2.3.4", "d", "1.2.3.4", null, "uuu", null);
+		assertValid("e://uuu@1.2.3.4:123", "e", "1.2.3.4", 123, "uuu", null);
+		assertValid("f://uuu:ppp@1.2.3.4", "f", "1.2.3.4", null, "uuu", "ppp");
+		assertValid("g://uuu:ppp@1.2.3.4:123", "g", "1.2.3.4", 123, "uuu", "ppp");
+		assertValid("abc-123://uuu:ppp@1.2.3.4:123", "abc-123", "1.2.3.4", 123, "uuu", "ppp");
+
+		// missing protocol
+		assertValid("1.2.3.4", null, "1.2.3.4", null, null, null);
+		assertValid("1.2.3.4:8888", null, "1.2.3.4", 8888, null, null);
+		assertValid("1.2.3.4:123", null, "1.2.3.4", 123, null, null);
+		assertValid("uuu@1.2.3.4", null, "1.2.3.4", null, "uuu", null);
+		assertValid("uuu@1.2.3.4:123", null, "1.2.3.4", 123, "uuu", null);
+		assertValid("uuu:ppp@1.2.3.4", null, "1.2.3.4", null, "uuu", "ppp");
+		assertValid("uuu:ppp@1.2.3.4:123", null, "1.2.3.4", 123, "uuu", "ppp");
+		// invalid format
+		assertInvalid("");
+		assertInvalid("x://");
+		//assertInvalid("@1.2.3.4");
+		//assertInvalid("uuu:@1.2.3.4");
+		//assertInvalid(":ppp@1.2.3.4");
+		assertInvalid("uuu@ppp@1.2.3.4");
+		assertInvalid("uuu:ppp@1.2.3.4@12323");
+		assertInvalid("uuu@ppp:1.2.3.4@12323");
 	}
 
 
-	@Test
-	public void withoutPassword() throws Exception {
-		Target t = parser.parse("hornetq://myuser@localhost:5445/queue.testing");
-		assertEquals("hornetq", t.getProvider());
-		assertEquals("myuser", t.getUsername());
-		assertNull(t.getPassword());
-		assertEquals("localhost", t.getHost());
-		assertEquals("queue.testing", t.getDestination());
-		assertEquals(5445, t.getPort().intValue());
+	protected void assertInvalid(String proxy) throws Exception {
+		assertNull(tp.parse(proxy));
 	}
 
 
-	@Test
-	public void withoutProvider() throws Exception {
-		Target t = parser.parse("myuser:mypass@localhost:5445/queue.testing");
-		assertNull(t.getProvider());
-		assertEquals("myuser", t.getUsername());
-		assertEquals("mypass", t.getPassword());
-		assertEquals("localhost", t.getHost());
-		assertEquals("queue.testing", t.getDestination());
-		assertEquals(5445, t.getPort().intValue());
-	}
-
-
-	@Test
-	public void onlyHost() throws Exception {
-		Target t = parser.parse("localhost");
-		assertNull(t.getProvider());
-		assertNull(t.getUsername());
-		assertNull(t.getPassword());
-		assertEquals("localhost", t.getHost());
-		assertNull(t.getDestination());
-		assertNull(t.getPort());
+	protected void assertValid(String proxy, String provider, String ip, Integer port, String username, String password) throws Exception {
+		Target result = tp.parse(proxy);
+		assertEquals(provider, result.getProvider());
+		assertEquals(ip, result.getHost());
+		assertEquals(port, result.getPort());
+		assertEquals(username, result.getUsername());
+		assertEquals(password, result.getPassword());
 	}
 
 }

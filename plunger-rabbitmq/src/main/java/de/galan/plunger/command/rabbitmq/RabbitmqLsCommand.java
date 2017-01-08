@@ -25,9 +25,7 @@ import de.galan.plunger.util.Urls;
 
 
 /**
- * Lists all destinations on a HornetQ messaging server.
- *
- * @author daniel
+ * Lists all destinations on a RabbitMQ messaging server.
  */
 public class RabbitmqLsCommand extends AbstractLsCommand {
 

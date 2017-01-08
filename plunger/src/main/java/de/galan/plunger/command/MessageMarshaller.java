@@ -1,10 +1,11 @@
-package de.galan.plunger.util;
+package de.galan.plunger.command;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 
 import de.galan.plunger.domain.Message;
+import de.galan.plunger.util.Escape;
 
 
 /**

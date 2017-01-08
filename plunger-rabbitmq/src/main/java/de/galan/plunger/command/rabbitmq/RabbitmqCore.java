@@ -15,8 +15,6 @@ import de.galan.plunger.util.Output;
 
 /**
  * Abstraction to deal with RabbitMQ API.
- *
- * @author daniel
  */
 public class RabbitmqCore {
 

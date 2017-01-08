@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import de.galan.plunger.domain.Target;
+import de.galan.plunger.domain.TargetParser;
 import de.galan.plunger.util.Output;
 import de.galan.plunger.util.PlungerCharsets;
-import de.galan.plunger.util.TargetParser;
 
 
 /**

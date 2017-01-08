@@ -4,13 +4,13 @@
 
 	<groupId>de.galan</groupId>
 	<artifactId>plunger</artifactId>
-	<version>1.4.1</version>
+	<version>1.5.0</version>
 	<name>plunger</name>
 
 	<parent>
 		<groupId>de.galan</groupId>
 		<artifactId>parent</artifactId>
-		<version>0.10.0</version>
+		<version>0.10.1-SNAPSHOT</version>
 	</parent>
 
 	<scm>
@@ -22,7 +22,7 @@
 		<dependency>
 			<groupId>de.galan</groupId>
 			<artifactId>commons</artifactId>
-			<version>0.12.0</version>
+			<version>0.14.2-SNAPSHOT</version>
 		</dependency>
 	
 	
@@ -55,6 +55,12 @@
 			<optional>true</optional>
 		</dependency>
 
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.6.4</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -62,7 +68,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.4</version>
+				<version>${plugin.maven-jar.version}</version>
 				<configuration>
 					<archive>
 						<manifest>

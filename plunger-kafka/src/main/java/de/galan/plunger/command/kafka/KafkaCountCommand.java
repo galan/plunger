@@ -1,34 +1,26 @@
-package de.galan.plunger.command.rabbitmq;
+package de.galan.plunger.command.kafka;
 
-import static org.apache.commons.lang3.StringUtils.*;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
-import de.galan.commons.net.UrlUtil;
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractCountCommand;
 import de.galan.plunger.domain.PlungerArguments;
-import de.galan.plunger.domain.Target;
-import de.galan.plunger.util.Urls;
 
 
 /**
- * Counts messages from a RabbitMQ messaging server.
+ * Counts messags from a HornetQ messaging server.
+ *
+ * @author daniel
  */
-public class RabbitmqCountCommand extends AbstractCountCommand {
-
-	RabbitmqCore core;
-
+public class KafkaCountCommand extends AbstractCountCommand {
 
 	@Override
 	protected void initialize(PlungerArguments pa) throws CommandException {
-		core = new RabbitmqCore();
+		//core = new RabbitmqCore();
 	}
 
 
 	@Override
 	protected long getCount(PlungerArguments pa) throws CommandException {
+		/*
 		Target t = pa.getTarget();
 		if (isBlank(t.getDestination())) {
 			throw new CommandException("No queue given");
@@ -48,13 +40,14 @@ public class RabbitmqCountCommand extends AbstractCountCommand {
 		catch (Exception ex) {
 			throw new CommandException("Failed retrieving count", ex);
 		}
-
+		*/
+		return 0;
 	}
 
 
 	@Override
 	protected void close() {
-		core.close();
+		//core.close();
 	}
 
 }

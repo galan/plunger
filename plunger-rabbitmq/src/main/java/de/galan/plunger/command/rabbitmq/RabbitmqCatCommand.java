@@ -21,9 +21,7 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * Prints messags from a HornetQ messaging server.
- *
- * @author daniel
+ * Prints messages from a RabbitMQ messaging server.
  */
 public class RabbitmqCatCommand extends AbstractCatCommand {
 

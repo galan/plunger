@@ -1,4 +1,4 @@
-package de.galan.plunger.command.rabbitmq;
+package de.galan.plunger.command.kafka;
 
 import de.galan.plunger.command.Command;
 import de.galan.plunger.command.CommandName;
@@ -8,12 +8,14 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * CommandProvider for a RabbitMQ message-broker
+ *
+ * @author daniel
  */
-public class RabbitmqProvider implements CommandProvider {
+public class KafkaProvider implements CommandProvider {
 
 	@Override
 	public String getName() {
-		return "rabbitmq";
+		return "kafka";
 	}
 
 
@@ -21,13 +23,13 @@ public class RabbitmqProvider implements CommandProvider {
 	public Command getCommand(CommandName commandName, PlungerArguments pa) {
 		switch (commandName) {
 			case LS:
-				return new RabbitmqLsCommand();
+				return new KafkaLsCommand();
 			case CAT:
-				return new RabbitmqCatCommand();
+				return new KafkaCatCommand();
 			case PUT:
-				return new RabbitmqPutCommand();
+				return new KafkaPutCommand();
 			case COUNT:
-				return new RabbitmqCountCommand();
+				return new KafkaCountCommand();
 			default:
 				return null;
 		}
@@ -36,7 +38,7 @@ public class RabbitmqProvider implements CommandProvider {
 
 	@Override
 	public int getDefaultPort() {
-		return 5672;
+		return 9092;
 	}
 
 }

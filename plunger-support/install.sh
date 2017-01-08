@@ -28,6 +28,11 @@ function header() {
 #read -p "Installing ${PLUNGER_NAME} into ${PLUNGER_HOME} (Press enter to continue)"
 echo "Installing ${PLUNGER_NAME} into ${PLUNGER_HOME}"
 
+function buildProvider() {
+	local provider=$1
+	mvn -f ${PATH_BASE}/plunger-${provider}/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS} -Dgpg.skip=true
+	cp ${PATH_BASE}/plunger-${provider}/target/plunger-${provider}.jar ${PLUNGER_LIBS}
+}
 
 header "assemblying jar"
 rm -rf ${PLUNGER_HOME}
@@ -36,14 +41,10 @@ mvn -f ${PATH_BASE}/plunger/pom.xml clean install dependency:copy-dependencies -
 # Not required, inside the following dependencies as transient dependency
 #cp ${PATH_BASE}/plunger/target/plunger-*.jar ${PLUNGER_LIBS}/plunger.jar
 
-mvn -f ${PATH_BASE}/plunger-rabbitmq/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS} -Dgpg.skip=true
-cp ${PATH_BASE}/plunger-rabbitmq/target/plunger-rabbitmq.jar ${PLUNGER_LIBS}
-
-mvn -f ${PATH_BASE}/plunger-hornetq/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS} -Dgpg.skip=true
-cp ${PATH_BASE}/plunger-hornetq/target/plunger-hornetq.jar ${PLUNGER_LIBS}
-
-mvn -f ${PATH_BASE}/plunger-activemq/pom.xml clean install dependency:copy-dependencies -DincludeScope=compile -DoutputDirectory=${PLUNGER_LIBS} -Dgpg.skip=true
-cp ${PATH_BASE}/plunger-activemq/target/plunger-activemq.jar ${PLUNGER_LIBS}
+buildProvider kafka
+buildProvider rabbitmq
+buildProvider activemq
+buildProvider hornetq
 
 # Workaround, will check assembly-plugin instead.
 #rm ${PLUNGER_LIBS}/plunger-*-SNAPSHOT.jar

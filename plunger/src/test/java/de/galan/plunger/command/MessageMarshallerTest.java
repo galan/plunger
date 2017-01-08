@@ -1,4 +1,4 @@
-package de.galan.plunger.util;
+package de.galan.plunger.command;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
@@ -7,6 +7,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import de.galan.plunger.domain.Message;
+import de.galan.plunger.util.Output;
 
 
 /**

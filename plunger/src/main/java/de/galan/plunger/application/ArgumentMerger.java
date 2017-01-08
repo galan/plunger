@@ -11,7 +11,7 @@ import de.galan.plunger.config.Config;
 import de.galan.plunger.config.Entry;
 import de.galan.plunger.domain.PlungerArguments;
 import de.galan.plunger.domain.Target;
-import de.galan.plunger.util.TargetParser;
+import de.galan.plunger.domain.TargetParser;
 
 
 /**

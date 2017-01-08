@@ -23,9 +23,7 @@ import de.galan.plunger.util.Output;
 
 
 /**
- * Writes messages to a destination on a HornetQ messaging server.
- *
- * @author daniel
+ * Writes messages to a destination on a RabbitMQ messaging server.
  */
 public class RabbitmqPutCommand extends AbstractPutCommand {
 

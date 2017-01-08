@@ -1,15 +1,14 @@
 package de.galan.plunger.command.rabbitmq;
 
 import static org.apache.commons.lang3.StringUtils.*;
+
 import de.galan.commons.net.UrlUtil;
 import de.galan.commons.util.Contained;
 import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * Common HornetQ abstractions.
- *
- * @author daniel
+ * Common RabbitMQ abstractions.
  */
 public class RabbitmqUtil {
 

@@ -4,10 +4,10 @@ import org.fusesource.jansi.Ansi.Color;
 
 import de.galan.plunger.command.AbstractCommand;
 import de.galan.plunger.command.CommandException;
+import de.galan.plunger.command.MessageMarshaller;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
 import de.galan.plunger.util.FileMessageReader;
-import de.galan.plunger.util.MessageMarshaller;
 import de.galan.plunger.util.MessageReader;
 import de.galan.plunger.util.Output;
 import de.galan.plunger.util.SystemMessageReader;
