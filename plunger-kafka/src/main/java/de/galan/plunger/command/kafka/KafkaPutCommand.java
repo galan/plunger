@@ -6,6 +6,7 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.serialization.StringSerializer;
 
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractPutCommand;
@@ -14,11 +15,13 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * Writes messages to a destination on a HornetQ messaging server.
- *
- * @author daniel
+ * Writes messages to a destination on a Kafka broker.
  */
 public class KafkaPutCommand extends AbstractPutCommand {
+
+	//parameter: timeout
+	//parameter: key?
+	//parameter: groupId
 
 	private Producer<String, String> producer;
 
@@ -33,10 +36,9 @@ public class KafkaPutCommand extends AbstractPutCommand {
 		props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
 		props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
 		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
-		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
-		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 		producer = new KafkaProducer<>(props);
-
 	}
 
 

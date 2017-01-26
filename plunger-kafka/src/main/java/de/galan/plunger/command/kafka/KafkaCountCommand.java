@@ -6,7 +6,7 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * Counts messags from a Kafka messaging server -> Not implemented
+ * Counts messags from a Kafka broker -> Not implemented
  */
 public class KafkaCountCommand extends AbstractCountCommand {
 

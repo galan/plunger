@@ -1,5 +1,6 @@
 package de.galan.plunger.command.rabbitmq;
 
+import static java.nio.charset.StandardCharsets.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.IOException;
@@ -8,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.google.common.base.Charsets;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.GetResponse;
@@ -77,7 +77,7 @@ public class RabbitmqCatCommand extends AbstractCatCommand {
 			result = new Message();
 			//AMQP.BasicProperties props = response.getProps();
 			//long deliveryTag = response.getEnvelope().getDeliveryTag();
-			String body = new String(response.getBody(), Charsets.UTF_8);
+			String body = new String(response.getBody(), UTF_8);
 			result.setBody(body);
 			if (!pa.containsCommandArgument("p")) { // exclude properties or not
 				Map<String, Object> headers = (response.getProps().getHeaders() == null) ? new HashMap<>() : response.getProps().getHeaders();

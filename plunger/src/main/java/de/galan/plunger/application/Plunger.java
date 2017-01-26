@@ -12,7 +12,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.fusesource.jansi.AnsiConsole;
-import org.slf4j.Logger;
 
 import de.galan.plunger.command.CommandName;
 import de.galan.plunger.config.Config;
@@ -35,8 +34,6 @@ public class Plunger {
 
 
 	public static void main(String[] args) {
-		System.setProperty(Logger.ROOT_LOGGER_NAME, "ERROR");
-		//System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "ERROR");
 		AnsiConsole.systemInstall();
 		new Plunger().start(args);
 	}

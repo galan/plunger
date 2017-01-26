@@ -29,11 +29,6 @@ import de.galan.plunger.domain.PlungerArguments;
  */
 public class KafkaCatCommand extends AbstractCatCommand {
 
-	//parameter: timeout
-	//parameter: key?
-	//parameter: groupId
-	//parameter: autoOffsetReset
-
 	// Limitations:
 	//- only String serializer/deserializer supported
 	//- only one bootstrap server
@@ -50,7 +45,7 @@ public class KafkaCatCommand extends AbstractCatCommand {
 	protected void initialize(PlungerArguments pa) throws CommandException {
 		super.initialize(pa);
 		clientId = "plunger-" + StandardSystemProperty.USER_NAME.value() + "-" + System.currentTimeMillis();
-		groupId = optional(pa.getTarget().getParameterValue("groupId")).orElse("plunger"); //.orElse("plunger-" + UUID.randomUUID().toString());
+		groupId = optional(pa.getTarget().getParameterValue("group")).orElse(optional(pa.getTarget().getParameterValue("groupId")).orElse("plunger"));
 		autoOffsetReset = optional(pa.getTarget().getParameterValue("autoOffsetReset")).orElse("earliest");
 	}
 
@@ -61,7 +56,6 @@ public class KafkaCatCommand extends AbstractCatCommand {
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, pa.getTarget().getHost() + ":" + pa.getTarget().getPort());
 		props.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
 		props.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
-		//props.put(ConsumerConfig.AUTO_COMMIT_INTERVAL_MS_CONFIG, "1000");
 		props.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 		props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, StringDeserializer.class.getName());
 		props.put(ConsumerConfig.CLIENT_ID_CONFIG, clientId);
@@ -97,7 +91,7 @@ public class KafkaCatCommand extends AbstractCatCommand {
 				msg.putProperty("partition", record.partition());
 				if (record.timestampType() != null && !record.timestampType().equals(TimestampType.NO_TIMESTAMP_TYPE)) {
 					msg.putProperty("timestamp", Instants.from(Instants.instant(record.timestamp())).toStringUtc());
-					msg.putProperty("timestamp_type", record.timestampType());
+					msg.putProperty("timestamp_type", record.timestampType().toString());
 				}
 			}
 			result = msg;
@@ -108,11 +102,11 @@ public class KafkaCatCommand extends AbstractCatCommand {
 
 		return result;
 	}
-	// http://stackoverflow.com/questions/28561147/how-to-read-data-using-kafka-consumer-api-from-beginning
 
 
 	@Override
 	protected boolean isSystemHeader(String headerName) {
+		// kafka does not provider own header information, only payload. Meta-data is provided as header instead.
 		return true;
 	}
 

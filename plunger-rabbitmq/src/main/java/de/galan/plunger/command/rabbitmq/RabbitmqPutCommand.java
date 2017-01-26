@@ -1,6 +1,6 @@
 package de.galan.plunger.command.rabbitmq;
 
-import static com.google.common.base.Charsets.*;
+import static java.nio.charset.StandardCharsets.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.IOException;

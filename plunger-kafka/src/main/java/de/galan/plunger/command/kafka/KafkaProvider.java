@@ -7,7 +7,7 @@ import de.galan.plunger.domain.PlungerArguments;
 
 
 /**
- * CommandProvider for a RabbitMQ message-broker
+ * CommandProvider for a Kafka message-broker
  *
  * @author daniel
  */

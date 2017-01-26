@@ -10,23 +10,23 @@ import static org.apache.commons.lang3.StringUtils.*;
  */
 public class Escape {
 
-	private static final String[] REPLACE = new String[] {"\\", "\n", "\r", "\t", "\b", "\f", "\'", "\"", "\u2028", "\u2029"};
-	private static final String[] WITH = new String[] {"\\\\", "\\n", "\\r", "\\t", "\\b", "\\f", "\\'", "\\\"", "\\u2028", "\\u2029"};
+	private static final String[] UNESCAPED = new String[] {"\\", "\n", "\r", "\t", "\b", "\f", "\'", "\"", "\u2028", "\u2029"};
+	private static final String[] ESCAPED = new String[] {"\\\\", "\\n", "\\r", "\\t", "\\b", "\\f", "\\'", "\\\"", "\\u2028", "\\u2029"};
 
 
 	public String escape(String text) {
 		if (isNotBlank(text)) {
-			return replaceEach(text, REPLACE, WITH);
+			return replaceEach(text, UNESCAPED, ESCAPED);
 		}
-		return "";
+		return EMPTY;
 	}
 
 
 	public String unescape(String text) {
 		if (isNotBlank(text)) {
-			return replaceEach(text, WITH, REPLACE);
+			return replaceEach(text, ESCAPED, UNESCAPED);
 		}
-		return "";
+		return EMPTY;
 	}
 
 }
