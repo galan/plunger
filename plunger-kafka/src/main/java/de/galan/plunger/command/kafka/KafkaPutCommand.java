@@ -1,6 +1,9 @@
 package de.galan.plunger.command.kafka;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -20,7 +23,7 @@ import de.galan.plunger.domain.PlungerArguments;
 public class KafkaPutCommand extends AbstractPutCommand {
 
 	//parameter: timeout
-	//parameter: key?
+	//parameter: key
 	//parameter: groupId
 
 	private Producer<String, String> producer;
@@ -44,7 +47,14 @@ public class KafkaPutCommand extends AbstractPutCommand {
 
 	@Override
 	protected void sendMessage(PlungerArguments pa, Message message, long count) throws CommandException {
-		producer.send(new ProducerRecord<String, String>(pa.getTarget().getDestination(), message.getBody()));
+		try {
+			String topic = pa.getTarget().getDestination();
+			String key = trimToNull(pa.getTarget().getParameterValue("key"));
+			producer.send(new ProducerRecord<String, String>(topic, key, message.getBody())).get();
+		}
+		catch (InterruptedException | ExecutionException ex) {
+			throw new CommandException("Failed sending record: " + ex.getMessage(), ex);
+		}
 	}
 
 
