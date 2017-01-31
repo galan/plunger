@@ -35,7 +35,7 @@ public class KafkaCatCommand extends AbstractCatCommand {
 
 	private KafkaConsumer<String, String> consumer;
 	private Iterator<ConsumerRecord<String, String>> recordIterator;
-	int timeout = 400;
+	int timeout = 1000;
 	String groupId;
 	String autoOffsetReset;
 	private String clientId;
