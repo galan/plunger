@@ -10,6 +10,8 @@ import java.util.AbstractMap.SimpleEntry;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.annotations.VisibleForTesting;
+
 import de.galan.plunger.domain.Target;
 import de.galan.plunger.domain.TargetParser;
 import de.galan.plunger.util.Output;
@@ -36,7 +38,7 @@ public class Config {
 	public boolean parse(File file) {
 		boolean result = true;
 		TargetParser parser = new TargetParser();
-		entries.clear();
+		getEntries().clear();
 		if ((file != null) && file.exists() && file.isFile()) {
 			int lineCount = 0;
 			try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), PlungerCharsets.UTF8))) {
@@ -51,7 +53,7 @@ public class Config {
 							// Allow aliases, separated by a single whitespace. They will refer the same entry.
 							String[] aliases = split(se.getValue(), " ");
 							for (String alias: aliases) {
-								entries.put(alias, entry);
+								getEntries().put(alias, entry);
 							}
 						}
 						else if (entry != null) {
@@ -99,7 +101,13 @@ public class Config {
 
 
 	public Entry getEntry(String alias) {
-		return entries.get(alias);
+		return getEntries().get(alias);
+	}
+
+
+	@VisibleForTesting
+	public Map<String, Entry> getEntries() {
+		return entries;
 	}
 
 }

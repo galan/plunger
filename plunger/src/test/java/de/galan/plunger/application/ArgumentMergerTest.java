@@ -16,7 +16,9 @@ import org.junit.Test;
 
 import de.galan.plunger.command.CommandName;
 import de.galan.plunger.config.Config;
+import de.galan.plunger.config.Entry;
 import de.galan.plunger.domain.PlungerArguments;
+import de.galan.plunger.domain.Target;
 
 
 /**
@@ -47,6 +49,44 @@ public class ArgumentMergerTest {
 		assertFalse(pa.containsCommandArgument("consumer"));
 		assertTrue(pa.containsCommandArgument("m"));
 		assertTrue(pa.containsCommandArgument("messages"));
+	}
+
+
+	@Test
+	public void getByConfig() throws Exception {
+		createConfigTarget("xyz", "provider", "host", 1234);
+		PlungerArguments pa = merge("xyz/queue.destination?param=value", CommandName.LS, "-m");
+		assertMisc(pa, "ls", true, false);
+		assertTarget(pa, "provider", "host", 1234, null, null, "queue.destination", "destination");
+
+		assertEquals(pa.getTarget().getParameterValue("param"), "value");
+	}
+
+
+	@Test
+	public void mergeParameter() throws Exception {
+		Target target = createConfigTarget("xyz", "provider", "host", 1234);
+		target.getParameter().put("param", "xyz"); // will be overriden
+		target.getParameter().put("ding", "dong"); // will be added
+		PlungerArguments pa = merge("xyz/queue.destination?param=value&cmd=new", CommandName.LS, "-m");
+		assertMisc(pa, "ls", true, false);
+		assertTarget(pa, "provider", "host", 1234, null, null, "queue.destination", "destination");
+
+		assertEquals(pa.getTarget().getParameterValue("param"), "value");
+		assertEquals(pa.getTarget().getParameterValue("ding"), "dong");
+		assertEquals(pa.getTarget().getParameterValue("cmd"), "new");
+	}
+
+
+	Target createConfigTarget(String alias, String provider, String host, Integer port) {
+		Target target = new Target();
+		target.setPort(port);
+		target.setProvider(provider);
+		target.setHost(host);
+		Entry entry = new Entry(alias);
+		entry.setTarget(target);
+		config.getEntries().put(alias, entry);
+		return target;
 	}
 
 

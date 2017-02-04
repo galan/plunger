@@ -62,6 +62,7 @@ public class ArgumentMerger {
 	}
 
 
+	// ct = commandlineTarget, et = entryTarget (config-file)
 	protected Target mergeTarget(Target ct, Target et) throws Exception {
 		Target result = new TargetParser().parse(et.toString());
 		if (ct.hasProvider()) {
@@ -79,9 +80,8 @@ public class ArgumentMerger {
 		if (ct.isDestinationSet()) {
 			result.setDestination(ct.getDestination());
 		}
-		for (String key: ct.getParameter().keySet()) {
-			result.getParameter().put(key, ct.getParameter().get(key));
-		}
+		result.getParameter().putAll(et.getParameter());
+		result.getParameter().putAll(ct.getParameter());
 		//if (!result.isDestinationSet()) {
 		//	throw new CommandException("No destination is given");
 		//}
