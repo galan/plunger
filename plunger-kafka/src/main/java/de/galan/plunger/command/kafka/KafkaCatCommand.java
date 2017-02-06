@@ -114,6 +114,7 @@ public class KafkaCatCommand extends AbstractCatCommand {
 	@Override
 	protected void close() {
 		if (consumer != null) {
+			consumer.unsubscribe();
 			consumer.close();
 		}
 	}

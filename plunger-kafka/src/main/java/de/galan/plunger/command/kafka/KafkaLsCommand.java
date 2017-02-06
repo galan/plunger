@@ -120,6 +120,7 @@ public class KafkaLsCommand extends AbstractLsCommand {
 	@Override
 	protected void close() {
 		if (consumer != null) {
+			consumer.unsubscribe();
 			consumer.close();
 		}
 		try {
