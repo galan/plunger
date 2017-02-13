@@ -1,5 +1,6 @@
 package de.galan.plunger.command.kafka;
 
+import static de.galan.commons.util.Sugar.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.util.Properties;
@@ -49,12 +50,20 @@ public class KafkaPutCommand extends AbstractPutCommand {
 	protected void sendMessage(PlungerArguments pa, Message message, long count) throws CommandException {
 		try {
 			String topic = pa.getTarget().getDestination();
-			String key = trimToNull(pa.getTarget().getParameterValue("key"));
-			producer.send(new ProducerRecord<String, String>(topic, key, message.getBody())).get();
+			producer.send(new ProducerRecord<String, String>(topic, getKey(message, pa), message.getBody())).get();
 		}
 		catch (InterruptedException | ExecutionException ex) {
 			throw new CommandException("Failed sending record: " + ex.getMessage(), ex);
 		}
+	}
+
+
+	private String getKey(Message message, PlungerArguments pa) {
+		String targetKey = trimToNull(pa.getTarget().getParameterValue("key"));
+		if (targetKey == null && pa.getTarget().containsParameter(targetKey)) {
+			return null; // "key=" user will overwrite keys from message with empty key
+		}
+		return optional(targetKey).orElseGet(() -> trimToNull(message.getPropertyString("key")));
 	}
 
 

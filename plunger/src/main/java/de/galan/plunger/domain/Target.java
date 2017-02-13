@@ -139,6 +139,11 @@ public class Target {
 	}
 
 
+	public boolean containsParameter(String key) {
+		return getParameter().keySet().contains(key);
+	}
+
+
 	@Override
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
