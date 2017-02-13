@@ -4,7 +4,7 @@
 
 	<groupId>de.galan</groupId>
 	<artifactId>plunger-rabbitmq</artifactId>
-	<version>1.5.2</version>
+	<version>1.5.3</version>
 
 	<parent>
 		<groupId>de.galan</groupId>
@@ -16,7 +16,7 @@
 		<dependency>
 			<groupId>de.galan</groupId>
 			<artifactId>plunger</artifactId>
-			<version>1.5.2</version>
+			<version>1.5.3</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
