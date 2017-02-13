@@ -1,23 +1,21 @@
 package de.galan.plunger.command.kafka;
 
 import static de.galan.commons.util.Sugar.*;
-import static org.apache.commons.lang3.StringUtils.*;
+import static java.util.stream.Collectors.*;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Properties;
 
-import javax.management.MBeanServerConnection;
-import javax.management.ObjectName;
 import javax.management.remote.JMXConnector;
-import javax.management.remote.JMXConnectorFactory;
-import javax.management.remote.JMXServiceURL;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.common.PartitionInfo;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
 import de.galan.plunger.command.CommandException;
@@ -34,7 +32,7 @@ public class KafkaLsCommand extends AbstractLsCommand {
 	private KafkaConsumer<String, String> consumer;
 
 	private JMXConnector connector;
-	private MBeanServerConnection connection;
+	//private MBeanServerConnection connection;
 
 	String groupId;
 
@@ -42,6 +40,7 @@ public class KafkaLsCommand extends AbstractLsCommand {
 	@Override
 	protected void initialize(PlungerArguments pa) throws CommandException {
 		Target target = pa.getTarget();
+		/* initialize
 		String port = defaultIfBlank(target.getParameterValue("jmxPort"), "9999");
 		String url = "service:jmx:rmi:///jndi/rmi://" + target.getHost() + ":" + port + "/jmxrmi";
 		try {
@@ -52,6 +51,7 @@ public class KafkaLsCommand extends AbstractLsCommand {
 		catch (IOException ex) {
 			throw new CommandException("Failed initializing Kafka JMX connector (" + url + ")", ex);
 		}
+		*/
 
 		groupId = optional(pa.getTarget().getParameterValue("groupId")).orElse("plunger"); //.orElse("plunger-" + UUID.randomUUID().toString());
 
@@ -78,33 +78,32 @@ public class KafkaLsCommand extends AbstractLsCommand {
 			if (StringUtils.equals("__consumer_offsets", topic)) {
 				continue;
 			}
-			long size = getSize(topic, topics.get(topic).size());
-			/*
-			List<PartitionInfo> infos = topics.get(topic);
-			for (PartitionInfo info: infos) {
-				TopicPartition partition = new TopicPartition(topic, info.partition());
-				try {
-					long position = consumer.position(partition);
-					Output.println("a" + position);
-				}
-				catch (Exception ex) {
-					Output.println("Partition xxx: " + partition.partition());
-				}
+			boolean matchesTarget = pa.getTarget().isDestinationErased() || topic.equals(pa.getTarget().getDestination());
+			if (!matchesTarget) {
+				continue;
 			}
-			*/
 
-			printDestination(pa, topic, 0, size, true);
+			List<PartitionInfo> infos = topics.get(topic);
+			List<TopicPartition> tps = infos.stream().map(info -> new TopicPartition(topic, info.partition())).collect(toList());
+			Map<TopicPartition, Long> offsetsBegin = consumer.beginningOffsets(tps);
+			Map<TopicPartition, Long> offsetsEnd = consumer.endOffsets(tps);
+			long offsetBegin = offsetsBegin.entrySet().stream().mapToLong(Entry::getValue).sum();
+			long offsetEnd = offsetsEnd.entrySet().stream().mapToLong(Entry::getValue).sum();
+			printDestination(pa, topic, 0, offsetEnd - offsetBegin, true);
 		}
 	}
 
-
+	/* jmx
+	//long size = getSize(topic, topics.get(topic).size());
+	//printDestination(pa, topic, 0, size, true);
+	
 	private long getSize(String topic, int paritions) {
 		long result = 0;
 		try {
 			for (int i = 0; i < paritions; i++) {
 				ObjectName nameStart = new ObjectName("kafka.log:type=Log,name=LogStartOffset,topic=" + topic + ",partition=" + i);
 				Long attributeStart = (Long)connection.getAttribute(nameStart, "Value");
-
+	
 				ObjectName nameEnd = new ObjectName("kafka.log:type=Log,name=LogEndOffset,topic=" + topic + ",partition=" + i);
 				Long attributeEnd = (Long)connection.getAttribute(nameEnd, "Value");
 				result += attributeEnd - attributeStart;
@@ -115,6 +114,7 @@ public class KafkaLsCommand extends AbstractLsCommand {
 		}
 		return result;
 	}
+	*/
 
 
 	@Override
