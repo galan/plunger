@@ -60,7 +60,7 @@ public class KafkaPutCommand extends AbstractPutCommand {
 
 	private String getKey(Message message, PlungerArguments pa) {
 		String targetKey = trimToNull(pa.getTarget().getParameterValue("key"));
-		if (targetKey == null && pa.getTarget().containsParameter(targetKey)) {
+		if (targetKey == null && pa.getTarget().containsParameter("key")) {
 			return null; // "key=" user will overwrite keys from message with empty key
 		}
 		return optional(targetKey).orElseGet(() -> trimToNull(message.getPropertyString("key")));
