@@ -74,10 +74,11 @@ public class KafkaLsCommand extends AbstractLsCommand {
 	@Override
 	protected void process(PlungerArguments pa) throws CommandException {
 		Map<String, List<PartitionInfo>> topics = consumer.listTopics();
-		for (String topic: topics.keySet()) {
-			if (StringUtils.equals("__consumer_offsets", topic)) {
-				continue;
-			}
+		List<String> topicList = topics.keySet().stream()
+			.filter(t -> !StringUtils.equals("__consumer_offsets", t))
+			.sorted()
+			.collect(toList());
+		for (String topic: topicList) {
 			boolean matchesTarget = pa.getTarget().isDestinationErased() || topic.equals(pa.getTarget().getDestination());
 			if (!matchesTarget) {
 				continue;
@@ -96,14 +97,14 @@ public class KafkaLsCommand extends AbstractLsCommand {
 	/* jmx
 	//long size = getSize(topic, topics.get(topic).size());
 	//printDestination(pa, topic, 0, size, true);
-	
+
 	private long getSize(String topic, int paritions) {
 		long result = 0;
 		try {
 			for (int i = 0; i < paritions; i++) {
 				ObjectName nameStart = new ObjectName("kafka.log:type=Log,name=LogStartOffset,topic=" + topic + ",partition=" + i);
 				Long attributeStart = (Long)connection.getAttribute(nameStart, "Value");
-	
+
 				ObjectName nameEnd = new ObjectName("kafka.log:type=Log,name=LogEndOffset,topic=" + topic + ",partition=" + i);
 				Long attributeEnd = (Long)connection.getAttribute(nameEnd, "Value");
 				result += attributeEnd - attributeStart;
