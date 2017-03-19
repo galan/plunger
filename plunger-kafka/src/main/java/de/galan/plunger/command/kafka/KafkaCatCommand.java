@@ -15,6 +15,7 @@ import org.apache.kafka.common.record.TimestampType;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
 import com.google.common.base.StandardSystemProperty;
+import com.google.common.primitives.Longs;
 
 import de.galan.commons.time.Durations;
 import de.galan.commons.time.Instants;
@@ -28,10 +29,6 @@ import de.galan.plunger.domain.PlungerArguments;
  * Retrieves messages from a Kafka broker.
  */
 public class KafkaCatCommand extends AbstractCatCommand {
-
-	// Limitations:
-	//- only String serializer/deserializer supported
-	//- only one bootstrap server
 
 	private KafkaConsumer<String, String> consumer;
 	private Iterator<ConsumerRecord<String, String>> recordIterator;
@@ -63,13 +60,27 @@ public class KafkaCatCommand extends AbstractCatCommand {
 		props.put(ConsumerConfig.CLIENT_ID_CONFIG, clientId);
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
 		props.put(ConsumerConfig.EXCLUDE_INTERNAL_TOPICS_CONFIG, "true");
-		props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "1");
+		props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "" + determineMaxPollRecords(pa));
 		consumer = new KafkaConsumer<>(props);
 		consumer.subscribe(Arrays.asList(pa.getTarget().getDestination()));
 		String timeoutDuration = pa.getTarget().getParameterValue("timeout");
 		if (isNotBlank(timeoutDuration)) {
 			timeout = Durations.dehumanize(timeoutDuration).intValue();
 		}
+	}
+
+
+	/**
+	 * Returns the "maxPollRecords" url argument, which will override the default of 1 for "max.poll.records". if the
+	 * size is larger then the limit "-n", it will be reduced to this.
+	 */
+	private Long determineMaxPollRecords(PlungerArguments pa) {
+		Long maxPollRecords = Longs.tryParse(optional(pa.getTarget().getParameterValue("maxPollRecords")).orElse("1"));
+		Long limit = pa.getCommandArgumentLong("n");
+		if (limit != null && limit < maxPollRecords) {
+			maxPollRecords = limit;
+		}
+		return maxPollRecords;
 	}
 
 
