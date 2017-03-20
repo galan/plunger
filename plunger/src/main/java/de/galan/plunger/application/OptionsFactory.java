@@ -197,6 +197,11 @@ public class OptionsFactory {
 		OptionBuilder.hasArg();
 		OptionBuilder.withDescription("Routingkey (AMQP)");
 		Option optionRk = OptionBuilder.create("r");
+
+		OptionBuilder.withLongOpt("direct");
+		OptionBuilder.withDescription("Pass line direct as message (each line, unescaped, without header)");
+		Option optionD = OptionBuilder.create("d");
+
 		/*
 		Option optionFile = Option.builder("f").longOpt("file").desc("File with escaped messages (instead of stdin)").hasArgs().build();
 		Option optionSkip = Option.builder("s").longOpt("skip").desc("Skip lines with errors").build();
@@ -204,7 +209,7 @@ public class OptionsFactory {
 		Option optionPrio = Option.builder("p").longOpt("priority").desc("Priority").hasArgs().build();
 		Option optionRk = Option.builder("r").longOpt("routingkey").desc("Routingkey (AMQP)").hasArg().build();
 		*/
-		return createOptions(optionFile, optionSkip, optionTtl, optionPrio, optionRk);
+		return createOptions(optionFile, optionSkip, optionTtl, optionPrio, optionRk, optionD);
 	}
 
 

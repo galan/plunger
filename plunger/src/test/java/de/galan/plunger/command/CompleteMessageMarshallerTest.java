@@ -15,14 +15,14 @@ import de.galan.plunger.util.Output;
  *
  * @author daniel
  */
-public class MessageMarshallerTest {
+public class CompleteMessageMarshallerTest {
 
-	private MessageMarshaller mm;
+	private CompleteMessageMarshaller mm;
 
 
 	@Before
 	public void setup() {
-		mm = new MessageMarshaller();
+		mm = new CompleteMessageMarshaller();
 	}
 
 

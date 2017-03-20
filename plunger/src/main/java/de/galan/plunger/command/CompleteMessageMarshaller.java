@@ -16,7 +16,7 @@ import de.galan.plunger.util.Escape;
  *
  * @author daniel
  */
-public class MessageMarshaller {
+public class CompleteMessageMarshaller implements MessageMarshaller {
 
 	private static final String SEPARATOR = "\t";
 
@@ -26,6 +26,7 @@ public class MessageMarshaller {
 	}
 
 
+	@Override
 	public String marshal(Message message) {
 		String[] parts = marshalParts(message);
 		return parts[0] + parts[1] + parts[2];
@@ -46,6 +47,7 @@ public class MessageMarshaller {
 	}
 
 
+	@Override
 	public Message unmarshal(String line) throws Exception {
 		String json = StringUtils.substringBefore(line, getSeparator());
 		String body = StringUtils.substringAfter(line, getSeparator());

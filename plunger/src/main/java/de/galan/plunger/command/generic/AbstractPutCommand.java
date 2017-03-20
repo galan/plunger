@@ -4,6 +4,8 @@ import org.fusesource.jansi.Ansi.Color;
 
 import de.galan.plunger.command.AbstractCommand;
 import de.galan.plunger.command.CommandException;
+import de.galan.plunger.command.CompleteMessageMarshaller;
+import de.galan.plunger.command.DirectMessageMarshaller;
 import de.galan.plunger.command.MessageMarshaller;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
@@ -15,8 +17,6 @@ import de.galan.plunger.util.SystemMessageReader;
 
 /**
  * Generic put command, that handles most of the plunger arguments already.
- * 
- * @author daniel
  */
 public abstract class AbstractPutCommand extends AbstractCommand {
 
@@ -33,7 +33,8 @@ public abstract class AbstractPutCommand extends AbstractCommand {
 		MessageReader reader = getMessageReader(pa);
 
 		long lineCount = 0;
-		MessageMarshaller mm = new MessageMarshaller();
+
+		MessageMarshaller mm = pa.containsCommandArgument("d") ? new DirectMessageMarshaller() : new CompleteMessageMarshaller();
 		String line = null;
 		while((line = reader.read()) != null) {
 			lineCount++;
@@ -75,7 +76,7 @@ public abstract class AbstractPutCommand extends AbstractCommand {
 
 	protected void logMessage(PlungerArguments pa, Message msg) {
 		if (pa.isVerbose()) {
-			String[] marshalled = new MessageMarshaller().marshalParts(msg);
+			String[] marshalled = new CompleteMessageMarshaller().marshalParts(msg);
 			Output.print(Color.GREEN, marshalled[0]);
 			Output.print(marshalled[1]);
 			Output.println(Color.YELLOW, marshalled[2]);

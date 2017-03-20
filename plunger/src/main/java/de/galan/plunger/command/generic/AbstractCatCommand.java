@@ -10,7 +10,7 @@ import org.fusesource.jansi.Ansi.Color;
 
 import de.galan.plunger.command.AbstractCommand;
 import de.galan.plunger.command.CommandException;
-import de.galan.plunger.command.MessageMarshaller;
+import de.galan.plunger.command.CompleteMessageMarshaller;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
 import de.galan.plunger.util.Output;
@@ -89,7 +89,7 @@ public abstract class AbstractCatCommand extends AbstractCommand {
 		}
 
 		if (pa.containsCommandArgument("e")) {
-			String[] marshalled = new MessageMarshaller().marshalParts(message);
+			String[] marshalled = new CompleteMessageMarshaller().marshalParts(message);
 			Output.print(Color.GREEN, marshalled[0]);
 			Output.print(marshalled[1]);
 			Output.println(Color.YELLOW, marshalled[2]);
