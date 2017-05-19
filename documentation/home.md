@@ -3,10 +3,10 @@ Plunger is a simple messaging client for the shell. It will closely follow the p
 It is written in Java 8, and provides convenience scripts for bash.
 
 # Available commands
-* [[ls|Command ls]] - lists the available destinations
-* [[cat|Command cat]] - consumes/reads messages
-* [[put|Command put]] - sends messages to a destination
-* [[count|Command count]] - shows the number of messages/consumers for a destination
+* [ls](command-ls.md) - lists the available destinations
+* [cat](command-cat.md) - consumes/reads messages
+* [put](command-put.md) - sends messages to a destination
+* [count](command-count.md) - shows the number of messages/consumers for a destination
 
 # Usage
 Basic usage is:
@@ -54,12 +54,12 @@ Note: When a destination is predefined, and you want to show all queues with `pl
 Plunger is messaging system agnostic, any message broker can be added. To do this, you have to implement the CommandProvider interface as SPI.
 
 ## Available provider
-* JBoss HornetQ ([[setup|JBoss HornetQ setup]]) >= 2.2.5 -- protocol-name: hornetq
-* Apache ActiveMQ ([[setup|Apache ActiveMQ setup]]) >= 5.8.0 -- protocol-name: amq
-* RabbitMQ ([[setup|RabbitMQ setup]]) >= 3.5.x -- protocol-name: rabbitmq
-* Apache Kafka ([[setup|Kafka setup]]) >= 3.5.x -- protocol-name: kafka
+* JBoss HornetQ [setup](provider-jboss-hornetq.md) >= 2.2.5 -- protocol-name: hornetq
+* Apache ActiveMQ [setup](provider-apache-activemq.md) >= 5.8.0 -- protocol-name: amq
+* RabbitMQ [setup](provider-rabbitmq.md) >= 3.5.x -- protocol-name: rabbitmq
+* Apache Kafka [setup](provider-apache-kafka.md) >= 0.10.1 -- protocol-name: kafka
 
 Other provides are planned, and might be implemented (of course you can create a PR as well). Take a look at the [issue-list](https://github.com/galan/plunger/issues?state=open).
 
 # Building sources
-See [[Building plunger]]
+See [Building plunger](plunger-build.md)
