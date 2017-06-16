@@ -10,7 +10,7 @@ With plunger you can:
 - get the amount of messages or consumers for a specific destination
 
 
-See the [full documentation in the wiki](documentation/home.md).
+Go on, and read the  [documentation](documentation/home.md).
 
 The [installation](https://github.com/galan/plunger/wiki/Building-plunger) will build the sources and create the required scripts.
 
@@ -18,5 +18,5 @@ Demo
 ====
 ![Visual demonstration of plunger (loading gif..)](https://github.com/galan/plunger/raw/master/plunger-support/tty-plunger.gif)
 
-Acknowledgement: plungers development started during work at [SEOlytics GmbH](http://www.seolytics.com) and continued at [Joblift GmbH](http://joblift.de).
+Acknowledgement: plungers development started during work at SEOlytics GmbH and continued at [Joblift GmbH](http://joblift.de).
 
