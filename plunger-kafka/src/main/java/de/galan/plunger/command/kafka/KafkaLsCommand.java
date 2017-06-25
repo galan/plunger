@@ -1,15 +1,11 @@
 package de.galan.plunger.command.kafka;
 
-import static de.galan.commons.util.Sugar.*;
 import static java.util.stream.Collectors.*;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
-
-import javax.management.remote.JMXConnector;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -31,7 +27,7 @@ public class KafkaLsCommand extends AbstractLsCommand {
 
 	private KafkaConsumer<String, String> consumer;
 
-	private JMXConnector connector;
+	//private JMXConnector connector;
 	//private MBeanServerConnection connection;
 
 	String groupId;
@@ -53,7 +49,7 @@ public class KafkaLsCommand extends AbstractLsCommand {
 		}
 		*/
 
-		groupId = optional(pa.getTarget().getParameterValue("groupId")).orElse("plunger"); //.orElse("plunger-" + UUID.randomUUID().toString());
+		groupId = KafkaUtils.groupId(pa.getTarget());
 
 		Properties props = new Properties();
 		props.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaUtils.brokers(target));
@@ -124,6 +120,7 @@ public class KafkaLsCommand extends AbstractLsCommand {
 			consumer.unsubscribe();
 			consumer.close();
 		}
+		/*
 		try {
 			if (connector != null) {
 				connector.close();
@@ -132,6 +129,7 @@ public class KafkaLsCommand extends AbstractLsCommand {
 		catch (IOException ex) {
 			// nada
 		}
+		*/
 	}
 
 }

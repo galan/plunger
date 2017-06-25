@@ -42,9 +42,7 @@ public class KafkaCatCommand extends AbstractCatCommand {
 	protected void initialize(PlungerArguments pa) throws CommandException {
 		super.initialize(pa);
 		clientId = "plunger-" + StandardSystemProperty.USER_NAME.value() + "-" + System.currentTimeMillis();
-		groupId = optional(pa.getTarget().getParameterValue("group"))
-			.orElse(optional(pa.getTarget().getParameterValue("groupId"))
-				.orElse("plunger-" + StandardSystemProperty.USER_NAME.value()));
+		groupId = KafkaUtils.groupId(pa.getTarget());
 		autoOffsetReset = optional(pa.getTarget().getParameterValue("autoOffsetReset")).orElse("earliest");
 	}
 
