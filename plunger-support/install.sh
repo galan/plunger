@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
 #
-# This script builds plunger and puts it to the default location at ~/bin/plunger/*
+# This script builds plunger and puts it to the default location at ~/app/plunger/*
 # In order to use it everywhere, you should add that path to your PATH environment variable.
 #
 # Hints:
