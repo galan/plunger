@@ -15,6 +15,7 @@ import org.apache.kafka.common.record.TimestampType;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
 import com.google.common.base.StandardSystemProperty;
+import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
 
 import de.galan.commons.time.Durations;
@@ -58,7 +59,13 @@ public class KafkaCatCommand extends AbstractCatCommand {
 		props.put(ConsumerConfig.CLIENT_ID_CONFIG, clientId);
 		props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, autoOffsetReset);
 		props.put(ConsumerConfig.EXCLUDE_INTERNAL_TOPICS_CONFIG, "true");
-		props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, "" + determineMaxPollRecords(pa));
+		props.put(ConsumerConfig.MAX_POLL_RECORDS_CONFIG, Long.toString(determineMaxPollRecords(pa)));
+
+		Integer maxPartitionFetchBytes = determineMaxPartitionFetchBytes(pa);
+		if (maxPartitionFetchBytes != null) {
+			props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, Integer.toString(maxPartitionFetchBytes));
+		}
+
 		consumer = new KafkaConsumer<>(props);
 		consumer.subscribe(Arrays.asList(pa.getTarget().getDestination()));
 		String timeoutDuration = pa.getTarget().getParameterValue("timeout");
@@ -69,8 +76,21 @@ public class KafkaCatCommand extends AbstractCatCommand {
 
 
 	/**
-	 * Returns the "maxPollRecords" url argument, which will override the default of 1 for "max.poll.records". if the
-	 * size is larger then the limit "-n", it will be reduced to this.
+	 * Returns the maxPartitionFetchBytes url argument, which could overwrite the default kakfa value for
+	 * 'max.partition.fetch.bytes'.
+	 */
+	private Integer determineMaxPartitionFetchBytes(PlungerArguments pa) {
+		String param = pa.getTarget().getParameterValue("maxPartitionFetchBytes");
+		if (isNotBlank(param)) {
+			return Ints.tryParse(param);
+		}
+		return null;
+	}
+
+
+	/**
+	 * Returns the "maxPollRecords" url argument, which will override the default of 1 for "max.poll.records". if the size
+	 * is larger then the limit "-n", it will be reduced to this.
 	 */
 	private Long determineMaxPollRecords(PlungerArguments pa) {
 		Long maxPollRecords = Longs.tryParse(optional(pa.getTarget().getParameterValue("maxPollRecords")).orElse("1"));

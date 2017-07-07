@@ -12,6 +12,8 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 
+import com.google.common.primitives.Ints;
+
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractPutCommand;
 import de.galan.plunger.domain.Message;
@@ -22,10 +24,6 @@ import de.galan.plunger.domain.PlungerArguments;
  * Writes messages to a destination on a Kafka broker.
  */
 public class KafkaPutCommand extends AbstractPutCommand {
-
-	//parameter: timeout
-	//parameter: key
-	//parameter: groupId
 
 	private Producer<String, String> producer;
 
@@ -42,7 +40,23 @@ public class KafkaPutCommand extends AbstractPutCommand {
 		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+		Integer maxRequestSize = determineMaxRequestSize(pa);
+		if (maxRequestSize != null) {
+			props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, Integer.toString(maxRequestSize));
+		}
+
 		producer = new KafkaProducer<>(props);
+	}
+
+
+	/** Returns the maxRequestSize url argument, which could overwrite the default kakfa value for 'max.request.size'. */
+	private Integer determineMaxRequestSize(PlungerArguments pa) {
+		String param = pa.getTarget().getParameterValue("maxRequestSize");
+		if (isNotBlank(param)) {
+			return Ints.tryParse(param);
+		}
+		return null;
 	}
 
 

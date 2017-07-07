@@ -17,6 +17,8 @@ Available url-parameters
 * `autoOffsetReset` - Set the `auto.offset.reset` kafka option, defaults to `earliest`
 * `timeout` - Option to set the timeout kafka uses for poll
 * `maxPollRecords` - Sets the `max.poll.records` kafka options, defaults to `1`
+* `maxPartitionFetchBytes` - Sets the `max.partition.fetch.bytes` option for the consumer (pcat)
+* `maxRequestSize` - Sets the `max.request.size` option for the producer (pput)
 
 Examples:
 
