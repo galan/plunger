@@ -4,7 +4,7 @@
 
 	<groupId>de.galan</groupId>
 	<artifactId>plunger-hornetq</artifactId>
-	<version>1.5.7</version>
+	<version>1.5.8</version>
 
 	<properties>
 		<hornetq.version>2.2.5.Final</hornetq.version>
@@ -20,7 +20,7 @@
 		<dependency>
 			<groupId>de.galan</groupId>
 			<artifactId>plunger</artifactId>
-			<version>1.5.7</version>
+			<version>1.5.8</version>
 			<scope>provided</scope>
 		</dependency>
 	
