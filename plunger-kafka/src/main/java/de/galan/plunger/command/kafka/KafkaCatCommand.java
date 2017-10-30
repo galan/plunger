@@ -37,6 +37,7 @@ public class KafkaCatCommand extends AbstractCatCommand {
 	String groupId;
 	String autoOffsetReset;
 	private String clientId;
+	private boolean commit;
 
 
 	@Override
@@ -45,6 +46,7 @@ public class KafkaCatCommand extends AbstractCatCommand {
 		clientId = "plunger-" + StandardSystemProperty.USER_NAME.value() + "-" + System.currentTimeMillis();
 		groupId = KafkaUtils.groupId(pa.getTarget());
 		autoOffsetReset = optional(pa.getTarget().getParameterValue("autoOffsetReset")).orElse("earliest");
+		commit = pa.containsCommandArgument("r");
 	}
 
 
@@ -104,7 +106,6 @@ public class KafkaCatCommand extends AbstractCatCommand {
 
 	@Override
 	protected Message getNextMessage(PlungerArguments pa) throws CommandException {
-		boolean commit = pa.containsCommandArgument("r");
 		Message result = null;
 		if (recordIterator == null || !recordIterator.hasNext()) {
 			ConsumerRecords<String, String> records = consumer.poll(timeout);
@@ -127,7 +128,7 @@ public class KafkaCatCommand extends AbstractCatCommand {
 			}
 			result = msg;
 		}
-		if (commit && recordIterator != null && result != null) {
+		if (commit && recordIterator != null && result != null && !recordIterator.hasNext()) {
 			consumer.commitSync();
 		}
 

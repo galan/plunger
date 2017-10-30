@@ -1,5 +1,7 @@
 package de.galan.plunger.command.generic;
 
+import static org.apache.commons.lang3.StringUtils.*;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -98,13 +100,9 @@ public abstract class AbstractCatCommand extends AbstractCommand {
 			List<String> keys = new ArrayList<>(message.getProperties().keySet());
 			Collections.sort(keys);
 			for (String key: keys) {
-				if (isSystemHeader(key)) {
-					Output.print(Color.BLUE, key + ":");
-				}
-				else {
-					Output.print(Color.GREEN, key + ":");
-				}
-				Output.println(" " + message.getPropertyString(key));
+				Color colorKey = isSystemHeader(key) ? Color.BLUE : Color.GREEN;
+				Output.print(colorKey, key + ":");
+				Output.println(SPACE + message.getPropertyString(key));
 			}
 			if (StringUtils.isNotBlank(message.getBody())) {
 				Output.println(Color.YELLOW, message.getBody());
