@@ -19,6 +19,7 @@ Available url-parameters
 * `maxPollRecords` - Sets the `max.poll.records` kafka options, defaults to `1`
 * `maxPartitionFetchBytes` - Sets the `max.partition.fetch.bytes` option for the consumer (pcat)
 * `maxRequestSize` - Sets the `max.request.size` option for the producer (pput)
+* `ack` - Set the producer `acks` option for the producer (pput), defaults to `all`
 
 Examples:
 

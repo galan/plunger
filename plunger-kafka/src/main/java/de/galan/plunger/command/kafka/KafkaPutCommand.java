@@ -33,7 +33,7 @@ public class KafkaPutCommand extends AbstractPutCommand {
 		super.initialize(pa);
 		Properties props = new Properties();
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaUtils.brokers(pa.getTarget()));
-		props.put(ProducerConfig.ACKS_CONFIG, "all");
+		props.put(ProducerConfig.ACKS_CONFIG, determineAcksConfig(pa));
 		props.put(ProducerConfig.RETRIES_CONFIG, 0);
 		props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
 		props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
@@ -57,6 +57,11 @@ public class KafkaPutCommand extends AbstractPutCommand {
 			return Ints.tryParse(param);
 		}
 		return null;
+	}
+
+
+	private String determineAcksConfig(PlungerArguments pa) {
+		return isNotBlank(pa.getCommandArgument("acks")) ? pa.getCommandArgument("acks") : "all";
 	}
 
 
