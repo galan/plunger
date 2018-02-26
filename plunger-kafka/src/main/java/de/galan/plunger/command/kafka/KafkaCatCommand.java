@@ -1,6 +1,7 @@
 package de.galan.plunger.command.kafka;
 
 import static de.galan.commons.util.Sugar.*;
+import static java.nio.charset.StandardCharsets.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.util.Arrays;
@@ -11,6 +12,7 @@ import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.consumer.KafkaConsumer;
+import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.record.TimestampType;
 import org.apache.kafka.common.serialization.StringDeserializer;
 
@@ -117,14 +119,18 @@ public class KafkaCatCommand extends AbstractCatCommand {
 			Message msg = new Message();
 			msg.setBody(record.value());
 			if (!pa.containsCommandArgument("p")) { // exclude properties or not
-				msg.putProperty("checksum", record.checksum());
-				msg.putProperty("key", record.key());
-				msg.putProperty("offset", record.offset());
-				msg.putProperty("partition", record.partition());
+				msg.putProperty("kafka.key", record.key());
+				msg.putProperty("kafka.offset", record.offset());
+				msg.putProperty("kafka.partition", record.partition());
 				if (record.timestampType() != null && !record.timestampType().equals(TimestampType.NO_TIMESTAMP_TYPE)) {
-					msg.putProperty("timestamp", Instants.from(Instants.instant(record.timestamp())).toStringUtc());
-					msg.putProperty("timestamp_type", record.timestampType().toString());
+					msg.putProperty("kafka.timestamp", Instants.from(Instants.instant(record.timestamp())).toStringUtc());
+					msg.putProperty("kafka.timestamp_type", record.timestampType().toString());
 				}
+
+				for (Header header: record.headers()) {
+					msg.putProperty(header.key(), new String(header.value(), UTF_8));
+				}
+
 			}
 			result = msg;
 		}
@@ -139,7 +145,7 @@ public class KafkaCatCommand extends AbstractCatCommand {
 	@Override
 	protected boolean isSystemHeader(String headerName) {
 		// kafka does not provider own header information, only payload. Meta-data is provided as header instead.
-		return true;
+		return startsWith(headerName, "kafka.");
 	}
 
 

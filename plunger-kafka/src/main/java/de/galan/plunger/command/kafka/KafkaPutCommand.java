@@ -1,8 +1,10 @@
 package de.galan.plunger.command.kafka;
 
 import static de.galan.commons.util.Sugar.*;
+import static java.nio.charset.StandardCharsets.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
+import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
@@ -10,6 +12,9 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.header.Headers;
+import org.apache.kafka.common.header.internals.RecordHeader;
+import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import com.google.common.primitives.Ints;
@@ -68,12 +73,24 @@ public class KafkaPutCommand extends AbstractPutCommand {
 	@Override
 	protected void sendMessage(PlungerArguments pa, Message message, long count) throws CommandException {
 		try {
+			Headers headers = mapHeader(message);
 			String topic = pa.getTarget().getDestination();
-			producer.send(new ProducerRecord<String, String>(topic, getKey(message, pa), message.getBody())).get();
+			producer.send(new ProducerRecord<String, String>(topic, null, getKey(message, pa), message.getBody(), headers)).get();
 		}
 		catch (InterruptedException | ExecutionException ex) {
 			throw new CommandException("Failed sending record: " + ex.getMessage(), ex);
 		}
+	}
+
+
+	private Headers mapHeader(Message message) {
+		Headers headers = new RecordHeaders();
+		if (message.getProperties() != null) {
+			for (Entry<String, Object> entry: message.getProperties().entrySet()) {
+				headers.add(new RecordHeader(entry.getKey(), entry.getValue().toString().getBytes(UTF_8)));
+			}
+		}
+		return headers;
 	}
 
 
@@ -82,7 +99,7 @@ public class KafkaPutCommand extends AbstractPutCommand {
 		if (targetKey == null && pa.getTarget().containsParameter("key")) {
 			return null; // "key=" user will overwrite keys from message with empty key
 		}
-		return optional(targetKey).orElseGet(() -> trimToNull(message.getPropertyString("key")));
+		return optional(targetKey).orElseGet(() -> trimToNull(message.getPropertyString("kafka.key")));
 	}
 
 

@@ -23,7 +23,7 @@
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka-clients</artifactId>
 			<!-- <version>0.10.1.1</version> Is incompatible to 0.10.0.x-->
-			<version>0.10.1.1</version>
+			<version>1.0.0</version>
 			<!-- exclude slf4j, otherwise kafka logs pollute stderr -->
 			<exclusions>
 				<exclusion>
