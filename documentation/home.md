@@ -34,8 +34,8 @@ plunger makes use of a configuration file, when available. It is comparable with
 
 ## Location
 The configuration file will be selected in the following order:
-* `$XDG_CONFIG_HOME/plunger/target`
-* `$HOME/.config/plunger/target`
+* `$XDG_CONFIG_HOME/plunger/targets`
+* `$HOME/.config/plunger/targets`
 * `$HOME/.plunger`
 
 ## Syntax
