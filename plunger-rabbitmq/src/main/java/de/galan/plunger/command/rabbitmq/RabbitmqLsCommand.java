@@ -10,6 +10,7 @@ import java.util.List;
 import org.apache.commons.lang3.StringUtils;
 import org.fusesource.jansi.Ansi.Color;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -97,24 +98,8 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 
 	private List<Item> collectQueues(PlungerArguments pa) throws IOException, CommandException {
 		List<Item> result = new ArrayList<>();
-
-		Target t = pa.getTarget();
-		String mgmtPort = t.getParameterValue("managementPort");
-		if (!isNumeric(mgmtPort)) {
-			throw new CommandException("No 'managementPort' parameter provided");
-		}
-		String vhost = RabbitmqUtil.getBase64Vhost(pa);
-		String destination = isBlank(t.getDestination()) ? EMPTY : "/" + UrlUtil.encode(t.getDestination());
-		String response = Urls.read("http://" + t.getHost() + ":" + mgmtPort + "/api/queues/" + vhost + destination, t.getUsername(), t.getPassword());
-		JsonNode responseNode = mapper.readTree(response);
-		if (responseNode.isObject()) {
-			if (((ObjectNode)responseNode).has("error")) {
-				throw new CommandException("Failed retrieving queues: " + ((ObjectNode)responseNode).get("error").asText());
-			}
-			throw new CommandException("Unexpected json format returned from rabbitmq-management: " + responseNode.toString());
-		}
-		ArrayNode queueNodes = isBlank(t.getDestination()) ? (ArrayNode)responseNode : mapper.createArrayNode().add(responseNode);
-		for (JsonNode node: queueNodes) {
+		ArrayNode nodes = queryApi(pa, "/api/queues");
+		for (JsonNode node: nodes) {
 			Item item = new Item();
 			item.entity = "queue";
 			item.vhost = node.get("vhost").textValue();
@@ -128,30 +113,42 @@ public class RabbitmqLsCommand extends AbstractLsCommand {
 	}
 
 
-	private List<Item> collectExchanges(PlungerArguments pa) throws IOException {
+	private List<Item> collectExchanges(PlungerArguments pa) throws IOException, CommandException {
 		List<Item> result = new ArrayList<>();
-		Target t = pa.getTarget();
-		String mgmtPort = t.getParameterValue("managementPort");
-		String vhost = RabbitmqUtil.getBase64Vhost(pa);
-		String destination = isBlank(t.getDestination()) ? EMPTY : "/" + UrlUtil.encode(t.getDestination());
-		String response = Urls.read("http://" + t.getHost() + ":" + mgmtPort + "/api/exchanges/" + vhost + destination, t.getUsername(), t.getPassword());
-		JsonNode responseNode = mapper.readTree(response);
-		if (!(responseNode.isObject() && ((ObjectNode)responseNode).has("error"))) {
-			ArrayNode queueNodes = isBlank(t.getDestination()) ? (ArrayNode)responseNode : mapper.createArrayNode().add(responseNode);
-			for (JsonNode node: queueNodes) {
-				Item item = new Item();
-				item.entity = "exchange";
-				item.vhost = node.get("vhost").textValue();
-				item.name = node.get("name").textValue();
-				item.type = node.get("type").textValue();
-				item.durable = node.get("durable").booleanValue();
-				boolean internal = node.get("internal").booleanValue();
-				if (!internal && !isDefaultExchange(item.name)) {
-					result.add(item);
-				}
+		JsonNode nodes = queryApi(pa, "/api/exchanges");
+		for (JsonNode node: nodes) {
+			Item item = new Item();
+			item.entity = "exchange";
+			item.vhost = node.get("vhost").textValue();
+			item.name = node.get("name").textValue();
+			item.type = node.get("type").textValue();
+			item.durable = node.get("durable").booleanValue();
+			boolean internal = node.get("internal").booleanValue();
+			if (!internal && !isDefaultExchange(item.name)) {
+				result.add(item);
 			}
 		}
 		return result;
+	}
+
+
+	private ArrayNode queryApi(PlungerArguments pa, String endpointResource) throws IOException, JsonProcessingException, CommandException {
+		Target t = pa.getTarget();
+		String mgmtPort = t.getParameterValue("managementPort");
+		if (!isNumeric(mgmtPort)) {
+			throw new CommandException("No 'managementPort' parameter provided");
+		}
+		String vhost = RabbitmqUtil.getBase64Vhost(pa);
+		String destination = (isBlank(t.getDestination()) || StringUtils.equals(t.getDestination(), "/")) ? EMPTY : "/" + UrlUtil.encode(t.getDestination());
+
+		String response = Urls.read("http://" + t.getHost() + ":" + mgmtPort + endpointResource + "/" + vhost + destination, t.getUsername(), t.getPassword());
+		JsonNode responseNode = mapper.readTree(response);
+
+		if (responseNode.isObject() && (((ObjectNode)responseNode).has("error"))) {
+			throw new CommandException("Failed retrieving data from resource (" + endpointResource + "): " + ((ObjectNode)responseNode).get("error").asText());
+		}
+
+		return isBlank(destination) ? (ArrayNode)responseNode : mapper.createArrayNode().add(responseNode);
 	}
 
 
