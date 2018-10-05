@@ -62,7 +62,7 @@ command -v java >/dev/null 2>&1 || { echo >&2 \"java not in PATH, exiting.\"; ex
 if [ -f \"\${PATH_SCRIPT}/plunger-environment.sh\" ]; then
 	. \${PATH_SCRIPT}/plunger-environment.sh
 fi
-java -cp \${PATH_SCRIPT}/libs/\* de.galan.plunger.application.Plunger \$*
+java \${JAVA_OPTS} -cp \${PATH_SCRIPT}/libs/\* de.galan.plunger.application.Plunger \$*
 " > ${PLUNGER_HOME}/${PLUNGER_NAME}
 
 #echo "\${JAVA_HOME}/bin/java -cp .:jars/* de.galan.plunger.application.Plunger \$*" >> ${PLUNGER_HOME}/${PLUNGER_NAME}
