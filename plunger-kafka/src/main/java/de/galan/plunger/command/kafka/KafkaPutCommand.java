@@ -27,13 +27,12 @@ import org.apache.kafka.common.serialization.StringSerializer;
 
 import com.google.common.primitives.Ints;
 
-import io.confluent.kafka.serializers.KafkaAvroSerializer;
-import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
-
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractPutCommand;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
+import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
+import io.confluent.kafka.serializers.KafkaAvroSerializer;
 
 
 /**
@@ -64,56 +63,64 @@ public class KafkaPutCommand extends AbstractPutCommand {
 			props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, Integer.toString(maxRequestSize));
 		}
 		// If a schema registry is provided, we assume that the topic contains Avro
-		String schemaRegistry = AvroUtils.getSchemaRegistry(pa);
+		String schemaRegistry = AvroUtils.determineSchemaRegistry(pa);
 		if (isNotBlank(schemaRegistry)) {
 			props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getName());
-			props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
+			props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
 			schema = AvroUtils.getSchema(schemaRegistry, pa.getTarget().getDestination());
 		}
 		producer = new KafkaProducer<>(props);
 	}
 
 
-	/** Returns the maxRequestSize url argument, which could overwrite the default kakfa value for 'max.request.size'. */
+	/**
+	 * Returns the maxRequestSize url argument, which could overwrite the default kakfa value for 'max.request.size'.
+	 */
 	private Integer determineMaxRequestSize(PlungerArguments pa) {
 		String param = pa.getTarget().getParameterValue("maxRequestSize");
-		if (isNotBlank(param)) {
-			return Ints.tryParse(param);
-		}
-		return null;
+		return isNotBlank(param) ? Ints.tryParse(param) : null;
 	}
 
 
 	private String determineAcksConfig(PlungerArguments pa) {
-		return isNotBlank(pa.getCommandArgument("acks")) ? pa.getCommandArgument("acks") : "all";
+		String param = pa.getCommandArgument("acks");
+		return isNotBlank(param) ? param : "all";
 	}
 
 
 	@Override
 	protected void sendMessage(PlungerArguments pa, Message message, long count) throws CommandException {
-		try {
-			Headers headers = mapHeader(message);
-			String topic = pa.getTarget().getDestination();
-			// Topic contains string values
-			if (schema == null) {
-				producer.send(new ProducerRecord<>(topic, null, getKey(message, pa), message.getBody(), headers))
-						.get();
-			}
-			// Topic contains avro values
-			else {
-				try {
-					String jsonBody = message.getBody();
-					Decoder decoder = decoderFactory.jsonDecoder(schema, jsonBody);
-					DatumReader<GenericData.Record> reader = new GenericDatumReader<>(schema);
-					GenericRecord genericRecord = reader.read(null, decoder);
-					producer.send(new ProducerRecord<>(topic, null, getKey(message, pa), genericRecord, headers))
-							.get();
-				}
-				catch (IOException e) {
-					throw new CommandException("Could not serialize Avro: " + e.getMessage(), e);
-				}
+		Headers headers = mapHeader(message);
+		String topic = pa.getTarget().getDestination();
+		if (schema == null) {
+			sendMessagePlain(pa, message, headers, topic);
+		}
+		else {
+			sendMessageAvro(pa, message, headers, topic);
+		}
+	}
 
-			}
+
+	private void sendMessagePlain(PlungerArguments pa, Message message, Headers headers, String topic) throws CommandException {
+		try {
+			producer.send(new ProducerRecord<>(topic, null, getKey(message, pa), message.getBody(), headers)).get();
+		}
+		catch (InterruptedException | ExecutionException ex) {
+			throw new CommandException("Failed sending record: " + ex.getMessage(), ex);
+		}
+	}
+
+
+	private void sendMessageAvro(PlungerArguments pa, Message message, Headers headers, String topic) throws CommandException {
+		try {
+			String jsonBody = message.getBody();
+			Decoder decoder = decoderFactory.jsonDecoder(schema, jsonBody);
+			DatumReader<GenericData.Record> reader = new GenericDatumReader<>(schema);
+			GenericRecord genericRecord = reader.read(null, decoder);
+			producer.send(new ProducerRecord<>(topic, null, getKey(message, pa), genericRecord, headers)).get();
+		}
+		catch (IOException e) {
+			throw new CommandException("Could not serialize Avro: " + e.getMessage(), e);
 		}
 		catch (InterruptedException | ExecutionException ex) {
 			throw new CommandException("Failed sending record: " + ex.getMessage(), ex);

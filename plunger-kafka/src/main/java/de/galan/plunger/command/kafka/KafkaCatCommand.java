@@ -27,15 +27,14 @@ import com.google.common.base.StandardSystemProperty;
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
 
-import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
-import io.confluent.kafka.serializers.KafkaAvroDeserializer;
-
 import de.galan.commons.time.Durations;
 import de.galan.commons.time.Instants;
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractCatCommand;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
+import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 
 
 /**
@@ -83,8 +82,9 @@ public class KafkaCatCommand extends AbstractCatCommand {
 		if (maxPartitionFetchBytes != null) {
 			props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, Integer.toString(maxPartitionFetchBytes));
 		}
+
 		// If the schema Registry is provided, we assume the format is Avro
-		String schemaRegistry = AvroUtils.getSchemaRegistry(pa);
+		String schemaRegistry = AvroUtils.determineSchemaRegistry(pa);
 		if (isNotBlank(schemaRegistry)) {
 			props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
 			props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class.getName());
@@ -114,8 +114,8 @@ public class KafkaCatCommand extends AbstractCatCommand {
 
 
 	/**
-	 * Returns the "maxPollRecords" url argument, which will override the default of 1 for "max.poll.records". if the size
-	 * is larger then the limit "-n", it will be reduced to this.
+	 * Returns the "maxPollRecords" url argument, which will override the default of 1 for "max.poll.records". if the
+	 * size is larger then the limit "-n", it will be reduced to this.
 	 */
 	private Long determineMaxPollRecords(PlungerArguments pa) {
 		Long maxPollRecords = Longs.tryParse(optional(pa.getTarget().getParameterValue("maxPollRecords")).orElse("1"));
@@ -138,26 +138,7 @@ public class KafkaCatCommand extends AbstractCatCommand {
 		if (recordIterator != null && recordIterator.hasNext()) {
 			ConsumerRecord<String, Object> record = recordIterator.next();
 			Message msg = new Message();
-			// Default case, json
-			if (schema == null) {
-				msg.setBody((String)record.value());
-			}
-			// The topic contains Avro
-			else {
-				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-				GenericDatumWriter<GenericRecord> writer = new GenericDatumWriter<>(schema);
-				try {
-					Encoder encoder = encoderFactory.jsonEncoder(schema, byteArrayOutputStream);
-					writer.write((GenericRecord)record.value(), encoder);
-					encoder.flush();
-					String body = byteArrayOutputStream.toString();
-
-					msg.setBody(body);
-				}
-				catch (IOException e) {
-					throw new CommandException("Could not deserialize into Avro: " + e.getMessage(), e);
-				}
-			}
+			msg.setBody(schema == null ? provideMessagePlain(record) : provideMessageAvro(record));
 			if (!pa.containsCommandArgument("p")) { // exclude properties or not
 				msg.putProperty("kafka.key", record.key());
 				msg.putProperty("kafka.offset", record.offset());
@@ -178,6 +159,28 @@ public class KafkaCatCommand extends AbstractCatCommand {
 			consumer.commitSync();
 		}
 
+		return result;
+	}
+
+
+	private String provideMessagePlain(ConsumerRecord<String, Object> record) {
+		return (String)record.value();
+	}
+
+
+	private String provideMessageAvro(ConsumerRecord<String, Object> record) throws CommandException {
+		String result = null;
+		ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
+		GenericDatumWriter<GenericRecord> writer = new GenericDatumWriter<>(schema);
+		try {
+			Encoder encoder = encoderFactory.jsonEncoder(schema, byteStream);
+			writer.write((GenericRecord)record.value(), encoder);
+			encoder.flush();
+			result = byteStream.toString();
+		}
+		catch (IOException e) {
+			throw new CommandException("Could not deserialize into Avro: " + e.getMessage(), e);
+		}
 		return result;
 	}
 
