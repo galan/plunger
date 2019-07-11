@@ -4,10 +4,18 @@ import static de.galan.commons.util.Sugar.*;
 import static java.nio.charset.StandardCharsets.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
+import java.io.IOException;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.concurrent.ExecutionException;
 
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.generic.GenericDatumReader;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumReader;
+import org.apache.avro.io.Decoder;
+import org.apache.avro.io.DecoderFactory;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -18,6 +26,9 @@ import org.apache.kafka.common.header.internals.RecordHeaders;
 import org.apache.kafka.common.serialization.StringSerializer;
 
 import com.google.common.primitives.Ints;
+
+import io.confluent.kafka.serializers.KafkaAvroSerializer;
+import io.confluent.kafka.serializers.KafkaAvroSerializerConfig;
 
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractPutCommand;
@@ -30,7 +41,9 @@ import de.galan.plunger.domain.PlungerArguments;
  */
 public class KafkaPutCommand extends AbstractPutCommand {
 
-	private Producer<String, String> producer;
+	private Producer<String, Object> producer;
+	private Schema schema = null;
+	private DecoderFactory decoderFactory = new DecoderFactory();
 
 
 	@Override
@@ -50,7 +63,13 @@ public class KafkaPutCommand extends AbstractPutCommand {
 		if (maxRequestSize != null) {
 			props.put(ProducerConfig.MAX_REQUEST_SIZE_CONFIG, Integer.toString(maxRequestSize));
 		}
-
+		// If a schema registry is provided, we assume that the topic contains Avro
+		String schemaRegistry = AvroUtils.getSchemaRegistry(pa);
+		if (isNotBlank(schemaRegistry)) {
+			props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, KafkaAvroSerializer.class.getName());
+			props.put(KafkaAvroSerializerConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
+			schema = AvroUtils.getSchema(schemaRegistry, pa.getTarget().getDestination());
+		}
 		producer = new KafkaProducer<>(props);
 	}
 
@@ -75,7 +94,26 @@ public class KafkaPutCommand extends AbstractPutCommand {
 		try {
 			Headers headers = mapHeader(message);
 			String topic = pa.getTarget().getDestination();
-			producer.send(new ProducerRecord<String, String>(topic, null, getKey(message, pa), message.getBody(), headers)).get();
+			// Topic contains string values
+			if (schema == null) {
+				producer.send(new ProducerRecord<>(topic, null, getKey(message, pa), message.getBody(), headers))
+						.get();
+			}
+			// Topic contains avro values
+			else {
+				try {
+					String jsonBody = message.getBody();
+					Decoder decoder = decoderFactory.jsonDecoder(schema, jsonBody);
+					DatumReader<GenericData.Record> reader = new GenericDatumReader<>(schema);
+					GenericRecord genericRecord = reader.read(null, decoder);
+					producer.send(new ProducerRecord<>(topic, null, getKey(message, pa), genericRecord, headers))
+							.get();
+				}
+				catch (IOException e) {
+					throw new CommandException("Could not serialize Avro: " + e.getMessage(), e);
+				}
+
+			}
 		}
 		catch (InterruptedException | ExecutionException ex) {
 			throw new CommandException("Failed sending record: " + ex.getMessage(), ex);

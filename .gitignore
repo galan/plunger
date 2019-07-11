@@ -2,4 +2,4 @@
 */target/*
 plunger-support/plunger
 *.swp
-
+.idea/*

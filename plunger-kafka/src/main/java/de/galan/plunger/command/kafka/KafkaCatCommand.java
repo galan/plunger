@@ -4,10 +4,17 @@ import static de.galan.commons.util.Sugar.*;
 import static java.nio.charset.StandardCharsets.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Properties;
 
+import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericDatumWriter;
+import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.Encoder;
+import org.apache.avro.io.EncoderFactory;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -19,6 +26,9 @@ import org.apache.kafka.common.serialization.StringDeserializer;
 import com.google.common.base.StandardSystemProperty;
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
+
+import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 
 import de.galan.commons.time.Durations;
 import de.galan.commons.time.Instants;
@@ -33,13 +43,17 @@ import de.galan.plunger.domain.PlungerArguments;
  */
 public class KafkaCatCommand extends AbstractCatCommand {
 
-	private KafkaConsumer<String, String> consumer;
-	private Iterator<ConsumerRecord<String, String>> recordIterator;
+	private KafkaConsumer<String, Object> consumer;
+	private Iterator<ConsumerRecord<String, Object>> recordIterator;
+
 	int timeout = 1000;
 	String groupId;
 	String autoOffsetReset;
 	private String clientId;
 	private boolean commit;
+
+	private Schema schema = null;
+	private EncoderFactory encoderFactory = new EncoderFactory();
 
 
 	@Override
@@ -68,6 +82,13 @@ public class KafkaCatCommand extends AbstractCatCommand {
 		Integer maxPartitionFetchBytes = determineMaxPartitionFetchBytes(pa);
 		if (maxPartitionFetchBytes != null) {
 			props.put(ConsumerConfig.MAX_PARTITION_FETCH_BYTES_CONFIG, Integer.toString(maxPartitionFetchBytes));
+		}
+		// If the schema Registry is provided, we assume the format is Avro
+		String schemaRegistry = AvroUtils.getSchemaRegistry(pa);
+		if (isNotBlank(schemaRegistry)) {
+			props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
+			props.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, KafkaAvroDeserializer.class.getName());
+			schema = AvroUtils.getSchema(schemaRegistry, pa.getTarget().getDestination());
 		}
 
 		consumer = new KafkaConsumer<>(props);
@@ -110,14 +131,33 @@ public class KafkaCatCommand extends AbstractCatCommand {
 	protected Message getNextMessage(PlungerArguments pa) throws CommandException {
 		Message result = null;
 		if (recordIterator == null || !recordIterator.hasNext()) {
-			ConsumerRecords<String, String> records = consumer.poll(timeout);
+			ConsumerRecords<String, Object> records = consumer.poll(timeout);
 			recordIterator = records.iterator();
 		}
 
 		if (recordIterator != null && recordIterator.hasNext()) {
-			ConsumerRecord<String, String> record = recordIterator.next();
+			ConsumerRecord<String, Object> record = recordIterator.next();
 			Message msg = new Message();
-			msg.setBody(record.value());
+			// Default case, json
+			if (schema == null) {
+				msg.setBody((String)record.value());
+			}
+			// The topic contains Avro
+			else {
+				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				GenericDatumWriter<GenericRecord> writer = new GenericDatumWriter<>(schema);
+				try {
+					Encoder encoder = encoderFactory.jsonEncoder(schema, byteArrayOutputStream);
+					writer.write((GenericRecord)record.value(), encoder);
+					encoder.flush();
+					String body = byteArrayOutputStream.toString();
+
+					msg.setBody(body);
+				}
+				catch (IOException e) {
+					throw new CommandException("Could not deserialize into Avro: " + e.getMessage(), e);
+				}
+			}
 			if (!pa.containsCommandArgument("p")) { // exclude properties or not
 				msg.putProperty("kafka.key", record.key());
 				msg.putProperty("kafka.offset", record.offset());
