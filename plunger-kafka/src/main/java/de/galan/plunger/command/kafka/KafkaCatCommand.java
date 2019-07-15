@@ -6,6 +6,7 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Properties;
@@ -45,7 +46,7 @@ public class KafkaCatCommand extends AbstractCatCommand {
 	private KafkaConsumer<String, Object> consumer;
 	private Iterator<ConsumerRecord<String, Object>> recordIterator;
 
-	int timeout = 1000;
+	int timeout = 4000;
 	String groupId;
 	String autoOffsetReset;
 	private String clientId;
@@ -131,7 +132,7 @@ public class KafkaCatCommand extends AbstractCatCommand {
 	protected Message getNextMessage(PlungerArguments pa) throws CommandException {
 		Message result = null;
 		if (recordIterator == null || !recordIterator.hasNext()) {
-			ConsumerRecords<String, Object> records = consumer.poll(timeout);
+			ConsumerRecords<String, Object> records = consumer.poll(Duration.ofMillis(timeout));
 			recordIterator = records.iterator();
 		}
 

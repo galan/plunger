@@ -15,7 +15,7 @@ Available url-parameters
 * `group` or `groupId` - Defines the groupId Kafka should use for the connection (otherwise `plunger-$USER` will be used)
 * `key` - key used when sending data into kafka (optional)
 * `autoOffsetReset` - Set the `auto.offset.reset` kafka option, defaults to `earliest`
-* `timeout` - Option to set the timeout kafka uses for poll
+* `timeout` - Option to set the timeout kafka uses for poll in millis/human notation, defaults to `4s`
 * `maxPollRecords` - Sets the `max.poll.records` kafka options, defaults to `1`
 * `maxPartitionFetchBytes` - Sets the `max.partition.fetch.bytes` option for the consumer (pcat)
 * `maxRequestSize` - Sets the `max.request.size` option for the producer (pput)
