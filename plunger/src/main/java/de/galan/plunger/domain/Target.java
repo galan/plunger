@@ -1,17 +1,21 @@
 package de.galan.plunger.domain;
 
+import static java.nio.charset.StandardCharsets.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.google.common.base.Joiner;
+import com.google.common.collect.Lists;
+
 import de.galan.plunger.util.Output;
-import de.galan.plunger.util.PlungerCharsets;
 
 
 /**
@@ -172,18 +176,22 @@ public class Target {
 		}
 		if (!getParameter().isEmpty()) {
 			buffer.append("?");
+			List<String> pairs = Lists.newArrayList();
 			for (Entry<String, String> entry: getParameter().entrySet()) {
-				buffer.append(entry.getKey());
-				buffer.append("=");
+				StringBuffer pair = new StringBuffer();
+				pair.append(entry.getKey());
+				pair.append("=");
 				if (isNotBlank(entry.getValue())) {
 					try {
-						buffer.append(URLDecoder.decode(entry.getValue(), PlungerCharsets.UTF8.toString()));
+						pair.append(URLDecoder.decode(entry.getValue(), UTF_8.toString()));
 					}
 					catch (UnsupportedEncodingException ex) {
 						Output.error("UTF-8 unknown");
 					}
 				}
+				pairs.add(pair.toString());
 			}
+			buffer.append(Joiner.on("&").join(pairs));
 		}
 		return buffer.toString();
 	}

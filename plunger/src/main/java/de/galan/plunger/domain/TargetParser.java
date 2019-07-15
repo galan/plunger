@@ -1,5 +1,6 @@
 package de.galan.plunger.domain;
 
+import static java.nio.charset.StandardCharsets.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.UnsupportedEncodingException;
@@ -10,7 +11,6 @@ import java.net.URLDecoder;
 import org.apache.commons.lang3.StringUtils;
 
 import de.galan.plunger.util.Output;
-import de.galan.plunger.util.PlungerCharsets;
 
 
 /**
@@ -56,7 +56,7 @@ public class TargetParser {
 							if (split.length > 1) {
 								if (isNotBlank(split[1])) {
 									try {
-										value = URLDecoder.decode(split[1], PlungerCharsets.UTF8.toString());
+										value = URLDecoder.decode(split[1], UTF_8.toString());
 									}
 									catch (UnsupportedEncodingException ex) {
 										Output.error("UTF-8 unknown");

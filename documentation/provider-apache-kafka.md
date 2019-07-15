@@ -20,7 +20,7 @@ Available url-parameters
 * `maxPartitionFetchBytes` - Sets the `max.partition.fetch.bytes` option for the consumer (pcat)
 * `maxRequestSize` - Sets the `max.request.size` option for the producer (pput)
 * `ack` - Set the producer `acks` option for the producer (pput), defaults to `all`
-* `schemaRegistry` - Set the URL to the kafka Schema registry. If this is set, it is assumed that the topic contains Avro rather than plain string
+* `schemaRegistry` - Set the URL to the kafka Schema registry. If this is set, it is assumed that the topic contains Avro rather than plain string. If the protocol is omitted, `http://` is taken. If a protocol is defined, it must be URL encoded to eg. `http%3A%2F%2Fexample.com`.
 
 Examples:
 

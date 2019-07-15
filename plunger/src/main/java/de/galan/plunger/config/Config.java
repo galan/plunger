@@ -1,5 +1,6 @@
 package de.galan.plunger.config;
 
+import static java.nio.charset.StandardCharsets.*;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.BufferedReader;
@@ -15,7 +16,6 @@ import com.google.common.annotations.VisibleForTesting;
 import de.galan.plunger.domain.Target;
 import de.galan.plunger.domain.TargetParser;
 import de.galan.plunger.util.Output;
-import de.galan.plunger.util.PlungerCharsets;
 
 
 /**
@@ -41,7 +41,7 @@ public class Config {
 		getEntries().clear();
 		if ((file != null) && file.exists() && file.isFile()) {
 			int lineCount = 0;
-			try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), PlungerCharsets.UTF8))) {
+			try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), UTF_8))) {
 				String line = null;
 				Entry entry = null;
 				while((line = br.readLine()) != null) {

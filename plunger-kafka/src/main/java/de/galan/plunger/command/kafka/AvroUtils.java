@@ -38,7 +38,12 @@ public class AvroUtils {
 
 	public static String determineSchemaRegistry(PlungerArguments pa) {
 		String param = pa.getTarget().getParameterValue("schemaRegistry");
-		return isNotBlank(param) ? param : null;
+		if (isNotBlank(param)) {
+			if (!startsWithAny(param, "http://", "https://")) {
+				param = "http://" + param;
+			}
+		}
+		return param;
 	}
 
 }
