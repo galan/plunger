@@ -3,7 +3,7 @@ package de.galan.plunger.command.kafka;
 import static org.apache.commons.lang3.StringUtils.*;
 
 import org.apache.avro.Schema;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,6 +27,7 @@ public class AvroUtils {
 
 			Schema.Parser schemaParser = new Schema.Parser();
 			JsonNode json = new ObjectMapper().readTree(content);
+
 			String schemaString = StringEscapeUtils.unescapeJson(json.get("schema").asText());
 			return schemaParser.parse(schemaString);
 		}

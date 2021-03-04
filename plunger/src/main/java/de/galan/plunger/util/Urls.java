@@ -9,7 +9,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.io.IOUtils;
+
+import de.galan.commons.io.streams.IOSupport;
 
 
 /**
@@ -34,7 +35,7 @@ public class Urls {
 			connection.setRequestMethod("GET");
 			InputStream stream = (connection.getResponseCode() >= 400) ? connection.getErrorStream() : connection.getInputStream();
 			//int statusCode = connection.getResponseCode();
-			result = IOUtils.toString(stream, UTF_8);
+			result = IOSupport.inputstreamToString(stream, UTF_8);
 			stream.close();
 		}
 		catch (Exception ex) {

@@ -4,19 +4,15 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-import de.galan.plunger.domain.Target;
-import de.galan.plunger.domain.TargetParser;
-
 
 /**
  * CUT TargetParser
- * 
+ *
  * @author danielt
  */
 public class TargetParserTest {
 
 	TargetParser tp = new TargetParser();
-
 
 	@Test
 	public void testParse() throws Exception {

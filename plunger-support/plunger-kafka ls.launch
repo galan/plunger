@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <launchConfiguration type="org.eclipse.jdt.launching.localJavaApplication">
-    <setAttribute key="name.schedenig.eclipse.grepconsole.DisabledIds"/>
-    <setAttribute key="name.schedenig.eclipse.grepconsole.EnabledIds"/>
-    <setAttribute key="name.schedenig.eclipse.grepconsole.FilterDisabledIds"/>
-    <setAttribute key="name.schedenig.eclipse.grepconsole.FilterEnabledIds"/>
-    <setAttribute key="name.schedenig.eclipse.grepconsole.StatisticsDisabledIds"/>
-    <setAttribute key="name.schedenig.eclipse.grepconsole.StatisticsEnabledIds"/>
-    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
-        <listEntry value="/plunger/src/main/java/de/galan/plunger/application/Plunger.java"/>
-    </listAttribute>
-    <listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
-        <listEntry value="1"/>
-    </listAttribute>
-    <booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
-    <stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
-    <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="de.galan.plunger.application.Plunger"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="kafka://localhost:9092/ -C ls"/>
-    <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="plunger-kafka"/>
-    <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
+<setAttribute key="name.schedenig.eclipse.grepconsole.DisabledIds"/>
+<setAttribute key="name.schedenig.eclipse.grepconsole.EnabledIds"/>
+<setAttribute key="name.schedenig.eclipse.grepconsole.FilterDisabledIds"/>
+<setAttribute key="name.schedenig.eclipse.grepconsole.FilterEnabledIds"/>
+<setAttribute key="name.schedenig.eclipse.grepconsole.StatisticsDisabledIds"/>
+<setAttribute key="name.schedenig.eclipse.grepconsole.StatisticsEnabledIds"/>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_PATHS">
+<listEntry value="/plunger/src/main/java/de/galan/plunger/application/Plunger.java"/>
+</listAttribute>
+<listAttribute key="org.eclipse.debug.core.MAPPED_RESOURCE_TYPES">
+<listEntry value="1"/>
+</listAttribute>
+<booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="org.eclipse.m2e.launchconfig.classpathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="de.galan.plunger.application.Plunger"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="kafka://localhost:9092/ -C ls"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="plunger-kafka"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
 </launchConfiguration>

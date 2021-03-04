@@ -5,7 +5,7 @@
 	<!-- <module name="SuppressionCommentFilter" /> -->
 
 	<module name="TreeWalker">
-		<module name="FileContentsHolder" />
+		<!-- <module name="FileContentsHolder" /> -->
 		<!-- Naming Conventions -->
 		<module name="ConstantName">
 			<property name="format" value="^([A-Z][A-Z0-9]*(_[A-Z0-9]+)*)$" />
