@@ -12,4 +12,5 @@ public interface Command {
 
 	public void execute(PlungerArguments pa) throws CommandException;
 
+	default void onError(CommandException exception) {}
 }
