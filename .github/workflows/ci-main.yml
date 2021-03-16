@@ -1,0 +1,38 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: main
+
+on:
+  push
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v1
+      env:
+        cache-name: m2
+      with:
+        path: ~/.m2/repository
+        key: ${{ env.cache-name }}-${{ hashFiles('**/pom.xml') }}
+        restore-keys: ${{ env.cache-name }}-
+    - name: setup java
+      uses: actions/setup-java@v1
+      with:
+        java-version: 11
+    - name: Build all modules with Maven
+      run: |
+        export PLUNGER_HOME="$(pwd)/dist"
+        mkdir "${PLUNGER_HOME}"
+        ./plunger-support/install.sh
+  release:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master' && startsWith(github.ref, 'refs/tags/')
+    steps:
+    - name: Collect release artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: dist
