@@ -36,7 +36,7 @@ public class Client {
 				command.execute(pa);
 			}
 			catch (CommandException ex) {
-				handleError(pa, ex);
+				handleError(pa, command, ex);
 			}
 		}
 	}
@@ -53,10 +53,10 @@ public class Client {
 		CommandProvider provider = new CommandProviderServiceLocator().locate(CommandProvider.class, pa.getTarget().getProvider());
 		if (provider == null) {
 			if (isBlank(pa.getTarget().getProvider())) {
-				handleError(pa, new CommandException("No provider given, is your target written correctly?"));
+				handleError(pa, null, new CommandException("No provider given, is your target written correctly?"));
 			}
 			else {
-				handleError(pa, new CommandException("No provider for '" + pa.getTarget().getProvider() + "' found"));
+				handleError(pa, null, new CommandException("No provider for '" + pa.getTarget().getProvider() + "' found"));
 			}
 		}
 		return provider;
@@ -69,14 +69,22 @@ public class Client {
 	}
 
 
-	protected void handleError(PlungerArguments pa, CommandException ex) {
+	protected void handleError(PlungerArguments pa, Command command, CommandException cex) {
 		if (pa.isVerbose()) {
-			Output.error(ex.getMessage() + System.getProperty("line.separator") + ExceptionUtils.getStackTrace(ex));
+			Output.error(cex.getMessage() + System.getProperty("line.separator") + ExceptionUtils.getStackTrace(cex));
 		}
 		else {
-			Throwable cause = ex.getCause();
+			Throwable cause = cex.getCause();
 			String causeMessage = (cause != null && isNotBlank(cause.getMessage())) ? ": " + cause.getMessage() : "";
-			Output.error(ex.getMessage() + causeMessage);
+			Output.error(cex.getMessage() + causeMessage);
+		}
+		if (command != null) {
+			try {
+				command.onError(cex);
+			}
+			catch (Exception ex) {
+				Output.error("Cleanup after error failed: " + ex.getMessage());
+			}
 		}
 		System.exit(4);
 	}

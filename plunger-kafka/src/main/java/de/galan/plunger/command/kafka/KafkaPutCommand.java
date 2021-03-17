@@ -28,14 +28,13 @@ import org.apache.kafka.common.serialization.StringSerializer;
 
 import com.google.common.primitives.Ints;
 
-import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
-import io.confluent.kafka.serializers.KafkaAvroSerializer;
-
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractPutCommand;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
 import de.galan.plunger.util.Output;
+import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
+import io.confluent.kafka.serializers.KafkaAvroSerializer;
 
 
 /**
@@ -46,6 +45,7 @@ public class KafkaPutCommand extends AbstractPutCommand {
 	private final DecoderFactory decoderFactory = new DecoderFactory();
 	private Producer<String, Object> producer;
 	private Schema schema = null;
+
 	private CommandException lastError;
 	private boolean transactional;
 	private boolean sendAsync;
@@ -69,8 +69,7 @@ public class KafkaPutCommand extends AbstractPutCommand {
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 
-		if (determineTransaction(pa)) {
-			transactional = true;
+		if (transactional) {
 			props.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, UUID.randomUUID().toString());
 			props.put(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG, determineTransactionTimeout(pa));
 			props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
@@ -143,7 +142,7 @@ public class KafkaPutCommand extends AbstractPutCommand {
 
 		Integer timeout = Ints.tryParse(param);
 		if (timeout == null) {
-			throw new IllegalArgumentException("invalid timeout value");
+			throw new IllegalArgumentException("invalid txTimeout value");
 		}
 		return timeout;
 	}
@@ -226,7 +225,7 @@ public class KafkaPutCommand extends AbstractPutCommand {
 	private Headers mapHeader(Message message) {
 		Headers headers = new RecordHeaders();
 		if (message.getProperties() != null) {
-			for (Entry<String, Object> entry : message.getProperties().entrySet()) {
+			for (Entry<String, Object> entry: message.getProperties().entrySet()) {
 				headers.add(new RecordHeader(entry.getKey(), entry.getValue().toString().getBytes(UTF_8)));
 			}
 		}
@@ -247,7 +246,7 @@ public class KafkaPutCommand extends AbstractPutCommand {
 	protected void close() {
 		// wait for all acks
 		synchronized (this) {
-			while(numAcked < numSend) {
+			while(sendAsync && lastError != null && numAcked < numSend) {
 				try {
 					wait(100);
 				}
