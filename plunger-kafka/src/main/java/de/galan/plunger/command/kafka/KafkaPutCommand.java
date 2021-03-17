@@ -7,6 +7,7 @@ import static org.apache.commons.lang3.StringUtils.*;
 import java.io.IOException;
 import java.util.Map.Entry;
 import java.util.Properties;
+import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import org.apache.avro.Schema;
@@ -31,6 +32,7 @@ import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractPutCommand;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
+import de.galan.plunger.util.Output;
 import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
 import io.confluent.kafka.serializers.KafkaAvroSerializer;
 
@@ -40,23 +42,41 @@ import io.confluent.kafka.serializers.KafkaAvroSerializer;
  */
 public class KafkaPutCommand extends AbstractPutCommand {
 
+	private final DecoderFactory decoderFactory = new DecoderFactory();
 	private Producer<String, Object> producer;
 	private Schema schema = null;
-	private DecoderFactory decoderFactory = new DecoderFactory();
 
+	private CommandException lastError;
+	private boolean transactional;
+	private boolean sendAsync;
+	private long numAcked = 0;
+	private long numSend = 0;
 
 	@Override
 	protected void initialize(PlungerArguments pa) throws CommandException {
 		super.initialize(pa);
+
+		transactional = determineTransaction(pa);
+		sendAsync = determineAsync(pa);
+
 		Properties props = new Properties();
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaUtils.brokers(pa.getTarget()));
 		props.put(ProducerConfig.ACKS_CONFIG, determineAcksConfig(pa));
-		props.put(ProducerConfig.RETRIES_CONFIG, 0);
-		props.put(ProducerConfig.BATCH_SIZE_CONFIG, 16384);
-		props.put(ProducerConfig.LINGER_MS_CONFIG, 1);
+		props.put(ProducerConfig.BATCH_SIZE_CONFIG, 100_000);
+		props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "lz4");
+		props.put(ProducerConfig.LINGER_MS_CONFIG, 50);
 		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
 		props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
+
+		if (transactional) {
+			props.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, UUID.randomUUID().toString());
+			props.put(ProducerConfig.TRANSACTION_TIMEOUT_CONFIG, determineTransactionTimeout(pa));
+			props.put(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
+		}
+		else {
+			props.put(ProducerConfig.RETRIES_CONFIG, 0);
+		}
 
 		Integer maxRequestSize = determineMaxRequestSize(pa);
 		if (maxRequestSize != null) {
@@ -69,7 +89,21 @@ public class KafkaPutCommand extends AbstractPutCommand {
 			props.put(AbstractKafkaAvroSerDeConfig.SCHEMA_REGISTRY_URL_CONFIG, schemaRegistry);
 			schema = AvroUtils.getSchema(schemaRegistry, pa.getTarget().getDestination());
 		}
+
 		producer = new KafkaProducer<>(props);
+
+		if (transactional) {
+			producer.initTransactions();
+			producer.beginTransaction();
+		}
+	}
+
+
+	@Override
+	public void onError(CommandException exception) {
+		if (transactional && !closed) {
+			producer.abortTransaction();
+		}
 	}
 
 
@@ -88,42 +122,102 @@ public class KafkaPutCommand extends AbstractPutCommand {
 	}
 
 
+	private boolean determineAsync(PlungerArguments pa) {
+		String param = pa.getTarget().getParameterValue("async");
+		return isNotBlank(param) && Boolean.parseBoolean(param);
+	}
+
+
+	private boolean determineTransaction(PlungerArguments pa) {
+		String param = pa.getTarget().getParameterValue("tx");
+		return isNotBlank(param) && Boolean.parseBoolean(param);
+	}
+
+
+	private int determineTransactionTimeout(PlungerArguments pa) {
+		String param = pa.getTarget().getParameterValue("txTimeout");
+		if (isBlank(param)) {
+			return 300_000;
+		}
+
+		Integer timeout = Ints.tryParse(param);
+		if (timeout == null) {
+			throw new IllegalArgumentException("invalid txTimeout value");
+		}
+		return timeout;
+	}
+
+
 	@Override
 	protected void sendMessage(PlungerArguments pa, Message message, long count) throws CommandException {
 		Headers headers = mapHeader(message);
 		String topic = pa.getTarget().getDestination();
+
+		numSend++;
 		if (schema == null) {
 			sendMessagePlain(pa, message, headers, topic);
 		}
 		else {
 			sendMessageAvro(pa, message, headers, topic);
 		}
+
+		if (lastError != null) {
+			throw lastError;
+		}
 	}
 
 
 	private void sendMessagePlain(PlungerArguments pa, Message message, Headers headers, String topic) throws CommandException {
-		try {
-			producer.send(new ProducerRecord<>(topic, null, getKey(message, pa), message.getBody(), headers)).get();
+		if (sendAsync) {
+			producer.send(new ProducerRecord<>(topic, null, getKey(message, pa), message.getBody(), headers), (metadata, exception) -> {
+				if (exception != null) {
+					lastError = new CommandException("Failed sending record: " + exception.getMessage(), exception);
+					return;
+				}
+				numAcked++;
+			});
 		}
-		catch (InterruptedException | ExecutionException ex) {
-			throw new CommandException("Failed sending record: " + ex.getMessage(), ex);
+		else {
+			try {
+				producer.send(new ProducerRecord<>(topic, null, getKey(message, pa), message.getBody(), headers)).get();
+				numAcked++;
+			}
+			catch (InterruptedException | ExecutionException ex) {
+				throw new CommandException("Failed sending record: " + ex.getMessage(), ex);
+			}
 		}
 	}
 
 
 	private void sendMessageAvro(PlungerArguments pa, Message message, Headers headers, String topic) throws CommandException {
+		GenericRecord genericRecord;
 		try {
 			String jsonBody = message.getBody();
 			Decoder decoder = decoderFactory.jsonDecoder(schema, jsonBody);
 			DatumReader<GenericData.Record> reader = new GenericDatumReader<>(schema);
-			GenericRecord genericRecord = reader.read(null, decoder);
-			producer.send(new ProducerRecord<>(topic, null, getKey(message, pa), genericRecord, headers)).get();
+			genericRecord = reader.read(null, decoder);
 		}
 		catch (IOException e) {
 			throw new CommandException("Could not serialize Avro: " + e.getMessage(), e);
 		}
-		catch (InterruptedException | ExecutionException ex) {
-			throw new CommandException("Failed sending record: " + ex.getMessage(), ex);
+
+		if (sendAsync) {
+			producer.send(new ProducerRecord<>(topic, null, getKey(message, pa), genericRecord, headers), (metadata, exception) -> {
+				if (exception != null) {
+					lastError = new CommandException("Failed sending record: " + exception.getMessage(), exception);
+					return;
+				}
+				numAcked++;
+			});
+		}
+		else {
+			try {
+				producer.send(new ProducerRecord<>(topic, null, getKey(message, pa), genericRecord, headers)).get();
+				numAcked++;
+			}
+			catch (InterruptedException | ExecutionException ex) {
+				throw new CommandException("Failed sending record: " + ex.getMessage(), ex);
+			}
 		}
 	}
 
@@ -150,6 +244,21 @@ public class KafkaPutCommand extends AbstractPutCommand {
 
 	@Override
 	protected void close() {
+		// wait for all acks
+		synchronized (this) {
+			while(sendAsync && lastError != null && numAcked < numSend) {
+				try {
+					wait(100);
+				}
+				catch (InterruptedException e) {
+					Output.error("Unexpected interruption: " + e.getMessage());
+				}
+			}
+		}
+
+		if (transactional && !closed) {
+			producer.commitTransaction();
+		}
 		if (producer != null) {
 			producer.close();
 		}

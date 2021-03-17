@@ -28,14 +28,15 @@ import com.google.common.base.StandardSystemProperty;
 import com.google.common.primitives.Ints;
 import com.google.common.primitives.Longs;
 
+import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
+import io.confluent.kafka.serializers.KafkaAvroDeserializer;
+
 import de.galan.commons.time.Durations;
 import de.galan.commons.time.Instants;
 import de.galan.plunger.command.CommandException;
 import de.galan.plunger.command.generic.AbstractCatCommand;
 import de.galan.plunger.domain.Message;
 import de.galan.plunger.domain.PlungerArguments;
-import io.confluent.kafka.serializers.AbstractKafkaAvroSerDeConfig;
-import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 
 
 /**
@@ -43,18 +44,16 @@ import io.confluent.kafka.serializers.KafkaAvroDeserializer;
  */
 public class KafkaCatCommand extends AbstractCatCommand {
 
-	private KafkaConsumer<String, Object> consumer;
-	private Iterator<ConsumerRecord<String, Object>> recordIterator;
-
 	int timeout = 4000;
 	String groupId;
 	String autoOffsetReset;
+	private KafkaConsumer<String, Object> consumer;
+	private Iterator<ConsumerRecord<String, Object>> recordIterator;
 	private String clientId;
 	private boolean commit;
 
 	private Schema schema = null;
 	private EncoderFactory encoderFactory = new EncoderFactory();
-
 
 	@Override
 	protected void initialize(PlungerArguments pa) throws CommandException {
@@ -149,7 +148,7 @@ public class KafkaCatCommand extends AbstractCatCommand {
 					msg.putProperty("kafka.timestamp_type", record.timestampType().toString());
 				}
 
-				for (Header header: record.headers()) {
+				for (Header header : record.headers()) {
 					msg.putProperty(header.key(), new String(header.value(), UTF_8));
 				}
 
