@@ -24,6 +24,7 @@ public abstract class AbstractCountCommand extends AbstractCommand {
 	@Override
 	protected void process(PlungerArguments pa) throws CommandException {
 		Output.println("" + getCount(pa));
+		Output.flush();
 	}
 
 

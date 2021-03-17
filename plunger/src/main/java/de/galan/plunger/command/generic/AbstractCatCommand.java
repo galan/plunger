@@ -33,7 +33,7 @@ public abstract class AbstractCatCommand extends AbstractCommand {
 
 	@Override
 	public void process(PlungerArguments pa) throws CommandException {
-		Message message = null;
+		Message message;
 		boolean firstMessage = true;
 		MutableLong counter = new MutableLong();
 		Long limit = pa.getCommandArgumentLong("n");
@@ -70,6 +70,7 @@ public abstract class AbstractCatCommand extends AbstractCommand {
 		if (!firstMessage) {
 			if (!pa.containsCommandArgument("e") && !pa.containsCommandArgument("d")) {
 				Output.println(StringUtils.repeat("-", 64));
+				Output.flush();
 			}
 		}
 		return false;
@@ -108,6 +109,7 @@ public abstract class AbstractCatCommand extends AbstractCommand {
 				Output.println(Color.YELLOW, message.getBody());
 			}
 		}
+		Output.flush();
 	}
 
 
