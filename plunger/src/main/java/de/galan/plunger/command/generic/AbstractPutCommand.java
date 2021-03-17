@@ -35,11 +35,11 @@ public abstract class AbstractPutCommand extends AbstractCommand {
 		long lineCount = 0;
 
 		MessageMarshaller mm = pa.containsCommandArgument("d") ? new DirectMessageMarshaller() : new CompleteMessageMarshaller();
-		String line = null;
+		String line;
 		while((line = reader.read()) != null) {
 			lineCount++;
 			try {
-				Message msg = null;
+				Message msg;
 				try {
 					msg = mm.unmarshal(line);
 				}
@@ -80,6 +80,7 @@ public abstract class AbstractPutCommand extends AbstractCommand {
 			Output.print(Color.GREEN, marshalled[0]);
 			Output.print(marshalled[1]);
 			Output.println(Color.YELLOW, marshalled[2]);
+			Output.flush();
 		}
 	}
 

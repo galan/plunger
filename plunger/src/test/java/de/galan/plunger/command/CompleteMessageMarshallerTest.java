@@ -64,6 +64,7 @@ public class CompleteMessageMarshallerTest {
 		// marshall
 		String marshal = mm.marshal(m);
 		Output.print(marshal);
+		Output.flush();
 		assertThat(marshal).contains("\"a\":\"a\"");
 		assertThat(marshal).contains("\"b\":123");
 		assertThat(marshal).contains("\"c\":true");

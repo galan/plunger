@@ -18,6 +18,7 @@ public class VersionUtil {
 		try {
 			pp.load(is);
 			Output.println(pp.getProperty("artifactId") + " version \"" + pp.getProperty("version") + "\"");
+			Output.flush();
 		}
 		catch (IOException ex) {
 			Output.error("Could not read version information from jar");

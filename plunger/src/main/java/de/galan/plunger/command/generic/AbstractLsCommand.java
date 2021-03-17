@@ -38,6 +38,7 @@ public abstract class AbstractLsCommand extends AbstractCommand {
 			}
 			Output.println("");
 		}
+		Output.flush();
 	}
 
 
