@@ -4,7 +4,6 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 import java.io.File;
 import java.io.PrintWriter;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -13,8 +12,6 @@ import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.PosixParser;
 import org.fusesource.jansi.AnsiConsole;
-
-import com.google.common.base.Stopwatch;
 
 import de.galan.plunger.command.CommandName;
 import de.galan.plunger.config.Config;
@@ -34,7 +31,6 @@ public class Plunger {
 	private static final String DOCUMENTATION_URL = "https://github.com/galan/plunger";
 
 	private OptionsFactory factory = new OptionsFactory();
-
 
 	public static void main(String[] args) {
 		AnsiConsole.systemInstall();
