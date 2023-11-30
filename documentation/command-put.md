@@ -39,4 +39,4 @@ Available via `pput --help`
 * -s,--skip  _/ skip lines with errors._
 * -t,--ttl <arg>  _/ Time to live, see documentation for format._
 * -r,--routingkey <arg> _/ Routingkey (AMQP)_
-
+* -c,--compression <arg> _/ Compression type (kafka). Supported values: none, gzip, snappy (default), lz4, or zstd._

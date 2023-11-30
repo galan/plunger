@@ -63,7 +63,7 @@ public class KafkaPutCommand extends AbstractPutCommand {
 		props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, KafkaUtils.brokers(pa.getTarget()));
 		props.put(ProducerConfig.ACKS_CONFIG, determineAcksConfig(pa));
 		props.put(ProducerConfig.BATCH_SIZE_CONFIG, 100_000);
-		props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, "lz4");
+		props.put(ProducerConfig.COMPRESSION_TYPE_CONFIG, defaultString(pa.getCommandArgument("compression"), "snappy"));
 		props.put(ProducerConfig.LINGER_MS_CONFIG, 50);
 		props.put(ProducerConfig.BUFFER_MEMORY_CONFIG, 33554432);
 		props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class.getName());
