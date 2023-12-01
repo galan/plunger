@@ -29,6 +29,7 @@ jobs:
         mkdir "${PLUNGER_HOME}"
         ./plunger-support/install.sh
   release:
+    needs: build
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
