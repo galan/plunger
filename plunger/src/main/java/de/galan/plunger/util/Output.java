@@ -13,8 +13,6 @@ import org.fusesource.jansi.Ansi.Color;
 
 /**
  * Prints output to the stdout/err, colors can be used via AnsiConsole
- * 
- * @author daniel
  */
 public class Output {
 

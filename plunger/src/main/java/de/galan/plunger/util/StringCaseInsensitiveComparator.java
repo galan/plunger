@@ -5,8 +5,6 @@ import java.util.Comparator;
 
 /**
  * Compares Strings independent of its case. Eg. sorting would result in aBcdEf instead of BEacdf.
- * 
- * @author daniel
  */
 public class StringCaseInsensitiveComparator implements Comparator<String> {
 

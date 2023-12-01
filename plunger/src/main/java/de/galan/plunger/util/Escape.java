@@ -5,8 +5,6 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 /**
  * Escapes and unescapes characters (some of &lt;= 0x20) with a slash
- *
- * @author daniel
  */
 public class Escape {
 

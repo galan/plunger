@@ -23,8 +23,6 @@ import de.galan.plunger.util.VersionUtil;
 
 /**
  * Shell client to a Messaging Provider
- *
- * @author daniel
  */
 public class Plunger {
 

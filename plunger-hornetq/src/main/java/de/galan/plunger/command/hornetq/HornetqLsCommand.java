@@ -19,8 +19,6 @@ import de.galan.plunger.util.StringCaseInsensitiveComparator;
 
 /**
  * Lists all destinations on a HornetQ messaging server.
- *
- * @author daniel
  */
 public class HornetqLsCommand extends AbstractLsCommand {
 

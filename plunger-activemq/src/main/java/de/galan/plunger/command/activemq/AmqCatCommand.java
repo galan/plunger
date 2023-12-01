@@ -7,8 +7,6 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * Prints messags from a ActiveMQ messaging server.
- * 
- * @author daniel
  */
 public class AmqCatCommand extends AbstractJmsCatCommand {
 

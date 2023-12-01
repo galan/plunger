@@ -15,8 +15,6 @@ import de.galan.commons.io.streams.IOSupport;
 
 /**
  * Simplified utility to read from urls with basic authentication.
- *
- * @author daniel
  */
 public class Urls {
 

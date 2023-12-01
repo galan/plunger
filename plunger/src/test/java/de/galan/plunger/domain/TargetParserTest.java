@@ -6,9 +6,7 @@ import org.junit.Test;
 
 
 /**
- * CUT TargetParser
- *
- * @author danielt
+ * CUT TargetParsert
  */
 public class TargetParserTest {
 

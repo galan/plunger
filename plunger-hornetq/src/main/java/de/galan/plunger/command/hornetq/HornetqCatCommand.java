@@ -7,8 +7,6 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * Prints messags from a HornetQ messaging server.
- * 
- * @author daniel
  */
 public class HornetqCatCommand extends AbstractJmsCatCommand {
 

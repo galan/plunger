@@ -12,8 +12,6 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * HornetQs JMS-provider connectivity.
- * 
- * @author daniel
  */
 public class HornetqJms extends AbstractJms {
 

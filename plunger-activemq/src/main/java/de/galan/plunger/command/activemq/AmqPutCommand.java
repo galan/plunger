@@ -7,8 +7,6 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * Puts messages on a ActiveMQ-provider destination.
- * 
- * @author daniel
  */
 public class AmqPutCommand extends AbstractJmsPutCommand {
 

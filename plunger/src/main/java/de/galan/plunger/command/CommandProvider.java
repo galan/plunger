@@ -5,8 +5,6 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * Contract for a messaging provider.
- * 
- * @author daniel
  */
 public interface CommandProvider {
 

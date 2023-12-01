@@ -7,8 +7,6 @@ import org.junit.Test;
 
 /**
  * CUT Escape.
- *
- * @author daniel
  */
 public class EscapeTest {
 

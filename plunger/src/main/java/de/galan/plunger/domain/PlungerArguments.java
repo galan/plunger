@@ -6,8 +6,6 @@ import java.util.Map;
 
 /**
  * Container for the parsed arguments, given by the user on the commandline
- * 
- * @author daniel
  */
 public class PlungerArguments {
 

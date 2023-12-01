@@ -8,8 +8,6 @@ import org.junit.Test;
 
 /**
  * CUT Target
- * 
- * @author daniel
  */
 public class TargetTest {
 

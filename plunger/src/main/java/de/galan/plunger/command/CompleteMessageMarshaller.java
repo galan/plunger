@@ -13,8 +13,6 @@ import de.galan.plunger.util.Escape;
  * json-properties(tab)marshalled-body<br/>
  * eg.:<br/>
  * {"property":"value"}\tHello world
- *
- * @author daniel
  */
 public class CompleteMessageMarshaller implements MessageMarshaller {
 

@@ -5,8 +5,6 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * Basic abstraction for Command interface
- * 
- * @author daniel
  */
 public abstract class AbstractCommand implements Command {
 

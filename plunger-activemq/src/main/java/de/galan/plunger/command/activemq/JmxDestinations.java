@@ -11,8 +11,6 @@ import org.apache.activemq.broker.jmx.BrokerViewMBean;
 
 /**
  * Collects ActiveMQ destinations and is sorted and iterable.
- * 
- * @author daniel
  */
 class JmxDestinations implements Iterable<JmxDestination> {
 

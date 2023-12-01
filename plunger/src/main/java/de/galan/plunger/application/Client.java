@@ -14,8 +14,6 @@ import de.galan.plunger.util.Output;
 
 /**
  * Executes the request provided by the PlungerArguments.
- *
- * @author daniel
  */
 public class Client {
 

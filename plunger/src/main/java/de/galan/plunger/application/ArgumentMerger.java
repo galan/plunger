@@ -16,8 +16,6 @@ import de.galan.plunger.domain.TargetParser;
 
 /**
  * Merges the possible stored configuration entry with the arguments from the commandline.
- *
- * @author daniel
  */
 public class ArgumentMerger {
 

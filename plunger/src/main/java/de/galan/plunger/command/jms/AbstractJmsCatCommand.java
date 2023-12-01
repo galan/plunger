@@ -16,8 +16,6 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * Prints messags from a JMS messaging server.
- * 
- * @author daniel
  */
 public class AbstractJmsCatCommand extends AbstractCatCommand {
 

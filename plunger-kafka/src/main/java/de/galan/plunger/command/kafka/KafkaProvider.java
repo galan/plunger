@@ -8,8 +8,6 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * CommandProvider for a Kafka message-broker
- *
- * @author daniel
  */
 public class KafkaProvider implements CommandProvider {
 

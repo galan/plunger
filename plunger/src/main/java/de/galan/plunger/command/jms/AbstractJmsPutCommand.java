@@ -18,8 +18,6 @@ import de.galan.plunger.util.Output;
 
 /**
  * Puts messages on a JMS message-server.
- *
- * @author daniel
  */
 public class AbstractJmsPutCommand extends AbstractPutCommand {
 

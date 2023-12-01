@@ -5,8 +5,6 @@ import static org.apache.commons.lang3.StringUtils.*;
 
 /**
  * Available commands.
- *
- * @author daniel
  */
 public enum CommandName {
 

@@ -7,8 +7,6 @@ import java.util.Properties;
 
 /**
  * Prints the Version
- * 
- * @author daniel
  */
 public class VersionUtil {
 

@@ -11,8 +11,6 @@ import de.galan.plunger.util.Output;
 
 /**
  * Generic ls command, that handles most of the plunger arguments already.
- *
- * @author daniel
  */
 public abstract class AbstractLsCommand extends AbstractCommand {
 

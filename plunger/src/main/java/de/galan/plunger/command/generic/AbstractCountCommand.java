@@ -8,8 +8,6 @@ import de.galan.plunger.util.Output;
 
 /**
  * Generic count command, that handles most of the plunger arguments already.
- * 
- * @author daniel
  */
 public abstract class AbstractCountCommand extends AbstractCommand {
 

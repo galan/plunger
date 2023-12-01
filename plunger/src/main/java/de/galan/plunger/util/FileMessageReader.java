@@ -8,8 +8,6 @@ import java.util.Scanner;
 
 /**
  * Reads input from a file
- * 
- * @author daniel
  */
 public class FileMessageReader implements MessageReader {
 

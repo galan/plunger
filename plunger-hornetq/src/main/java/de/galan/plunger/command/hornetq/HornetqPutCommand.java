@@ -7,8 +7,6 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * Writes messages to a destination on a HornetQ messaging server.
- * 
- * @author daniel
  */
 public class HornetqPutCommand extends AbstractJmsPutCommand {
 

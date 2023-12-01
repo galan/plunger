@@ -2,8 +2,6 @@ package de.galan.plunger.command;
 
 /**
  * Generic Command Exception
- * 
- * @author daniel
  */
 public class CommandException extends Exception {
 

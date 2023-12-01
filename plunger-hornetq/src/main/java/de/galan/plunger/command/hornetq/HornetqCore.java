@@ -14,8 +14,6 @@ import de.galan.plunger.util.Output;
 
 /**
  * Abstraction to deal with HornetQs core-API.
- * 
- * @author daniel
  */
 public class HornetqCore {
 

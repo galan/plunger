@@ -20,8 +20,6 @@ import de.galan.plunger.util.Output;
 
 /**
  * Reads the configuration, located at ~/.plunger. The configurationfile syntax is based on the .ssh/config file.
- *
- * @author daniel
  */
 public class Config {
 

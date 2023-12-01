@@ -5,8 +5,6 @@ import de.galan.plunger.domain.Target;
 
 /**
  * An entry in the plunger configuration file
- * 
- * @author daniel
  */
 public class Entry {
 

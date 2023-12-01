@@ -10,8 +10,6 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * Counts messags from a HornetQ messaging server.
- * 
- * @author daniel
  */
 public class HornetqCountCommand extends AbstractCountCommand {
 

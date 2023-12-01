@@ -6,8 +6,6 @@ import de.galan.plunger.command.jms.ProviderInformation;
 
 /**
  * Helper for ActiveMQ.
- *
- * @author daniel
  */
 public class AmqUtil implements ProviderInformation {
 

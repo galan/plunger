@@ -8,8 +8,6 @@ import java.util.Map;
 
 /**
  * Simplified Pojo for a message
- * 
- * @author daniel
  */
 public class Message {
 

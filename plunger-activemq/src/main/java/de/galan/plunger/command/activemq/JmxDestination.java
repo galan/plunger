@@ -7,8 +7,6 @@ import org.apache.commons.lang3.ObjectUtils;
 
 /**
  * ActiveMQ abstraction for a destination.
- *
- * @author daniel
  */
 class JmxDestination implements Comparable<JmxDestination> {
 

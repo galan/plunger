@@ -23,8 +23,6 @@ import de.galan.plunger.util.Output;
 
 /**
  * Retrieves message/consumer amount for an ActiveMQ Provider.
- *
- * @author daniel
  */
 public class AmqCountCommand extends AbstractCountCommand {
 

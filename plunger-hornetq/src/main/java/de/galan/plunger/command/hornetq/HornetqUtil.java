@@ -15,8 +15,6 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * Common HornetQ abstractions.
- *
- * @author daniel
  */
 public class HornetqUtil implements ProviderInformation {
 

@@ -8,8 +8,6 @@ import de.galan.plunger.domain.PlungerArguments;
 
 /**
  * CommandProvider for a HornetQ server, >= version 2.2.5.
- * 
- * @author daniel
  */
 public class HornetqProvider implements CommandProvider {
 

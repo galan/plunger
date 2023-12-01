@@ -7,8 +7,6 @@ import java.io.InputStreamReader;
 
 /**
  * Reads message from stdin
- * 
- * @author daniel
  */
 public class SystemMessageReader implements MessageReader {
 

@@ -23,8 +23,6 @@ import de.galan.plunger.domain.Target;
 
 /**
  * CUT ArgumentMerger
- *
- * @author daniel
  */
 public class ArgumentMergerTest {
 

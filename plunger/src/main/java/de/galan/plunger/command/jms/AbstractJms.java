@@ -17,8 +17,6 @@ import de.galan.plunger.util.Output;
 
 /**
  * Basic connectivity for JMS-providers
- *
- * @author daniel
  */
 public abstract class AbstractJms {
 

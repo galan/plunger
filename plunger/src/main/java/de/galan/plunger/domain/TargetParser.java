@@ -15,8 +15,6 @@ import de.galan.plunger.util.Output;
 
 /**
  * Parses a given target in form [provider://][username[:password]@]host[:port][/destination]
- *
- * @author daniel
  */
 public class TargetParser {
 

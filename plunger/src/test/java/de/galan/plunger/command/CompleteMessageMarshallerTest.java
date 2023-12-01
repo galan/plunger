@@ -12,8 +12,6 @@ import de.galan.plunger.util.Output;
 
 /**
  * CUT MessageMarshaller
- *
- * @author daniel
  */
 public class CompleteMessageMarshallerTest {
 

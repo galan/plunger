@@ -23,8 +23,6 @@ import de.galan.plunger.util.Output;
 
 /**
  * Lists all available destinations from a ActiveMQ-provider.
- *
- * @author daniel
  */
 public class AmqLsCommand extends AbstractLsCommand {
 

@@ -11,8 +11,6 @@ import de.galan.plunger.domain.Target;
 
 /**
  * ActiveMQs JMS-provider connectivity.
- * 
- * @author daniel
  */
 public class AmqJms extends AbstractJms {
 
