@@ -5,7 +5,7 @@
 
 	<groupId>de.galan</groupId>
 	<artifactId>plunger-kafka</artifactId>
-	<version>1.8.0</version>
+	<version>1.8.1</version>
 
 	<parent>
 		<groupId>de.galan</groupId>
@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>de.galan</groupId>
 			<artifactId>plunger</artifactId>
-			<version>1.8.0</version>
+			<version>1.8.1</version>
 			<scope>provided</scope>
 		</dependency>
 

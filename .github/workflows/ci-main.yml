@@ -10,8 +10,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v1
+    - uses: actions/checkout@v4
+    - uses: actions/cache@v3
       env:
         cache-name: m2
       with:
@@ -19,9 +19,9 @@ jobs:
         key: ${{ env.cache-name }}-${{ hashFiles('**/pom.xml') }}
         restore-keys: ${{ env.cache-name }}-
     - name: setup java
-      uses: actions/setup-java@v1
+      uses: actions/setup-java@v4
       with:
-        java-version: 11
+        java-version: 17
     - name: Build all modules with Maven
       run: |
         export PLUNGER_HOME="$(pwd)/dist"
@@ -32,7 +32,7 @@ jobs:
     if: github.ref == 'refs/heads/master' && startsWith(github.ref, 'refs/tags/')
     steps:
     - name: Collect release artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v3
       with:
         name: dist
         path: dist
